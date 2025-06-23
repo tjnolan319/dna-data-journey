@@ -27,10 +27,28 @@ export const Navigation = () => {
               About
             </button>
             <button 
+              onClick={() => scrollToSection('tech-stack')}
+              className="text-slate-600 hover:text-blue-600 transition-colors"
+            >
+              Tech Stack
+            </button>
+            <button 
               onClick={() => scrollToSection('gantt')}
               className="text-slate-600 hover:text-blue-600 transition-colors"
             >
               Timeline
+            </button>
+            <button 
+              onClick={() => scrollToSection('data-gallery')}
+              className="text-slate-600 hover:text-blue-600 transition-colors"
+            >
+              Gallery
+            </button>
+            <button 
+              onClick={() => scrollToSection('projects')}
+              className="text-slate-600 hover:text-blue-600 transition-colors"
+            >
+              Portfolio
             </button>
             <button 
               onClick={() => scrollToSection('dna-timeline')}
@@ -56,10 +74,28 @@ export const Navigation = () => {
               About
             </button>
             <button 
+              onClick={() => scrollToSection('tech-stack')}
+              className="block w-full text-left px-4 py-2 text-slate-600 hover:text-blue-600"
+            >
+              Tech Stack
+            </button>
+            <button 
               onClick={() => scrollToSection('gantt')}
               className="block w-full text-left px-4 py-2 text-slate-600 hover:text-blue-600"
             >
               Timeline
+            </button>
+            <button 
+              onClick={() => scrollToSection('data-gallery')}
+              className="block w-full text-left px-4 py-2 text-slate-600 hover:text-blue-600"
+            >
+              Gallery
+            </button>
+            <button 
+              onClick={() => scrollToSection('projects')}
+              className="block w-full text-left px-4 py-2 text-slate-600 hover:text-blue-600"
+            >
+              Portfolio
             </button>
             <button 
               onClick={() => scrollToSection('dna-timeline')}
