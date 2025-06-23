@@ -1,7 +1,5 @@
-
 import { useState } from "react";
 import { X } from "lucide-react";
-import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface DNATimelineItem {
   id: string;
@@ -161,23 +159,20 @@ export const DNATimeline = () => {
     setSelectedItem(null);
   };
 
-  // Calculate positions for timeline segments
   const minYear = 2018;
   const maxYear = 2025;
   const totalYears = maxYear - minYear;
-  const svgWidth = 1200; // Increased width
-  const svgHeight = 500; // Increased height
+  const svgWidth = 1200;
+  const svgHeight = 500;
 
   const getXPosition = (year: number) => {
     return ((year - minYear) / totalYears) * (svgWidth - 200) + 100;
   };
 
-  // Improved positioning logic for overlapping segments
   const getYPosition = (item: DNATimelineItem, index: number) => {
     const baseY = svgHeight / 2;
     const overlapOffset = 40;
     
-    // Check for overlaps with previous items
     let yOffset = 0;
     const itemsToCheck = timelineData.slice(0, index);
     
@@ -187,13 +182,11 @@ export const DNATimeline = () => {
       const otherStart = otherItem.startYear;
       const otherEnd = otherItem.endYear === 2024 ? 2025 : otherItem.endYear;
       
-      // Check for overlap
       if (itemStart < otherEnd && itemEnd > otherStart) {
         yOffset += overlapOffset;
       }
     }
     
-    // Alternate above and below the center line, with overlap adjustments
     const side = index % 2 === 0 ? -1 : 1;
     return baseY + (side * (60 + yOffset));
   };
@@ -210,17 +203,15 @@ export const DNATimeline = () => {
           </p>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-xl p-8">
-          <ScrollArea className="w-full">
-            <div className="min-w-full">
-              <svg width={svgWidth} height={svgHeight} className="mx-auto">
-                {/* Background grid */}
+        <div className="bg-white rounded-2xl shadow-xl p-4 sm:p-8">
+          <div className="w-full overflow-x-auto overflow-y-hidden">
+            <div className="min-w-[1200px] w-full">
+              <svg width={svgWidth} height={svgHeight} className="w-full h-auto">
                 <defs>
                   <pattern id="grid" width="50" height="50" patternUnits="userSpaceOnUse">
                     <path d="M 50 0 L 0 0 0 50" fill="none" stroke="#f8fafc" strokeWidth="1"/>
                   </pattern>
                   
-                  {/* Gradients for DNA strands */}
                   <linearGradient id="gradient1" x1="0%" y1="0%" x2="100%" y2="0%">
                     <stop offset="0%" stopColor="#3B82F6" stopOpacity="0.8" />
                     <stop offset="50%" stopColor="#8B5CF6" stopOpacity="0.8" />
@@ -235,7 +226,6 @@ export const DNATimeline = () => {
                 
                 <rect width="100%" height="100%" fill="url(#grid)" />
                 
-                {/* Year markers */}
                 {Array.from({ length: totalYears + 1 }, (_, i) => {
                   const year = minYear + i;
                   const x = getXPosition(year);
@@ -249,7 +239,6 @@ export const DNATimeline = () => {
                   );
                 })}
 
-                {/* DNA Double Helix - more prominent */}
                 <path
                   d={`M 100 ${svgHeight/2} Q 300 ${svgHeight/2 - 80} 600 ${svgHeight/2} Q 900 ${svgHeight/2 + 80} 1100 ${svgHeight/2}`}
                   fill="none"
@@ -263,16 +252,14 @@ export const DNATimeline = () => {
                   strokeWidth="6"
                 />
 
-                {/* Timeline segments */}
                 {timelineData.map((item, index) => {
                   const startX = getXPosition(item.startYear);
                   const endX = getXPosition(item.endYear === 2024 ? 2025 : item.endYear);
                   const y = getYPosition(item, index);
-                  const width = Math.max(endX - startX, 80); // Minimum width for visibility
+                  const width = Math.max(endX - startX, 80);
 
                   return (
                     <g key={item.id}>
-                      {/* Segment bar */}
                       <rect
                         x={startX}
                         y={y - 20}
@@ -284,7 +271,6 @@ export const DNATimeline = () => {
                         onClick={() => handleSegmentClick(item)}
                       />
                       
-                      {/* Connecting line to main helix */}
                       <line
                         x1={startX + width/2}
                         y1={y}
@@ -296,7 +282,6 @@ export const DNATimeline = () => {
                         opacity="0.7"
                       />
                       
-                      {/* Label */}
                       <text
                         x={startX + width/2}
                         y={y + (y < svgHeight/2 ? -35 : 55)}
@@ -307,7 +292,6 @@ export const DNATimeline = () => {
                         {item.title}
                       </text>
                       
-                      {/* Company name */}
                       <text
                         x={startX + width/2}
                         y={y + (y < svgHeight/2 ? -20 : 70)}
@@ -318,7 +302,6 @@ export const DNATimeline = () => {
                         {item.company}
                       </text>
                       
-                      {/* Year range on segment */}
                       <text
                         x={startX + width/2}
                         y={y + 5}
@@ -333,11 +316,11 @@ export const DNATimeline = () => {
                 })}
               </svg>
             </div>
-          </ScrollArea>
+          </div>
         </div>
 
         <div className="text-center text-sm text-slate-500 mt-6">
-          Click on any segment above to explore the details • Scroll horizontally to see the full timeline
+          Click on any segment above to explore the details • Swipe or scroll horizontally to see the full timeline
         </div>
 
         <DetailModal 
