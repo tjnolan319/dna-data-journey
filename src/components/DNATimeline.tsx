@@ -1,6 +1,7 @@
 
 import { useState } from "react";
 import { X } from "lucide-react";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface DNATimelineItem {
   id: string;
@@ -164,20 +165,42 @@ export const DNATimeline = () => {
   const minYear = 2018;
   const maxYear = 2025;
   const totalYears = maxYear - minYear;
-  const svgWidth = 800;
-  const svgHeight = 400;
+  const svgWidth = 1200; // Increased width
+  const svgHeight = 500; // Increased height
 
   const getXPosition = (year: number) => {
-    return ((year - minYear) / totalYears) * (svgWidth - 100) + 50;
+    return ((year - minYear) / totalYears) * (svgWidth - 200) + 100;
   };
 
-  const getYPosition = (index: number) => {
-    return svgHeight / 2 + (index % 2 === 0 ? -50 : 50);
+  // Improved positioning logic for overlapping segments
+  const getYPosition = (item: DNATimelineItem, index: number) => {
+    const baseY = svgHeight / 2;
+    const overlapOffset = 40;
+    
+    // Check for overlaps with previous items
+    let yOffset = 0;
+    const itemsToCheck = timelineData.slice(0, index);
+    
+    for (const otherItem of itemsToCheck) {
+      const itemStart = item.startYear;
+      const itemEnd = item.endYear === 2024 ? 2025 : item.endYear;
+      const otherStart = otherItem.startYear;
+      const otherEnd = otherItem.endYear === 2024 ? 2025 : otherItem.endYear;
+      
+      // Check for overlap
+      if (itemStart < otherEnd && itemEnd > otherStart) {
+        yOffset += overlapOffset;
+      }
+    }
+    
+    // Alternate above and below the center line, with overlap adjustments
+    const side = index % 2 === 0 ? -1 : 1;
+    return baseY + (side * (60 + yOffset));
   };
 
   return (
     <section id="dna-timeline" className="py-20 bg-gradient-to-br from-slate-50 to-blue-50">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold text-slate-800 mb-4">
             Interactive DNA Strand Timeline
@@ -187,122 +210,134 @@ export const DNATimeline = () => {
           </p>
         </div>
 
-        <div className="flex justify-center mb-8">
-          <svg width={svgWidth} height={svgHeight} className="border rounded-lg bg-white shadow-lg">
-            {/* Background grid */}
-            <defs>
-              <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-                <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#f1f5f9" strokeWidth="1"/>
-              </pattern>
-            </defs>
-            <rect width="100%" height="100%" fill="url(#grid)" />
-            
-            {/* Year markers */}
-            {Array.from({ length: totalYears + 1 }, (_, i) => {
-              const year = minYear + i;
-              const x = getXPosition(year);
-              return (
-                <g key={year}>
-                  <line x1={x} y1={svgHeight - 30} x2={x} y2={svgHeight - 10} stroke="#64748b" strokeWidth="2" />
-                  <text x={x} y={svgHeight - 5} textAnchor="middle" className="fill-slate-600 text-sm font-medium">
-                    {year}
-                  </text>
-                </g>
-              );
-            })}
-
-            {/* DNA Double Helix */}
-            <path
-              d={`M 50 ${svgHeight/2} Q 200 ${svgHeight/2 - 60} 400 ${svgHeight/2} Q 600 ${svgHeight/2 + 60} 750 ${svgHeight/2}`}
-              fill="none"
-              stroke="url(#gradient1)"
-              strokeWidth="4"
-              opacity="0.6"
-            />
-            <path
-              d={`M 50 ${svgHeight/2} Q 200 ${svgHeight/2 + 60} 400 ${svgHeight/2} Q 600 ${svgHeight/2 - 60} 750 ${svgHeight/2}`}
-              fill="none"
-              stroke="url(#gradient2)"
-              strokeWidth="4"
-              opacity="0.6"
-            />
-
-            {/* Gradients */}
-            <defs>
-              <linearGradient id="gradient1" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor="#3B82F6" />
-                <stop offset="50%" stopColor="#8B5CF6" />
-                <stop offset="100%" stopColor="#10B981" />
-              </linearGradient>
-              <linearGradient id="gradient2" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor="#10B981" />
-                <stop offset="50%" stopColor="#F59E0B" />
-                <stop offset="100%" stopColor="#3B82F6" />
-              </linearGradient>
-            </defs>
-
-            {/* Timeline segments */}
-            {timelineData.map((item, index) => {
-              const startX = getXPosition(item.startYear);
-              const endX = getXPosition(item.endYear === 2024 ? 2025 : item.endYear);
-              const y = getYPosition(index);
-              const width = endX - startX;
-
-              return (
-                <g key={item.id}>
-                  {/* Segment bar */}
-                  <rect
-                    x={startX}
-                    y={y - 15}
-                    width={width}
-                    height={30}
-                    fill={item.color}
-                    rx="15"
-                    className="cursor-pointer hover:opacity-80 transition-opacity"
-                    onClick={() => handleSegmentClick(item)}
-                  />
+        <div className="bg-white rounded-2xl shadow-xl p-8">
+          <ScrollArea className="w-full">
+            <div className="min-w-full">
+              <svg width={svgWidth} height={svgHeight} className="mx-auto">
+                {/* Background grid */}
+                <defs>
+                  <pattern id="grid" width="50" height="50" patternUnits="userSpaceOnUse">
+                    <path d="M 50 0 L 0 0 0 50" fill="none" stroke="#f8fafc" strokeWidth="1"/>
+                  </pattern>
                   
-                  {/* Connecting line to main helix */}
-                  <line
-                    x1={startX + width/2}
-                    y1={y}
-                    x2={startX + width/2}
-                    y2={svgHeight/2}
-                    stroke={item.color}
-                    strokeWidth="2"
-                    strokeDasharray="5,5"
-                    opacity="0.6"
-                  />
-                  
-                  {/* Label */}
-                  <text
-                    x={startX + width/2}
-                    y={y + (index % 2 === 0 ? -25 : 45)}
-                    textAnchor="middle"
-                    className="fill-slate-700 text-sm font-medium cursor-pointer hover:fill-slate-900"
-                    onClick={() => handleSegmentClick(item)}
-                  >
-                    {item.title}
-                  </text>
-                  
-                  {/* Company name */}
-                  <text
-                    x={startX + width/2}
-                    y={y + (index % 2 === 0 ? -10 : 60)}
-                    textAnchor="middle"
-                    className="fill-slate-500 text-xs cursor-pointer"
-                    onClick={() => handleSegmentClick(item)}
-                  >
-                    {item.company}
-                  </text>
-                </g>
-              );
-            })}
-          </svg>
+                  {/* Gradients for DNA strands */}
+                  <linearGradient id="gradient1" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stopColor="#3B82F6" stopOpacity="0.8" />
+                    <stop offset="50%" stopColor="#8B5CF6" stopOpacity="0.8" />
+                    <stop offset="100%" stopColor="#10B981" stopOpacity="0.8" />
+                  </linearGradient>
+                  <linearGradient id="gradient2" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stopColor="#10B981" stopOpacity="0.8" />
+                    <stop offset="50%" stopColor="#F59E0B" stopOpacity="0.8" />
+                    <stop offset="100%" stopColor="#3B82F6" stopOpacity="0.8" />
+                  </linearGradient>
+                </defs>
+                
+                <rect width="100%" height="100%" fill="url(#grid)" />
+                
+                {/* Year markers */}
+                {Array.from({ length: totalYears + 1 }, (_, i) => {
+                  const year = minYear + i;
+                  const x = getXPosition(year);
+                  return (
+                    <g key={year}>
+                      <line x1={x} y1={svgHeight - 50} x2={x} y2={svgHeight - 20} stroke="#64748b" strokeWidth="2" />
+                      <text x={x} y={svgHeight - 5} textAnchor="middle" className="fill-slate-600 text-sm font-medium">
+                        {year}
+                      </text>
+                    </g>
+                  );
+                })}
+
+                {/* DNA Double Helix - more prominent */}
+                <path
+                  d={`M 100 ${svgHeight/2} Q 300 ${svgHeight/2 - 80} 600 ${svgHeight/2} Q 900 ${svgHeight/2 + 80} 1100 ${svgHeight/2}`}
+                  fill="none"
+                  stroke="url(#gradient1)"
+                  strokeWidth="6"
+                />
+                <path
+                  d={`M 100 ${svgHeight/2} Q 300 ${svgHeight/2 + 80} 600 ${svgHeight/2} Q 900 ${svgHeight/2 - 80} 1100 ${svgHeight/2}`}
+                  fill="none"
+                  stroke="url(#gradient2)"
+                  strokeWidth="6"
+                />
+
+                {/* Timeline segments */}
+                {timelineData.map((item, index) => {
+                  const startX = getXPosition(item.startYear);
+                  const endX = getXPosition(item.endYear === 2024 ? 2025 : item.endYear);
+                  const y = getYPosition(item, index);
+                  const width = Math.max(endX - startX, 80); // Minimum width for visibility
+
+                  return (
+                    <g key={item.id}>
+                      {/* Segment bar */}
+                      <rect
+                        x={startX}
+                        y={y - 20}
+                        width={width}
+                        height={40}
+                        fill={item.color}
+                        rx="20"
+                        className="cursor-pointer hover:opacity-80 transition-all duration-300 hover:stroke-slate-800 hover:stroke-2"
+                        onClick={() => handleSegmentClick(item)}
+                      />
+                      
+                      {/* Connecting line to main helix */}
+                      <line
+                        x1={startX + width/2}
+                        y1={y}
+                        x2={startX + width/2}
+                        y2={svgHeight/2}
+                        stroke={item.color}
+                        strokeWidth="3"
+                        strokeDasharray="8,4"
+                        opacity="0.7"
+                      />
+                      
+                      {/* Label */}
+                      <text
+                        x={startX + width/2}
+                        y={y + (y < svgHeight/2 ? -35 : 55)}
+                        textAnchor="middle"
+                        className="fill-slate-700 text-sm font-semibold cursor-pointer hover:fill-slate-900"
+                        onClick={() => handleSegmentClick(item)}
+                      >
+                        {item.title}
+                      </text>
+                      
+                      {/* Company name */}
+                      <text
+                        x={startX + width/2}
+                        y={y + (y < svgHeight/2 ? -20 : 70)}
+                        textAnchor="middle"
+                        className="fill-slate-500 text-xs cursor-pointer"
+                        onClick={() => handleSegmentClick(item)}
+                      >
+                        {item.company}
+                      </text>
+                      
+                      {/* Year range on segment */}
+                      <text
+                        x={startX + width/2}
+                        y={y + 5}
+                        textAnchor="middle"
+                        className="fill-white text-xs font-medium cursor-pointer"
+                        onClick={() => handleSegmentClick(item)}
+                      >
+                        {item.startYear}-{item.endYear === 2024 ? 'Present' : item.endYear}
+                      </text>
+                    </g>
+                  );
+                })}
+              </svg>
+            </div>
+          </ScrollArea>
         </div>
 
-        <div className="text-center text-sm text-slate-500">
-          Click on any segment above to explore the details of that period in my journey
+        <div className="text-center text-sm text-slate-500 mt-6">
+          Click on any segment above to explore the details • Scroll horizontally to see the full timeline
         </div>
 
         <DetailModal 
