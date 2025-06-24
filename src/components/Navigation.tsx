@@ -23,7 +23,7 @@ export const Navigation = () => {
   };
 
   const handleGitHubClick = () => {
-    // Replace with your actual GitHub URL
+    // Replace with your actual GitHub URL - based on your portfolio it should be your GitHub username
     window.open('https://github.com/yourusername', '_blank');
   };
 

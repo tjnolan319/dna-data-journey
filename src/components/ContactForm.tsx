@@ -1,166 +1,160 @@
 
 import { useState } from "react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Mail, Phone, MapPin } from "lucide-react";
+import { Label } from "@/components/ui/label";
+import { Mail, Phone, Linkedin, MapPin, Clock } from "lucide-react";
 
 export const ContactForm = () => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    subject: '',
     message: ''
   });
-  const [isSubmitted, setIsSubmitted] = useState(false);
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Here you would typically send the form data to your backend
+    // Handle form submission here
     console.log('Form submitted:', formData);
-    setIsSubmitted(true);
-    
-    // Reset form after 3 seconds
-    setTimeout(() => {
-      setIsSubmitted(false);
-      setFormData({ name: '', email: '', subject: '', message: '' });
-    }, 3000);
+    // You can integrate with email service or backend here
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
   };
 
   return (
-    <section id="contact" className="py-20 bg-slate-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="contact" className="py-20 px-4 sm:px-6 lg:px-8 bg-slate-50">
+      <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-slate-800 mb-4">Get In Touch</h2>
-          <p className="text-xl text-slate-600 max-w-3xl mx-auto">
-            Ready to discuss data-driven strategies or potential collaborations? 
-            I'd love to hear from you.
+          <h2 className="text-4xl font-bold text-slate-800 mb-4">
+            Let's <span className="text-blue-600">Connect</span>
+          </h2>
+          <p className="text-xl text-slate-600">
+            Ready to discuss data-driven opportunities and strategic insights
           </p>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-12">
-          {/* Contact Info */}
-          <div className="space-y-8">
-            <div>
-              <h3 className="text-2xl font-semibold text-slate-800 mb-6">Let's Connect</h3>
-              <div className="space-y-4">
-                <div className="flex items-center space-x-4 text-slate-600">
-                  <Mail className="h-5 w-5 text-blue-600 flex-shrink-0" />
-                  <span>timothy.nolan@email.com</span>
+        <div className="grid lg:grid-cols-2 gap-12 items-start">
+          <div className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center space-x-2">
+                  <Mail className="h-5 w-5 text-blue-600" />
+                  <span>Contact Information</span>
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex items-center space-x-3">
+                  <Mail className="h-4 w-4 text-slate-500" />
+                  <div>
+                    <p className="font-medium">Email</p>
+                    <p className="text-slate-600">tjnolan319@gmail.com</p>
+                    <p className="text-slate-600 text-sm">tnolan@falcon.bentley.edu</p>
+                  </div>
                 </div>
-                <div className="flex items-center space-x-4 text-slate-600">
-                  <Phone className="h-5 w-5 text-blue-600 flex-shrink-0" />
-                  <span>+1 (555) 123-4567</span>
+                <div className="flex items-center space-x-3">
+                  <Phone className="h-4 w-4 text-slate-500" />
+                  <div>
+                    <p className="font-medium">Phone</p>
+                    <p className="text-slate-600">(978) 846-2725</p>
+                  </div>
                 </div>
-                <div className="flex items-center space-x-4 text-slate-600">
-                  <MapPin className="h-5 w-5 text-blue-600 flex-shrink-0" />
-                  <span>San Francisco, CA</span>
+                <div className="flex items-center space-x-3">
+                  <MapPin className="h-4 w-4 text-slate-500" />
+                  <div>
+                    <p className="font-medium">Location</p>
+                    <p className="text-slate-600">Waltham, MA, US</p>
+                  </div>
                 </div>
-              </div>
-            </div>
+                <div className="flex items-center space-x-3">
+                  <Clock className="h-4 w-4 text-slate-500" />
+                  <div>
+                    <p className="font-medium">Current Time</p>
+                    <p className="text-slate-600">Eastern Time Zone</p>
+                  </div>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <Linkedin className="h-4 w-4 text-slate-500" />
+                  <div>
+                    <p className="font-medium">LinkedIn</p>
+                    <a href="#" className="text-blue-600 hover:underline">Connect with me</a>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
 
-            <div className="bg-blue-50 p-6 rounded-xl border border-blue-200">
-              <h4 className="font-semibold text-blue-900 mb-2">Quick Response</h4>
-              <p className="text-blue-800 text-sm">
-                I typically respond to messages within 24 hours. For urgent inquiries, 
-                feel free to mention it in your message.
-              </p>
-            </div>
+            <Card>
+              <CardHeader>
+                <CardTitle>Availability</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex items-center space-x-2">
+                  <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+                  <span className="font-medium text-green-700">Available for work</span>
+                </div>
+                <p className="text-slate-600 mt-2">
+                  Open to full-time opportunities in data analytics, business strategy, and consulting roles.
+                </p>
+              </CardContent>
+            </Card>
           </div>
 
-          {/* Contact Form */}
-          <div className="bg-white p-8 rounded-xl shadow-lg border border-slate-200">
-            {isSubmitted ? (
-              <div className="text-center py-8">
-                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Mail className="h-8 w-8 text-green-600" />
-                </div>
-                <h3 className="text-xl font-semibold text-slate-800 mb-2">Message Sent!</h3>
-                <p className="text-slate-600">Thanks for reaching out. I'll get back to you soon.</p>
-              </div>
-            ) : (
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="grid md:grid-cols-2 gap-6">
-                  <div>
-                    <label htmlFor="name" className="block text-sm font-medium text-slate-700 mb-2">
-                      Name *
-                    </label>
-                    <input
-                      type="text"
-                      id="name"
-                      name="name"
-                      required
-                      value={formData.name}
-                      onChange={handleInputChange}
-                      className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                      placeholder="Your name"
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor="email" className="block text-sm font-medium text-slate-700 mb-2">
-                      Email *
-                    </label>
-                    <input
-                      type="email"
-                      id="email"
-                      name="email"
-                      required
-                      value={formData.email}
-                      onChange={handleInputChange}
-                      className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                      placeholder="your.email@example.com"
-                    />
-                  </div>
-                </div>
-                
+          <Card>
+            <CardHeader>
+              <CardTitle>Send Message</CardTitle>
+              <CardDescription>
+                Reach out to discuss opportunities or ask questions about my work
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
-                  <label htmlFor="subject" className="block text-sm font-medium text-slate-700 mb-2">
-                    Subject *
-                  </label>
-                  <input
-                    type="text"
-                    id="subject"
-                    name="subject"
-                    required
-                    value={formData.subject}
+                  <Label htmlFor="name">Your Name</Label>
+                  <Input
+                    id="name"
+                    name="name"
+                    value={formData.name}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                    placeholder="What's this about?"
+                    placeholder="Enter your name"
+                    required
                   />
                 </div>
-                
                 <div>
-                  <label htmlFor="message" className="block text-sm font-medium text-slate-700 mb-2">
-                    Message *
-                  </label>
+                  <Label htmlFor="email">Your Email</Label>
+                  <Input
+                    id="email"
+                    name="email"
+                    type="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    placeholder="Enter your email"
+                    required
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="message">Message</Label>
                   <Textarea
                     id="message"
                     name="message"
-                    required
                     value={formData.message}
                     onChange={handleInputChange}
+                    placeholder="Tell me about your project or opportunity..."
                     rows={5}
-                    className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors resize-none"
-                    placeholder="Tell me about your project or how I can help..."
+                    required
                   />
                 </div>
-                
-                <Button 
-                  type="submit"
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 text-lg font-medium transition-colors"
-                >
+                <Button type="submit" className="w-full">
                   Send Message
                 </Button>
               </form>
-            )}
-          </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </section>

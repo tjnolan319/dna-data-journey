@@ -88,65 +88,86 @@ export const DNATimeline = () => {
       id: "1",
       startYear: 2024,
       endYear: 2024,
-      title: "Business Strategy Analyst",
-      company: "Tech Innovation Corp",
-      description: "Leading strategic initiatives and data-driven decision making for enterprise solutions.",
+      title: "Program Assistant",
+      company: "Bentley University Entrepreneurship Hub",
+      description: "Spearheading the development of student-run business programs and aligning strategic goals with E-Hub initiatives.",
       achievements: [
-        "Developed predictive models that improved forecasting accuracy by 35%",
-        "Led cross-functional team of 8 analysts on market expansion project",
-        "Created executive dashboards tracking $50M+ revenue streams"
+        "Spearhead development of student-run business program",
+        "Manage marketing materials and Eventbrite listings for program visibility", 
+        "Analyze program performance and drive student engagement",
+        "Connect students with entrepreneurial resources"
       ],
-      skills: ["Strategic Planning", "Predictive Analytics", "Executive Reporting", "Team Leadership"],
+      skills: ["Strategic Planning", "Program Development", "Marketing", "Student Engagement"],
       type: "work",
       color: "#10b981"
     },
     {
-      id: "2",
-      startYear: 2022,
-      endYear: 2023,
-      title: "Junior Data Analyst",
-      company: "Financial Solutions Inc",
-      description: "Analyzed customer behavior and market trends to support business growth initiatives.",
+      id: "2", 
+      startYear: 2023,
+      endYear: 2024,
+      title: "Practice Manager",
+      company: "Lighthouse Health",
+      description: "Executed patient acquisition strategies and scaled clinical operations for telehealth startup.",
       achievements: [
-        "Built automated reporting system reducing manual work by 60%",
-        "Identified customer segments leading to 20% increase in retention",
-        "Collaborated with product teams on feature optimization"
+        "Executed patient acquisition strategies through market research",
+        "Scaled clinical staff from 0 to 10 within 18 months",
+        "Built partnerships with universities and specialty clinics",
+        "Discussed financial projections with key stakeholders weekly"
       ],
-      skills: ["SQL", "Python", "Data Visualization", "Customer Analytics"],
-      type: "work",
+      skills: ["Market Research", "Strategic Scaling", "Partnership Development", "Financial Planning"],
+      type: "work", 
       color: "#f59e0b"
     },
     {
       id: "3",
       startYear: 2021,
-      endYear: 2021,
-      title: "Data Science Bootcamp",
-      company: "DataLearn Academy",
-      description: "Intensive 6-month program covering machine learning, statistics, and business applications.",
+      endYear: 2023,
+      title: "Human Resources Manager", 
+      company: "Lighthouse Health",
+      description: "Directed strategic planning and execution of telehealth startup trajectory from inception.",
       achievements: [
-        "Completed 15+ real-world projects",
-        "Built recommendation system for e-commerce platform",
-        "Graduated top 10% of cohort"
+        "Directed strategic planning from startup inception",
+        "Managed recruitment and onboarding of 6+ provider types",
+        "Ensured websites met accessibility and SEO standards",
+        "Launched digital marketing campaigns with 7% engagement rate"
       ],
-      skills: ["Machine Learning", "Statistical Analysis", "Python", "R"],
-      type: "certification",
+      skills: ["Strategic Planning", "HR Management", "Digital Marketing", "SEO"],
+      type: "work",
       color: "#8b5cf6"
     },
     {
       id: "4",
-      startYear: 2018,
-      endYear: 2022,
-      title: "Bachelor of Business Administration",
-      company: "State University",
-      description: "Specialized in Analytics and Information Systems with a focus on business intelligence.",
+      startYear: 2023,
+      endYear: 2025,
+      title: "MBA & MS Business Analytics",
+      company: "Bentley University McCallum Graduate School",
+      description: "Master of Business Administration (Information Systems and Technology) and Master of Science in Business Analytics.",
       achievements: [
-        "Graduated Magna Cum Laude (3.8 GPA)",
-        "President of Business Analytics Club",
-        "Won university-wide case competition"
+        "Graduated with High Distinction, May 2025",
+        "GPA: 3.89",
+        "Specialized in Information Systems and Technology",
+        "Advanced coursework in Business Analytics"
       ],
-      skills: ["Business Strategy", "Statistics", "Project Management", "Research Methods"],
+      skills: ["Business Strategy", "Information Systems", "Business Analytics", "Data Science"],
       type: "education",
       color: "#3b82f6"
+    },
+    {
+      id: "5",
+      startYear: 2020,
+      endYear: 2023,
+      title: "BS Business Administration & BA Psychology",
+      company: "University of Rhode Island",
+      description: "Bachelor of Science in Business Administration (Marketing) and Bachelor of Arts in Psychology on accelerated 3-year track.",
+      achievements: [
+        "Graduated Summa Cum Laude, May 2023",
+        "GPA: 3.87",
+        "Accelerated 3-year graduation track",
+        "Marketing Award for Scholastic Achievement & Service Excellence"
+      ],
+      skills: ["Marketing", "Psychology", "Business Administration", "Research Methods"],
+      type: "education",
+      color: "#ec4899"
     }
   ];
 

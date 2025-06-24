@@ -24,7 +24,8 @@ export const DNAHero = () => {
               </div>
               <div>
                 <h1 className="text-3xl font-bold text-slate-800">Timothy Nolan</h1>
-                <p className="text-lg text-slate-600">Business Data & Strategy Analyst</p>
+                <p className="text-lg text-slate-600">Data & Business Strategy Analyst</p>
+                <p className="text-sm text-slate-500">Waltham, MA • Available for work</p>
               </div>
             </div>
             
@@ -33,7 +34,7 @@ export const DNAHero = () => {
               <span className="block text-blue-600">Professional DNA?</span>
             </h2>
             <p className="text-xl text-slate-600 leading-relaxed">
-              Passionate about transforming complex data into actionable insights. My analytical DNA is built from years of education and hands-on experience in data science, strategic planning, and business intelligence.
+              Recent MBA and MS in Business Analytics graduate from Bentley University, with undergraduate degrees in Marketing and Psychology. My background combines business, analytics, and behavioral science, applied in early-stage companies, research, and university-based entrepreneurship programs.
             </p>
             <div className="flex flex-wrap gap-4">
               <span className="px-4 py-2 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">
@@ -44,6 +45,9 @@ export const DNAHero = () => {
               </span>
               <span className="px-4 py-2 bg-purple-100 text-purple-800 rounded-full text-sm font-medium">
                 Business Intelligence
+              </span>
+              <span className="px-4 py-2 bg-orange-100 text-orange-800 rounded-full text-sm font-medium">
+                Behavioral Science
               </span>
             </div>
           </div>

@@ -5,37 +5,58 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 
 const projects = [
   {
-    title: "Sales Performance Dashboard",
-    description: "Interactive dashboard analyzing quarterly sales trends and KPIs",
-    tech: ["Tableau", "SQL", "Python"],
-    impact: "25% improvement in sales forecasting accuracy"
+    title: "Interactive Skillset Network Diagram",
+    description: "Network visualization mapping skillsets based on GitHub project topics, with automated daily updates",
+    tech: ["Python", "Data Visualization", "GitHub API"],
+    impact: "Visual representation for non-technical users"
   },
   {
-    title: "Customer Segmentation Analysis",
-    description: "Advanced clustering analysis to identify high-value customer segments",
-    tech: ["R", "Machine Learning", "Power BI"],
-    impact: "15% increase in customer retention"
+    title: "Genre-Category Pair Advantages at Academy Awards",
+    description: "Data science analysis of Academy Award patterns using statistical methods",
+    tech: ["Python", "Statistical Analysis", "Deepnote"],
+    impact: "Published research findings"
   },
   {
-    title: "Supply Chain Optimization",
-    description: "Data-driven approach to optimize inventory and reduce costs",
-    tech: ["Python", "AWS", "SQL"],
-    impact: "$2M annual cost savings"
+    title: "Telehealth Platform Growth Strategy",
+    description: "Strategic scaling of clinical staff and digital marketing initiatives for healthcare startup",
+    tech: ["Market Research", "SEO", "Digital Marketing"],
+    impact: "Scaled from 0 to 10 clinical staff in 18 months"
   }
 ];
 
 const publications = [
   {
-    title: "Modern Data Analytics in Business Strategy",
-    journal: "Business Intelligence Quarterly",
-    year: "2023",
-    description: "A comprehensive study on integrating advanced analytics into strategic decision-making"
+    title: "Are my peers impulsive? Normative perceptions of impulsivity and associations with personal impulsivity and alcohol use outcomes",
+    journal: "Journal of Substance Use",
+    year: "2024",
+    description: "Research examining whether individuals perceived their peers' impulsivity as different from their own impulsivity and if perceptions of peers' impulsivity moderated the associations between personal impulsivity and alcohol use and consequences."
+  }
+];
+
+const certifications = [
+  {
+    title: "Alteryx Designer Cloud Core",
+    issuer: "Alteryx",
+    year: "2025",
+    expires: "2027"
   },
   {
-    title: "Predictive Modeling for Customer Behavior",
-    journal: "Data Science Review",
-    year: "2022",
-    description: "Exploring machine learning techniques for customer lifetime value prediction"
+    title: "Alteryx Foundational Micro-Credential", 
+    issuer: "Alteryx",
+    year: "2025",
+    expires: "2027"
+  },
+  {
+    title: "Microsoft Office Specialist: Excel Associate",
+    issuer: "Microsoft",
+    year: "2023",
+    expires: null
+  },
+  {
+    title: "Social and Behavioral Responsible Conduct of Research",
+    issuer: "CITI Program",
+    year: "2023",
+    expires: "2026"
   }
 ];
 
@@ -48,9 +69,10 @@ export const ProjectTabs = () => {
         </h2>
 
         <Tabs defaultValue="projects" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 max-w-md mx-auto mb-8">
+          <TabsList className="grid w-full grid-cols-3 max-w-lg mx-auto mb-8">
             <TabsTrigger value="projects">Projects</TabsTrigger>
             <TabsTrigger value="publications">Publications</TabsTrigger>
+            <TabsTrigger value="certifications">Certifications</TabsTrigger>
           </TabsList>
 
           <TabsContent value="projects" className="space-y-6">
@@ -84,7 +106,7 @@ export const ProjectTabs = () => {
           </TabsContent>
 
           <TabsContent value="publications" className="space-y-6">
-            <div className="grid md:grid-cols-2 gap-6">
+            <div className="grid gap-6">
               {publications.map((pub, index) => (
                 <Card key={index} className="hover:shadow-lg transition-shadow">
                   <CardHeader>
@@ -94,6 +116,22 @@ export const ProjectTabs = () => {
                   <CardContent>
                     <p className="text-slate-600">{pub.description}</p>
                   </CardContent>
+                </Card>
+              ))}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="certifications" className="space-y-6">
+            <div className="grid md:grid-cols-2 gap-6">
+              {certifications.map((cert, index) => (
+                <Card key={index} className="hover:shadow-lg transition-shadow">
+                  <CardHeader>
+                    <CardTitle className="text-lg">{cert.title}</CardTitle>
+                    <CardDescription>
+                      {cert.issuer} • Issued {cert.year}
+                      {cert.expires && ` • Expires ${cert.expires}`}
+                    </CardDescription>
+                  </CardHeader>
                 </Card>
               ))}
             </div>

@@ -4,14 +4,14 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 const techStack = [
-  { name: "Python", category: "Analytics" },
-  { name: "R", category: "Analytics" },
   { name: "SQL", category: "Database" },
+  { name: "Python", category: "Programming" },
+  { name: "R Programming", category: "Statistics" },
+  { name: "SPSS", category: "Statistics" },
+  { name: "Alteryx", category: "Data Workflow" },
+  { name: "Excel", category: "Analytics" },
   { name: "Tableau", category: "Visualization" },
   { name: "Power BI", category: "Visualization" },
-  { name: "Excel", category: "Analytics" },
-  { name: "SPSS", category: "Statistics" },
-  { name: "AWS", category: "Cloud" },
 ];
 
 export const TechStack = () => {
@@ -42,14 +42,14 @@ export const TechStack = () => {
               <Avatar className="w-32 h-32 border-4 border-blue-200">
                 <AvatarImage 
                   src="https://images.unsplash.com/photo-1649972904349-6e44c42644a7?w=400&h=400&fit=crop&crop=face" 
-                  alt="Profile Picture" 
+                  alt="Timothy Nolan Profile Picture" 
                 />
-                <AvatarFallback className="text-2xl bg-blue-100 text-blue-800">DA</AvatarFallback>
+                <AvatarFallback className="text-2xl bg-blue-100 text-blue-800">TN</AvatarFallback>
               </Avatar>
               <div>
-                <h3 className="text-2xl font-bold text-slate-800 mb-2">Data Analyst</h3>
+                <h3 className="text-2xl font-bold text-slate-800 mb-2">Data & Business Analyst</h3>
                 <p className="text-slate-600">
-                  Transforming complex data into strategic insights through advanced analytics and visualization
+                  Combining business strategy with advanced analytics to drive data-driven insights and decisions
                 </p>
               </div>
             </div>
