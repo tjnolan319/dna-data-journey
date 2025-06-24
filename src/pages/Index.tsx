@@ -6,6 +6,7 @@ import { Navigation } from "@/components/Navigation";
 import { TechStack } from "@/components/TechStack";
 import { ProjectTabs } from "@/components/ProjectTabs";
 import { DataGallery } from "@/components/DataGallery";
+import { ContactForm } from "@/components/ContactForm";
 
 const Index = () => {
   return (
@@ -17,6 +18,7 @@ const Index = () => {
       <DataGallery />
       <ProjectTabs />
       <DNATimeline />
+      <ContactForm />
     </div>
   );
 };

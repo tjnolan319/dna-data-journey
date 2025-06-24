@@ -14,14 +14,26 @@ export const DNAHero = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <div className={`space-y-6 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-10'}`}>
-            <h1 className="text-5xl lg:text-6xl font-bold text-slate-800 leading-tight">
+            <div className="flex items-center space-x-4 mb-6">
+              <div className="w-20 h-20 rounded-full overflow-hidden border-4 border-blue-200 shadow-lg">
+                <img 
+                  src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face" 
+                  alt="Timothy Nolan" 
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div>
+                <h1 className="text-3xl font-bold text-slate-800">Timothy Nolan</h1>
+                <p className="text-lg text-slate-600">Business Data & Strategy Analyst</p>
+              </div>
+            </div>
+            
+            <h2 className="text-4xl lg:text-5xl font-bold text-slate-800 leading-tight">
               What's in my
               <span className="block text-blue-600">Professional DNA?</span>
-            </h1>
+            </h2>
             <p className="text-xl text-slate-600 leading-relaxed">
-              Business Data & Strategy Analyst with a passion for transforming complex data 
-              into actionable insights. My analytical DNA is built from years of education 
-              and hands-on experience in data science, strategic planning, and business intelligence.
+              Passionate about transforming complex data into actionable insights. My analytical DNA is built from years of education and hands-on experience in data science, strategic planning, and business intelligence.
             </p>
             <div className="flex flex-wrap gap-4">
               <span className="px-4 py-2 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">

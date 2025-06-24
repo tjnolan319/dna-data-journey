@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Download, Github } from "lucide-react";
 
 export const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -11,15 +11,31 @@ export const Navigation = () => {
     setIsOpen(false);
   };
 
+  const handleResumeDownload = () => {
+    // Replace with your actual resume URL
+    const resumeUrl = "/resume.pdf";
+    const link = document.createElement('a');
+    link.href = resumeUrl;
+    link.download = 'Timothy_Nolan_Resume.pdf';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const handleGitHubClick = () => {
+    // Replace with your actual GitHub URL
+    window.open('https://github.com/yourusername', '_blank');
+  };
+
   return (
     <nav className="fixed top-0 w-full bg-white/80 backdrop-blur-md z-50 border-b border-slate-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <div className="font-bold text-xl text-slate-800">
-            My Professional DNA
+            Timothy Nolan
           </div>
           
-          <div className="hidden md:flex space-x-8">
+          <div className="hidden md:flex items-center space-x-6">
             <button 
               onClick={() => scrollToSection('hero')}
               className="text-slate-600 hover:text-blue-600 transition-colors"
@@ -56,6 +72,29 @@ export const Navigation = () => {
             >
               Experience
             </button>
+            <button 
+              onClick={() => scrollToSection('contact')}
+              className="text-slate-600 hover:text-blue-600 transition-colors"
+            >
+              Contact
+            </button>
+            
+            <div className="flex items-center space-x-3 border-l border-slate-300 pl-6">
+              <button
+                onClick={handleResumeDownload}
+                className="flex items-center space-x-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+              >
+                <Download className="h-4 w-4" />
+                <span>Resume</span>
+              </button>
+              <button
+                onClick={handleGitHubClick}
+                className="flex items-center space-x-2 bg-slate-800 text-white px-4 py-2 rounded-lg hover:bg-slate-900 transition-colors"
+              >
+                <Github className="h-4 w-4" />
+                <span>GitHub</span>
+              </button>
+            </div>
           </div>
 
           <div className="md:hidden">
@@ -66,7 +105,7 @@ export const Navigation = () => {
         </div>
 
         {isOpen && (
-          <div className="md:hidden py-4 space-y-2">
+          <div className="md:hidden py-4 space-y-2 border-t border-slate-200">
             <button 
               onClick={() => scrollToSection('hero')}
               className="block w-full text-left px-4 py-2 text-slate-600 hover:text-blue-600"
@@ -103,6 +142,29 @@ export const Navigation = () => {
             >
               Experience
             </button>
+            <button 
+              onClick={() => scrollToSection('contact')}
+              className="block w-full text-left px-4 py-2 text-slate-600 hover:text-blue-600"
+            >
+              Contact
+            </button>
+            
+            <div className="flex flex-col space-y-2 pt-4 border-t border-slate-200">
+              <button
+                onClick={handleResumeDownload}
+                className="flex items-center justify-center space-x-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors mx-4"
+              >
+                <Download className="h-4 w-4" />
+                <span>Download Resume</span>
+              </button>
+              <button
+                onClick={handleGitHubClick}
+                className="flex items-center justify-center space-x-2 bg-slate-800 text-white px-4 py-2 rounded-lg hover:bg-slate-900 transition-colors mx-4"
+              >
+                <Github className="h-4 w-4" />
+                <span>View GitHub</span>
+              </button>
+            </div>
           </div>
         )}
       </div>
