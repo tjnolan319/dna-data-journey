@@ -188,7 +188,7 @@ export const DNATimeline = () => {
       }
     }
     
-    const side = index % 2 === 0 ? -1 :;
+    const side = index % 2 === 0 ? -1 : 1;
     return baseY + (side * (50 + yOffset));
   };
 
