@@ -25,34 +25,34 @@ const DetailModal = ({ item, isOpen, onClose }: DetailModalProps) => {
   if (!isOpen || !item) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg max-w-2xl w-full max-h-[80vh] overflow-y-auto">
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+      <div className="bg-slate-800 rounded-xl max-w-2xl w-full max-h-[80vh] overflow-y-auto border border-slate-700">
         <div className="p-6">
           <div className="flex justify-between items-start mb-4">
             <div>
-              <h3 className="text-2xl font-bold text-slate-800 mb-1">{item.title}</h3>
-              <p className="text-blue-600 font-medium mb-2">{item.company}</p>
-              <span className="text-sm bg-slate-100 px-3 py-1 rounded-full">
+              <h3 className="text-2xl font-bold text-white mb-1">{item.title}</h3>
+              <p className="text-blue-400 font-medium mb-2">{item.company}</p>
+              <span className="text-sm bg-slate-700 text-slate-200 px-3 py-1 rounded-full">
                 {item.startYear} - {item.endYear === 2024 ? 'Present' : item.endYear}
               </span>
             </div>
             <button
               onClick={onClose}
-              className="p-2 hover:bg-slate-100 rounded-full transition-colors"
+              className="p-2 hover:bg-slate-700 rounded-full transition-colors text-slate-400 hover:text-white"
             >
               <X className="h-5 w-5" />
             </button>
           </div>
           
-          <p className="text-slate-600 mb-6 leading-relaxed">{item.description}</p>
+          <p className="text-slate-300 mb-6 leading-relaxed">{item.description}</p>
           
           <div className="space-y-4">
             <div>
-              <h4 className="font-semibold text-slate-800 mb-2">Key Achievements:</h4>
+              <h4 className="font-semibold text-white mb-2">Key Achievements:</h4>
               <ul className="space-y-2">
                 {item.achievements.map((achievement, idx) => (
-                  <li key={idx} className="text-slate-600 flex items-start">
-                    <span className="text-green-500 mr-2 mt-1">▪</span>
+                  <li key={idx} className="text-slate-300 flex items-start">
+                    <span className="text-blue-400 mr-2 mt-1 font-bold">▪</span>
                     {achievement}
                   </li>
                 ))}
@@ -60,12 +60,12 @@ const DetailModal = ({ item, isOpen, onClose }: DetailModalProps) => {
             </div>
 
             <div>
-              <h4 className="font-semibold text-slate-800 mb-2">Skills Developed:</h4>
+              <h4 className="font-semibold text-white mb-2">Skills Developed:</h4>
               <div className="flex flex-wrap gap-2">
                 {item.skills.map((skill, idx) => (
                   <span 
                     key={idx}
-                    className="px-3 py-1 text-sm bg-slate-100 text-slate-700 rounded-full"
+                    className="px-3 py-1 text-sm bg-slate-700 text-slate-200 rounded-full border border-slate-600"
                   >
                     {skill}
                   </span>
@@ -98,7 +98,7 @@ export const DNATimeline = () => {
       ],
       skills: ["Strategic Planning", "Predictive Analytics", "Executive Reporting", "Team Leadership"],
       type: "work",
-      color: "#48bb78"
+      color: "#10b981"
     },
     {
       id: "2",
@@ -114,7 +114,7 @@ export const DNATimeline = () => {
       ],
       skills: ["SQL", "Python", "Data Visualization", "Customer Analytics"],
       type: "work",
-      color: "#ed8936"
+      color: "#f59e0b"
     },
     {
       id: "3",
@@ -130,7 +130,7 @@ export const DNATimeline = () => {
       ],
       skills: ["Machine Learning", "Statistical Analysis", "Python", "R"],
       type: "certification",
-      color: "#9f7aea"
+      color: "#8b5cf6"
     },
     {
       id: "4",
@@ -146,7 +146,7 @@ export const DNATimeline = () => {
       ],
       skills: ["Business Strategy", "Statistics", "Project Management", "Research Methods"],
       type: "education",
-      color: "#667eea"
+      color: "#3b82f6"
     }
   ];
 
@@ -163,8 +163,8 @@ export const DNATimeline = () => {
   const minYear = 2018;
   const maxYear = 2025;
   const totalYears = maxYear - minYear;
-  const svgWidth = 1200;
-  const svgHeight = 500;
+  const svgWidth = 1000;
+  const svgHeight = 400;
 
   const getXPosition = (year: number) => {
     return ((year - minYear) / totalYears) * (svgWidth - 200) + 100;
@@ -172,7 +172,7 @@ export const DNATimeline = () => {
 
   const getYPosition = (item: DNATimelineItem, index: number) => {
     const baseY = svgHeight / 2;
-    const overlapOffset = 40;
+    const overlapOffset = 35;
     
     let yOffset = 0;
     const itemsToCheck = timelineData.slice(0, index);
@@ -188,75 +188,54 @@ export const DNATimeline = () => {
       }
     }
     
-    const side = index % 2 === 0 ? -1 : 1;
-    return baseY + (side * (60 + yOffset));
+    const side = index % 2 === 0 ? -1 :;
+    return baseY + (side * (50 + yOffset));
   };
 
   return (
-    <section id="dna-timeline" className="py-20" style={{
-      background: "linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)",
-      minHeight: "100vh",
-      color: "white"
-    }}>
+    <section id="dna-timeline" className="py-20 bg-slate-900 min-h-screen">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold mb-4" style={{
-            background: "linear-gradient(45deg, #ffeaa7, #fab1a0, #fd79a8)",
-            backgroundClip: "text",
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-          }}>
+          <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">
             🧬 Interactive DNA Strand Timeline
           </h2>
-          <p className="text-xl text-white/80">
+          <p className="text-xl text-slate-300">
             Click on any segment to explore my professional evolution
           </p>
         </div>
 
-        <div style={{
-          background: "rgba(255,255,255,0.05)",
-          borderRadius: "20px",
-          backdropFilter: "blur(15px)",
-          border: "1px solid rgba(255,255,255,0.1)",
-          padding: "20px"
-        }}>
-          <div className="w-full overflow-x-auto overflow-y-hidden" style={{
+        <div className="bg-slate-800/50 rounded-2xl p-6 backdrop-blur-sm border border-slate-700">
+          <div className="w-full overflow-x-auto" style={{
             WebkitOverflowScrolling: "touch",
             scrollbarWidth: "thin",
-            scrollbarColor: "rgba(255,255,255,0.3) transparent"
+            scrollbarColor: "rgb(71, 85, 105) transparent"
           }}>
-            <div className="min-w-[1200px] w-full">
+            <div className="min-w-[800px] w-full">
               <svg width={svgWidth} height={svgHeight} className="w-full h-auto">
                 <defs>
-                  <pattern id="grid" width="50" height="50" patternUnits="userSpaceOnUse">
-                    <path d="M 50 0 L 0 0 0 50" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="1"/>
-                  </pattern>
-                  
                   <linearGradient id="gradient1" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%" stopColor="#667eea" stopOpacity="0.8" />
-                    <stop offset="25%" stopColor="#48bb78" stopOpacity="0.8" />
-                    <stop offset="50%" stopColor="#ed8936" stopOpacity="0.8" />
-                    <stop offset="75%" stopColor="#9f7aea" stopOpacity="0.8" />
-                    <stop offset="100%" stopColor="#f093fb" stopOpacity="0.8" />
+                    <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.8" />
+                    <stop offset="25%" stopColor="#10b981" stopOpacity="0.8" />
+                    <stop offset="50%" stopColor="#f59e0b" stopOpacity="0.8" />
+                    <stop offset="75%" stopColor="#8b5cf6" stopOpacity="0.8" />
+                    <stop offset="100%" stopColor="#ec4899" stopOpacity="0.8" />
                   </linearGradient>
                   <linearGradient id="gradient2" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%" stopColor="#f093fb" stopOpacity="0.8" />
-                    <stop offset="25%" stopColor="#ed8936" stopOpacity="0.8" />
-                    <stop offset="50%" stopColor="#48bb78" stopOpacity="0.8" />
-                    <stop offset="75%" stopColor="#667eea" stopOpacity="0.8" />
-                    <stop offset="100%" stopColor="#9f7aea" stopOpacity="0.8" />
+                    <stop offset="0%" stopColor="#ec4899" stopOpacity="0.8" />
+                    <stop offset="25%" stopColor="#f59e0b" stopOpacity="0.8" />
+                    <stop offset="50%" stopColor="#10b981" stopOpacity="0.8" />
+                    <stop offset="75%" stopColor="#3b82f6" stopOpacity="0.8" />
+                    <stop offset="100%" stopColor="#8b5cf6" stopOpacity="0.8" />
                   </linearGradient>
                 </defs>
-                
-                <rect width="100%" height="100%" fill="url(#grid)" />
                 
                 {Array.from({ length: totalYears + 1 }, (_, i) => {
                   const year = minYear + i;
                   const x = getXPosition(year);
                   return (
                     <g key={year}>
-                      <line x1={x} y1={svgHeight - 50} x2={x} y2={svgHeight - 20} stroke="rgba(255,234,167,0.7)" strokeWidth="2" />
-                      <text x={x} y={svgHeight - 5} textAnchor="middle" className="fill-white text-sm font-medium">
+                      <line x1={x} y1={svgHeight - 40} x2={x} y2={svgHeight - 20} stroke="rgb(148, 163, 184)" strokeWidth="2" />
+                      <text x={x} y={svgHeight - 5} textAnchor="middle" className="fill-slate-300 text-sm font-medium">
                         {year}
                       </text>
                     </g>
@@ -264,34 +243,34 @@ export const DNATimeline = () => {
                 })}
 
                 <path
-                  d={`M 100 ${svgHeight/2} Q 300 ${svgHeight/2 - 80} 600 ${svgHeight/2} Q 900 ${svgHeight/2 + 80} 1100 ${svgHeight/2}`}
+                  d={`M 100 ${svgHeight/2} Q 250 ${svgHeight/2 - 60} 500 ${svgHeight/2} Q 750 ${svgHeight/2 + 60} 900 ${svgHeight/2}`}
                   fill="none"
                   stroke="url(#gradient1)"
-                  strokeWidth="6"
+                  strokeWidth="4"
                 />
                 <path
-                  d={`M 100 ${svgHeight/2} Q 300 ${svgHeight/2 + 80} 600 ${svgHeight/2} Q 900 ${svgHeight/2 - 80} 1100 ${svgHeight/2}`}
+                  d={`M 100 ${svgHeight/2} Q 250 ${svgHeight/2 + 60} 500 ${svgHeight/2} Q 750 ${svgHeight/2 - 60} 900 ${svgHeight/2}`}
                   fill="none"
                   stroke="url(#gradient2)"
-                  strokeWidth="6"
+                  strokeWidth="4"
                 />
 
                 {timelineData.map((item, index) => {
                   const startX = getXPosition(item.startYear);
                   const endX = getXPosition(item.endYear === 2024 ? 2025 : item.endYear);
                   const y = getYPosition(item, index);
-                  const width = Math.max(endX - startX, 80);
+                  const width = Math.max(endX - startX, 70);
 
                   return (
                     <g key={item.id}>
                       <rect
                         x={startX}
-                        y={y - 20}
+                        y={y - 18}
                         width={width}
-                        height={40}
+                        height={36}
                         fill={item.color}
-                        rx="20"
-                        className="cursor-pointer hover:opacity-80 transition-all duration-300 hover:stroke-white hover:stroke-2"
+                        rx="18"
+                        className="cursor-pointer hover:opacity-80 transition-all duration-300 hover:stroke-2 stroke-slate-300"
                         onClick={() => handleSegmentClick(item)}
                       />
                       
@@ -301,16 +280,16 @@ export const DNATimeline = () => {
                         x2={startX + width/2}
                         y2={svgHeight/2}
                         stroke={item.color}
-                        strokeWidth="3"
-                        strokeDasharray="8,4"
+                        strokeWidth="2"
+                        strokeDasharray="4,2"
                         opacity="0.7"
                       />
                       
                       <text
                         x={startX + width/2}
-                        y={y + (y < svgHeight/2 ? -35 : 55)}
+                        y={y + (y < svgHeight/2 ? -30 : 50)}
                         textAnchor="middle"
-                        className="fill-white text-sm font-semibold cursor-pointer hover:fill-yellow-200"
+                        className="fill-white text-sm font-semibold cursor-pointer hover:fill-blue-300"
                         onClick={() => handleSegmentClick(item)}
                       >
                         {item.title}
@@ -318,9 +297,9 @@ export const DNATimeline = () => {
                       
                       <text
                         x={startX + width/2}
-                        y={y + (y < svgHeight/2 ? -20 : 70)}
+                        y={y + (y < svgHeight/2 ? -15 : 65)}
                         textAnchor="middle"
-                        className="fill-white/70 text-xs cursor-pointer"
+                        className="fill-slate-300 text-xs cursor-pointer"
                         onClick={() => handleSegmentClick(item)}
                       >
                         {item.company}
@@ -328,7 +307,7 @@ export const DNATimeline = () => {
                       
                       <text
                         x={startX + width/2}
-                        y={y + 5}
+                        y={y + 4}
                         textAnchor="middle"
                         className="fill-white text-xs font-medium cursor-pointer"
                         onClick={() => handleSegmentClick(item)}
@@ -343,7 +322,7 @@ export const DNATimeline = () => {
           </div>
         </div>
 
-        <div className="text-center text-sm text-white/70 mt-6">
+        <div className="text-center text-sm text-slate-400 mt-6">
           Click on any segment above to explore the details • Swipe or scroll horizontally to see the full timeline
         </div>
 
