@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { X } from "lucide-react";
 
@@ -66,40 +65,18 @@ export const DNATimeline = () => {
       semester: "Fall",
       year: 2020,
       courses: [
-        "BUS 111 - Intro Bus Analy & Applications",
-        "BUS 140G - The Power of Business",
-        "ECN 201 - Prin of Econ: Microeconomics",
-        "PLS 150 - Plants, People and the Planet",
-        "PSY 113 - General Psychology",
-        "URI 101 - Planning for Academic Success"
+        "BUS 111 - Intro Bus Analy & Applications"
       ],
       school: "URI",
       color: "#3b82f6"
     },
     {
       id: "2",
-      semester: "Spring",
-      year: 2021,
-      courses: [
-        "ECN 202 - Prin of Econ: Macroeconomics",
-        "EDC 312 - The Psychology of Learning",
-        "ITL 100 - Accelerated Elementary Italian",
-        "PSY 232 - Developmental Psychology",
-        "PSY 235 - Theories of Personality",
-        "PSY 488 - Undergrad Teaching Exp in PSY"
-      ],
-      school: "URI",
-      color: "#10b981"
-    },
-    {
-      id: "3",
       semester: "Fall",
       year: 2021,
       courses: [
-        "ACC 201 - Financial Accounting",
         "BAI 210 - Managerial Stat. I",
         "MKT 265 - Marketing Principles",
-        "PSY 200 - Quantitative Methods in PSY",
         "PSY 399 - Intro to Multicultural Psych",
         "WRT 227 - Business Communications"
       ],
@@ -107,7 +84,7 @@ export const DNATimeline = () => {
       color: "#f59e0b"
     },
     {
-      id: "4",
+      id: "3",
       semester: "Winter",
       year: 2022,
       courses: [
@@ -117,12 +94,10 @@ export const DNATimeline = () => {
       color: "#8b5cf6"
     },
     {
-      id: "5",
+      id: "4",
       semester: "Spring",
       year: 2022,
       courses: [
-        "ACC 202 - Managerial Accounting",
-        "FIN 220 - Financial Management",
         "MGT 341 - Organizational Behavior",
         "MKT 366 - Consumer Behavior",
         "PSY 301 - Res. Mthd/Design in Behav Sci.",
@@ -132,18 +107,17 @@ export const DNATimeline = () => {
       color: "#ec4899"
     },
     {
-      id: "6",
+      id: "5",
       semester: "Summer",
       year: 2022,
       courses: [
-        "MKT 475 - Social Media - Marketing",
-        "MUS 106 - History of Jazz"
+        "MKT 475 - Social Media - Marketing"
       ],
       school: "URI",
       color: "#06b6d4"
     },
     {
-      id: "7",
+      id: "6",
       semester: "Fall",
       year: 2022,
       courses: [
@@ -160,7 +134,7 @@ export const DNATimeline = () => {
       color: "#84cc16"
     },
     {
-      id: "8",
+      id: "7",
       semester: "Spring",
       year: 2023,
       courses: [
@@ -176,7 +150,7 @@ export const DNATimeline = () => {
       color: "#f97316"
     },
     {
-      id: "9",
+      id: "8",
       semester: "Fall",
       year: 2023,
       courses: [
@@ -189,7 +163,7 @@ export const DNATimeline = () => {
       color: "#3b82f6"
     },
     {
-      id: "10",
+      id: "9",
       semester: "Spring",
       year: 2024,
       courses: [
@@ -202,7 +176,7 @@ export const DNATimeline = () => {
       color: "#10b981"
     },
     {
-      id: "11",
+      id: "10",
       semester: "Summer",
       year: 2024,
       courses: [
@@ -213,7 +187,7 @@ export const DNATimeline = () => {
       color: "#f59e0b"
     },
     {
-      id: "12",
+      id: "11",
       semester: "Fall",
       year: 2024,
       courses: [
@@ -226,7 +200,7 @@ export const DNATimeline = () => {
       color: "#8b5cf6"
     },
     {
-      id: "13",
+      id: "12",
       semester: "Spring",
       year: 2025,
       courses: [
@@ -286,6 +260,9 @@ export const DNATimeline = () => {
           </h2>
           <p className="text-xl text-slate-300">
             Click on any segment to explore my coursework through college
+          </p>
+          <p className="text-sm text-slate-400 mt-2">
+            * Only courses level 300 and above are displayed
           </p>
         </div>
 

@@ -64,6 +64,36 @@ const certifications = [
   }
 ];
 
+const caseStudies = [
+  {
+    title: "Healthcare Startup Digital Transformation",
+    description: "Strategic analysis and implementation of digital marketing and operational scaling for telehealth platform",
+    industry: "Healthcare Technology",
+    impact: "300% growth in clinical staff within 18 months"
+  },
+  {
+    title: "University Entrepreneurship Program Development",
+    description: "Market analysis and program design for student-run business initiatives at Bentley University",
+    industry: "Education",
+    impact: "Increased program engagement by 40%"
+  }
+];
+
+const dashboards = [
+  {
+    title: "Marketing Performance Analytics Dashboard",
+    description: "Interactive dashboard tracking digital marketing campaign performance with real-time KPI monitoring",
+    tools: ["Tableau", "Excel", "Google Analytics"],
+    impact: "Improved campaign ROI by 25%"
+  },
+  {
+    title: "Clinical Operations Dashboard",
+    description: "Comprehensive dashboard for healthcare provider scheduling and patient flow optimization",
+    tools: ["Power BI", "SQL", "Excel"],
+    impact: "Reduced patient wait times by 30%"
+  }
+];
+
 export const ProjectTabs = () => {
   const navigate = useNavigate();
 
@@ -81,8 +111,10 @@ export const ProjectTabs = () => {
         </h2>
 
         <Tabs defaultValue="projects" className="w-full">
-          <TabsList className="grid w-full grid-cols-3 max-w-lg mx-auto mb-8">
+          <TabsList className="grid w-full grid-cols-5 max-w-3xl mx-auto mb-8">
             <TabsTrigger value="projects">Projects</TabsTrigger>
+            <TabsTrigger value="case-studies">Case Studies</TabsTrigger>
+            <TabsTrigger value="dashboards">Dashboards</TabsTrigger>
             <TabsTrigger value="publications">Publications</TabsTrigger>
             <TabsTrigger value="certifications">Certifications</TabsTrigger>
           </TabsList>
@@ -120,6 +152,53 @@ export const ProjectTabs = () => {
                             <ExternalLink className="h-3 w-3" />
                           </Button>
                         )}
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="case-studies" className="space-y-6">
+            <div className="grid md:grid-cols-2 gap-6">
+              {caseStudies.map((study, index) => (
+                <Card key={index} className="hover:shadow-lg transition-shadow">
+                  <CardHeader>
+                    <CardTitle className="text-lg">{study.title}</CardTitle>
+                    <CardDescription>{study.industry}</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-slate-600 mb-3">{study.description}</p>
+                    <p className="text-sm font-medium text-green-600">{study.impact}</p>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="dashboards" className="space-y-6">
+            <div className="grid md:grid-cols-2 gap-6">
+              {dashboards.map((dashboard, index) => (
+                <Card key={index} className="hover:shadow-lg transition-shadow">
+                  <CardHeader>
+                    <CardTitle className="text-lg">{dashboard.title}</CardTitle>
+                    <CardDescription>{dashboard.description}</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-3">
+                      <div>
+                        <h4 className="font-medium text-sm text-slate-700 mb-2">Tools:</h4>
+                        <div className="flex flex-wrap gap-2">
+                          {dashboard.tools.map((tool) => (
+                            <span key={tool} className="px-2 py-1 bg-purple-100 text-purple-800 text-xs rounded-full">
+                              {tool}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                      <div className="pt-2 border-t">
+                        <p className="text-sm font-medium text-green-600">{dashboard.impact}</p>
                       </div>
                     </div>
                   </CardContent>

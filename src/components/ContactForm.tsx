@@ -68,7 +68,7 @@ export const ContactForm = () => {
                       <Linkedin className="h-4 w-4 text-slate-500" />
                       <div>
                         <p className="font-medium">LinkedIn</p>
-                        <a href="#" className="text-blue-600 hover:underline">Connect with me</a>
+                        <a href="https://www.linkedin.com/in/tjnolan319/" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Connect with me</a>
                       </div>
                     </div>
                   </div>

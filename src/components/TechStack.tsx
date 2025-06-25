@@ -1,7 +1,6 @@
 
 import { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 const techStack = [
   { name: "SQL", category: "Database" },
@@ -42,13 +41,13 @@ export const TechStack = () => {
         <div className="grid lg:grid-cols-3 gap-12 items-center">
           <div className={`lg:col-span-1 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-10'}`}>
             <div className="flex flex-col items-center text-center space-y-6">
-              <Avatar className="w-32 h-32 border-4 border-blue-200">
-                <AvatarImage 
-                  src="/lovable-uploads/01cfb1ee-b214-4fc4-a824-19f89c135827.png" 
-                  alt="Timothy Nolan Profile Picture" 
+              <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-blue-200 bg-slate-200 flex items-center justify-center">
+                <img 
+                  src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face" 
+                  alt="Professional placeholder" 
+                  className="w-full h-full object-cover"
                 />
-                <AvatarFallback className="text-2xl bg-blue-100 text-blue-800">TN</AvatarFallback>
-              </Avatar>
+              </div>
             </div>
           </div>
 

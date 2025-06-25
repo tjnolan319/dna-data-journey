@@ -15,9 +15,9 @@ export const DNAHero = () => {
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <div className={`space-y-6 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-10'}`}>
             <div className="flex items-center space-x-4 mb-6">
-              <div className="w-20 h-20 rounded-full overflow-hidden border-4 border-blue-200 shadow-lg">
+              <div className="w-24 h-24 rounded-full overflow-hidden border-4 border-blue-200 shadow-lg">
                 <img 
-                  src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face" 
+                  src="/lovable-uploads/01cfb1ee-b214-4fc4-a824-19f89c135827.png" 
                   alt="Timothy Nolan" 
                   className="w-full h-full object-cover"
                 />
@@ -33,7 +33,7 @@ export const DNAHero = () => {
               What's in my
               <span className="block text-blue-600">Professional DNA?</span>
             </h2>
-            <p className="text-xl text-slate-600 leading-relaxed">
+            <p className="text-lg text-slate-600 leading-relaxed">
               Recent MBA and MS in Business Analytics graduate from Bentley University, with undergraduate degrees in Marketing and Psychology. My background combines business, analytics, and behavioral science, applied in early-stage companies, research, and university-based entrepreneurship programs.
             </p>
             <div className="flex flex-wrap gap-4">
