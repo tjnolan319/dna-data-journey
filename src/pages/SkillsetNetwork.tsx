@@ -5,6 +5,25 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, ExternalLink } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
+interface NetworkNode {
+  id: string;
+  x?: number;
+  y?: number;
+  fx?: number | null;
+  fy?: number | null;
+}
+
+interface NetworkLink {
+  source: string | NetworkNode;
+  target: string | NetworkNode;
+  weight: number;
+}
+
+interface NetworkData {
+  nodes: NetworkNode[];
+  links: NetworkLink[];
+}
+
 const NetworkVisualization = () => {
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -23,8 +42,10 @@ const NetworkVisualization = () => {
       d3.select(container).selectAll("svg").remove();
 
       // Load data from GitHub
-      d3.json("https://raw.githubusercontent.com/tjnolan319/network-visualization/main/tag_network.json")
-        .then((data: any) => {
+      d3.json<NetworkData>("https://raw.githubusercontent.com/tjnolan319/network-visualization/main/tag_network.json")
+        .then((data) => {
+          if (!data) return;
+
           const svg = d3
             .select(container)
             .append("svg")
@@ -36,9 +57,11 @@ const NetworkVisualization = () => {
 
           // Compute node degrees
           const degreeMap: { [key: string]: number } = {};
-          data.links.forEach((link: any) => {
-            degreeMap[link.source] = (degreeMap[link.source] || 0) + 1;
-            degreeMap[link.target] = (degreeMap[link.target] || 0) + 1;
+          data.links.forEach((link) => {
+            const sourceId = typeof link.source === 'string' ? link.source : link.source.id;
+            const targetId = typeof link.target === 'string' ? link.target : link.target.id;
+            degreeMap[sourceId] = (degreeMap[sourceId] || 0) + 1;
+            degreeMap[targetId] = (degreeMap[targetId] || 0) + 1;
           });
 
           // Scale node radius based on degree
@@ -79,7 +102,7 @@ const NetworkVisualization = () => {
             .style("cursor", "pointer")
             .call(
               d3
-                .drag<any, any>()
+                .drag<SVGGElement, NetworkNode>()
                 .on("start", dragstarted)
                 .on("drag", dragged)
                 .on("end", dragended)
