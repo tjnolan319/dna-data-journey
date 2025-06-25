@@ -5,7 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Mail, Phone, Linkedin, MapPin, Clock } from "lucide-react";
+import { Mail, Phone, Linkedin, MapPin, Clock, CheckCircle } from "lucide-react";
+import { toast } from "@/components/ui/sonner";
 
 export const ContactForm = () => {
   const [formData, setFormData] = useState({
@@ -13,10 +14,39 @@ export const ContactForm = () => {
     email: '',
     message: ''
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
+    
     console.log('Form submitted:', formData);
+    
+    // Create mailto link
+    const subject = `Message from ${formData.name}`;
+    const body = `Name: ${formData.name}\nEmail: ${formData.email}\n\nMessage:\n${formData.message}`;
+    const mailtoLink = `mailto:tjnolan319@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    
+    // Open email client
+    window.location.href = mailtoLink;
+    
+    // Show success toast
+    toast("Message prepared!", {
+      description: "Your email client should open with the message ready to send.",
+      duration: 5000,
+    });
+    
+    // Reset form
+    setFormData({
+      name: '',
+      email: '',
+      message: ''
+    });
+    
+    // Reset button text after 2 seconds
+    setTimeout(() => {
+      setIsSubmitting(false);
+    }, 2000);
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -152,8 +182,15 @@ export const ContactForm = () => {
                     required
                   />
                 </div>
-                <Button type="submit" className="w-full">
-                  Send Message
+                <Button type="submit" className="w-full" disabled={isSubmitting}>
+                  {isSubmitting ? (
+                    <div className="flex items-center space-x-2">
+                      <CheckCircle className="h-4 w-4" />
+                      <span>Message Sent!</span>
+                    </div>
+                  ) : (
+                    "Send Message"
+                  )}
                 </Button>
               </form>
             </CardContent>
