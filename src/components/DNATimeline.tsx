@@ -2,21 +2,17 @@
 import { useState } from "react";
 import { X } from "lucide-react";
 
-interface DNATimelineItem {
+interface CourseTimelineItem {
   id: string;
-  startYear: number;
-  endYear: number;
-  title: string;
-  company: string;
-  description: string;
-  achievements: string[];
-  skills: string[];
-  type: "education" | "work" | "certification";
+  semester: string;
+  year: number;
+  courses: string[];
+  school: "URI" | "Bentley" | "Transfer";
   color: string;
 }
 
 interface DetailModalProps {
-  item: DNATimelineItem | null;
+  item: CourseTimelineItem | null;
   isOpen: boolean;
   onClose: () => void;
 }
@@ -30,11 +26,11 @@ const DetailModal = ({ item, isOpen, onClose }: DetailModalProps) => {
         <div className="p-6">
           <div className="flex justify-between items-start mb-4">
             <div>
-              <h3 className="text-2xl font-bold text-white mb-1">{item.title}</h3>
-              <p className="text-blue-400 font-medium mb-2">{item.company}</p>
-              <span className="text-sm bg-slate-700 text-slate-200 px-3 py-1 rounded-full">
-                {item.startYear} - {item.endYear === 2024 ? 'Present' : item.endYear}
-              </span>
+              <h3 className="text-2xl font-bold text-white mb-1">{item.semester} {item.year}</h3>
+              <p className="text-blue-400 font-medium mb-2">
+                {item.school === "URI" ? "University of Rhode Island" : 
+                 item.school === "Bentley" ? "Bentley University" : "Transfer Credits"}
+              </p>
             </div>
             <button
               onClick={onClose}
@@ -44,33 +40,14 @@ const DetailModal = ({ item, isOpen, onClose }: DetailModalProps) => {
             </button>
           </div>
           
-          <p className="text-slate-300 mb-6 leading-relaxed">{item.description}</p>
-          
-          <div className="space-y-4">
-            <div>
-              <h4 className="font-semibold text-white mb-2">Key Achievements:</h4>
-              <ul className="space-y-2">
-                {item.achievements.map((achievement, idx) => (
-                  <li key={idx} className="text-slate-300 flex items-start">
-                    <span className="text-blue-400 mr-2 mt-1 font-bold">▪</span>
-                    {achievement}
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="font-semibold text-white mb-2">Skills Developed:</h4>
-              <div className="flex flex-wrap gap-2">
-                {item.skills.map((skill, idx) => (
-                  <span 
-                    key={idx}
-                    className="px-3 py-1 text-sm bg-slate-700 text-slate-200 rounded-full border border-slate-600"
-                  >
-                    {skill}
-                  </span>
-                ))}
-              </div>
+          <div>
+            <h4 className="font-semibold text-white mb-3">Courses Taken:</h4>
+            <div className="grid gap-2">
+              {item.courses.map((course, idx) => (
+                <div key={idx} className="text-slate-300 bg-slate-700/50 p-2 rounded">
+                  {course}
+                </div>
+              ))}
             </div>
           </div>
         </div>
@@ -80,98 +57,190 @@ const DetailModal = ({ item, isOpen, onClose }: DetailModalProps) => {
 };
 
 export const DNATimeline = () => {
-  const [selectedItem, setSelectedItem] = useState<DNATimelineItem | null>(null);
+  const [selectedItem, setSelectedItem] = useState<CourseTimelineItem | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const timelineData: DNATimelineItem[] = [
+  const timelineData: CourseTimelineItem[] = [
     {
       id: "1",
-      startYear: 2024,
-      endYear: 2024,
-      title: "Program Assistant",
-      company: "Bentley University Entrepreneurship Hub",
-      description: "Spearheading the development of student-run business programs and aligning strategic goals with E-Hub initiatives.",
-      achievements: [
-        "Spearhead development of student-run business program",
-        "Manage marketing materials and Eventbrite listings for program visibility", 
-        "Analyze program performance and drive student engagement",
-        "Connect students with entrepreneurial resources"
+      semester: "Fall",
+      year: 2020,
+      courses: [
+        "BUS 111 - Intro Bus Analy & Applications",
+        "BUS 140G - The Power of Business",
+        "ECN 201 - Prin of Econ: Microeconomics",
+        "PLS 150 - Plants, People and the Planet",
+        "PSY 113 - General Psychology",
+        "URI 101 - Planning for Academic Success"
       ],
-      skills: ["Strategic Planning", "Program Development", "Marketing", "Student Engagement"],
-      type: "work",
-      color: "#10b981"
-    },
-    {
-      id: "2", 
-      startYear: 2023,
-      endYear: 2024,
-      title: "Practice Manager",
-      company: "Lighthouse Health",
-      description: "Executed patient acquisition strategies and scaled clinical operations for telehealth startup.",
-      achievements: [
-        "Executed patient acquisition strategies through market research",
-        "Scaled clinical staff from 0 to 10 within 18 months",
-        "Built partnerships with universities and specialty clinics",
-        "Discussed financial projections with key stakeholders weekly"
-      ],
-      skills: ["Market Research", "Strategic Scaling", "Partnership Development", "Financial Planning"],
-      type: "work", 
-      color: "#f59e0b"
-    },
-    {
-      id: "3",
-      startYear: 2021,
-      endYear: 2023,
-      title: "Human Resources Manager", 
-      company: "Lighthouse Health",
-      description: "Directed strategic planning and execution of telehealth startup trajectory from inception.",
-      achievements: [
-        "Directed strategic planning from startup inception",
-        "Managed recruitment and onboarding of 6+ provider types",
-        "Ensured websites met accessibility and SEO standards",
-        "Launched digital marketing campaigns with 7% engagement rate"
-      ],
-      skills: ["Strategic Planning", "HR Management", "Digital Marketing", "SEO"],
-      type: "work",
-      color: "#8b5cf6"
-    },
-    {
-      id: "4",
-      startYear: 2023,
-      endYear: 2025,
-      title: "MBA & MS Business Analytics",
-      company: "Bentley University McCallum Graduate School",
-      description: "Master of Business Administration (Information Systems and Technology) and Master of Science in Business Analytics.",
-      achievements: [
-        "Graduated with High Distinction, May 2025",
-        "GPA: 3.89",
-        "Specialized in Information Systems and Technology",
-        "Advanced coursework in Business Analytics"
-      ],
-      skills: ["Business Strategy", "Information Systems", "Business Analytics", "Data Science"],
-      type: "education",
+      school: "URI",
       color: "#3b82f6"
     },
     {
-      id: "5",
-      startYear: 2020,
-      endYear: 2023,
-      title: "BS Business Administration & BA Psychology",
-      company: "University of Rhode Island",
-      description: "Bachelor of Science in Business Administration (Marketing) and Bachelor of Arts in Psychology on accelerated 3-year track.",
-      achievements: [
-        "Graduated Summa Cum Laude, May 2023",
-        "GPA: 3.87",
-        "Accelerated 3-year graduation track",
-        "Marketing Award for Scholastic Achievement & Service Excellence"
+      id: "2",
+      semester: "Spring",
+      year: 2021,
+      courses: [
+        "ECN 202 - Prin of Econ: Macroeconomics",
+        "EDC 312 - The Psychology of Learning",
+        "ITL 100 - Accelerated Elementary Italian",
+        "PSY 232 - Developmental Psychology",
+        "PSY 235 - Theories of Personality",
+        "PSY 488 - Undergrad Teaching Exp in PSY"
       ],
-      skills: ["Marketing", "Psychology", "Business Administration", "Research Methods"],
-      type: "education",
+      school: "URI",
+      color: "#10b981"
+    },
+    {
+      id: "3",
+      semester: "Fall",
+      year: 2021,
+      courses: [
+        "ACC 201 - Financial Accounting",
+        "BAI 210 - Managerial Stat. I",
+        "MKT 265 - Marketing Principles",
+        "PSY 200 - Quantitative Methods in PSY",
+        "PSY 399 - Intro to Multicultural Psych",
+        "WRT 227 - Business Communications"
+      ],
+      school: "URI",
+      color: "#f59e0b"
+    },
+    {
+      id: "4",
+      semester: "Winter",
+      year: 2022,
+      courses: [
+        "MGT 345 - Business in Society"
+      ],
+      school: "URI",
+      color: "#8b5cf6"
+    },
+    {
+      id: "5",
+      semester: "Spring",
+      year: 2022,
+      courses: [
+        "ACC 202 - Managerial Accounting",
+        "FIN 220 - Financial Management",
+        "MGT 341 - Organizational Behavior",
+        "MKT 366 - Consumer Behavior",
+        "PSY 301 - Res. Mthd/Design in Behav Sci.",
+        "SCA 255 - Oper. & Supply Chain Mgt"
+      ],
+      school: "URI",
+      color: "#ec4899"
+    },
+    {
+      id: "6",
+      semester: "Summer",
+      year: 2022,
+      courses: [
+        "MKT 475 - Social Media - Marketing",
+        "MUS 106 - History of Jazz"
+      ],
+      school: "URI",
+      color: "#06b6d4"
+    },
+    {
+      id: "7",
+      semester: "Fall",
+      year: 2022,
+      courses: [
+        "CSV 302 - URI Community Service",
+        "INE 315 - Legal Environ - Business",
+        "MKT 367 - Marketing Research",
+        "MKT 390 - Junior Career Passport Program",
+        "MKT 467 - Customer Analytics",
+        "MKT 468 - Global Marketing",
+        "PSY 384 - Cognitive Psychology",
+        "PSY 432 - Advanced Developmental Psychol"
+      ],
+      school: "URI",
+      color: "#84cc16"
+    },
+    {
+      id: "8",
+      semester: "Spring",
+      year: 2023,
+      courses: [
+        "BAI 310 - Bus. Data Analysis with Excel",
+        "MGT 445 - Strategic Management",
+        "MKT 465 - Marketing Communications",
+        "MKT 470 - Strategic Marketing Mgt.",
+        "PSY 381 - Physiological Psychology",
+        "PSY 435 - Applied Psychological Research",
+        "PSY 488 - Undergrad Teaching Exp in PSY"
+      ],
+      school: "URI",
+      color: "#f97316"
+    },
+    {
+      id: "9",
+      semester: "Fall",
+      year: 2023,
+      courses: [
+        "CS 605 - Data Mgt & SQL for Analytics",
+        "FI 623 - Investments",
+        "GR 603D - Leading Responsibly",
+        "IPM 652 - Managing with Analytics"
+      ],
+      school: "Bentley",
+      color: "#3b82f6"
+    },
+    {
+      id: "10",
+      semester: "Spring",
+      year: 2024,
+      courses: [
+        "GR 601 - Strategic Information Technology Alignment",
+        "GR 602 - Business Process Management",
+        "MA 610 - Optimization and Simulation for Business Decisions",
+        "ST 625 - Quantitative Analysis for Busi"
+      ],
+      school: "Bentley",
+      color: "#10b981"
+    },
+    {
+      id: "11",
+      semester: "Summer",
+      year: 2024,
+      courses: [
+        "GR 604 - Global Strategy",
+        "GR 606 - Designing For The Value Chain"
+      ],
+      school: "Bentley",
+      color: "#f59e0b"
+    },
+    {
+      id: "12",
+      semester: "Fall",
+      year: 2024,
+      courses: [
+        "CS 602 - Data-Driven Development with Python",
+        "GR 645 - Law, Ethics and Social Responsibility",
+        "MA 611 - Time Series Analysis",
+        "ST 635 - Intermediate Statistical Model"
+      ],
+      school: "Bentley",
+      color: "#8b5cf6"
+    },
+    {
+      id: "13",
+      semester: "Spring",
+      year: 2025,
+      courses: [
+        "CS 650 - Data Analytics Architectures with Big Data",
+        "MA 705 - Data Science",
+        "MA 706 - Design of Experiments for Busi",
+        "MA 710 - Data Mining"
+      ],
+      school: "Bentley",
       color: "#ec4899"
     }
   ];
 
-  const handleSegmentClick = (item: DNATimelineItem) => {
+  const handleSegmentClick = (item: CourseTimelineItem) => {
     setSelectedItem(item);
     setIsModalOpen(true);
   };
@@ -181,7 +250,7 @@ export const DNATimeline = () => {
     setSelectedItem(null);
   };
 
-  const minYear = 2018;
+  const minYear = 2020;
   const maxYear = 2025;
   const totalYears = maxYear - minYear;
   const svgWidth = 1000;
@@ -191,26 +260,21 @@ export const DNATimeline = () => {
     return ((year - minYear) / totalYears) * (svgWidth - 200) + 100;
   };
 
-  const getYPosition = (item: DNATimelineItem, index: number) => {
+  const getYPosition = (item: CourseTimelineItem, index: number) => {
     const baseY = svgHeight / 2;
-    const overlapOffset = 35;
+    const overlapOffset = 25;
     
     let yOffset = 0;
     const itemsToCheck = timelineData.slice(0, index);
     
     for (const otherItem of itemsToCheck) {
-      const itemStart = item.startYear;
-      const itemEnd = item.endYear === 2024 ? 2025 : item.endYear;
-      const otherStart = otherItem.startYear;
-      const otherEnd = otherItem.endYear === 2024 ? 2025 : otherItem.endYear;
-      
-      if (itemStart < otherEnd && itemEnd > otherStart) {
+      if (item.year === otherItem.year) {
         yOffset += overlapOffset;
       }
     }
     
     const side = index % 2 === 0 ? -1 : 1;
-    return baseY + (side * (50 + yOffset));
+    return baseY + (side * (40 + yOffset));
   };
 
   return (
@@ -218,19 +282,15 @@ export const DNATimeline = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">
-            🧬 Interactive DNA Strand Timeline
+            🧬 Academic Journey Timeline
           </h2>
           <p className="text-xl text-slate-300">
-            Click on any segment to explore my professional evolution
+            Click on any segment to explore my coursework through college
           </p>
         </div>
 
         <div className="bg-slate-800/50 rounded-2xl p-6 backdrop-blur-sm border border-slate-700">
-          <div className="w-full overflow-x-auto" style={{
-            WebkitOverflowScrolling: "touch",
-            scrollbarWidth: "thin",
-            scrollbarColor: "rgb(71, 85, 105) transparent"
-          }}>
+          <div className="w-full overflow-x-auto">
             <div className="min-w-[800px] w-full">
               <svg width={svgWidth} height={svgHeight} className="w-full h-auto">
                 <defs>
@@ -277,15 +337,14 @@ export const DNATimeline = () => {
                 />
 
                 {timelineData.map((item, index) => {
-                  const startX = getXPosition(item.startYear);
-                  const endX = getXPosition(item.endYear === 2024 ? 2025 : item.endYear);
+                  const x = getXPosition(item.year);
                   const y = getYPosition(item, index);
-                  const width = Math.max(endX - startX, 70);
+                  const width = 80;
 
                   return (
                     <g key={item.id}>
                       <rect
-                        x={startX}
+                        x={x - width/2}
                         y={y - 18}
                         width={width}
                         height={36}
@@ -296,9 +355,9 @@ export const DNATimeline = () => {
                       />
                       
                       <line
-                        x1={startX + width/2}
+                        x1={x}
                         y1={y}
-                        x2={startX + width/2}
+                        x2={x}
                         y2={svgHeight/2}
                         stroke={item.color}
                         strokeWidth="2"
@@ -307,33 +366,33 @@ export const DNATimeline = () => {
                       />
                       
                       <text
-                        x={startX + width/2}
+                        x={x}
                         y={y + (y < svgHeight/2 ? -30 : 50)}
                         textAnchor="middle"
                         className="fill-white text-sm font-semibold cursor-pointer hover:fill-blue-300"
                         onClick={() => handleSegmentClick(item)}
                       >
-                        {item.title}
+                        {item.semester}
                       </text>
                       
                       <text
-                        x={startX + width/2}
+                        x={x}
                         y={y + (y < svgHeight/2 ? -15 : 65)}
                         textAnchor="middle"
                         className="fill-slate-300 text-xs cursor-pointer"
                         onClick={() => handleSegmentClick(item)}
                       >
-                        {item.company}
+                        {item.year}
                       </text>
                       
                       <text
-                        x={startX + width/2}
+                        x={x}
                         y={y + 4}
                         textAnchor="middle"
                         className="fill-white text-xs font-medium cursor-pointer"
                         onClick={() => handleSegmentClick(item)}
                       >
-                        {item.startYear}-{item.endYear === 2024 ? 'Present' : item.endYear}
+                        {item.courses.length} courses
                       </text>
                     </g>
                   );
@@ -344,7 +403,7 @@ export const DNATimeline = () => {
         </div>
 
         <div className="text-center text-sm text-slate-400 mt-6">
-          Click on any segment above to explore the details • Swipe or scroll horizontally to see the full timeline
+          Click on any segment above to explore the courses • Swipe or scroll horizontally to see the full timeline
         </div>
 
         <DetailModal 

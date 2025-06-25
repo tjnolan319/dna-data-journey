@@ -12,6 +12,9 @@ const techStack = [
   { name: "Excel", category: "Analytics" },
   { name: "Tableau", category: "Visualization" },
   { name: "Power BI", category: "Visualization" },
+  { name: "Drupal", category: "Website Editing" },
+  { name: "Hubspot", category: "CRM & Marketing" },
+  { name: "Qualtrics", category: "Survey & Research" },
 ];
 
 export const TechStack = () => {
@@ -41,17 +44,11 @@ export const TechStack = () => {
             <div className="flex flex-col items-center text-center space-y-6">
               <Avatar className="w-32 h-32 border-4 border-blue-200">
                 <AvatarImage 
-                  src="https://images.unsplash.com/photo-1649972904349-6e44c42644a7?w=400&h=400&fit=crop&crop=face" 
+                  src="/lovable-uploads/01cfb1ee-b214-4fc4-a824-19f89c135827.png" 
                   alt="Timothy Nolan Profile Picture" 
                 />
                 <AvatarFallback className="text-2xl bg-blue-100 text-blue-800">TN</AvatarFallback>
               </Avatar>
-              <div>
-                <h3 className="text-2xl font-bold text-slate-800 mb-2">Data & Business Analyst</h3>
-                <p className="text-slate-600">
-                  Combining business strategy with advanced analytics to drive data-driven insights and decisions
-                </p>
-              </div>
             </div>
           </div>
 

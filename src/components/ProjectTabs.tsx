@@ -2,6 +2,9 @@
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { ExternalLink } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const projects = [
   {
@@ -14,7 +17,8 @@ const projects = [
     title: "Genre-Category Pair Advantages at Academy Awards",
     description: "Data science analysis of Academy Award patterns using statistical methods",
     tech: ["Python", "Statistical Analysis", "Deepnote"],
-    impact: "Published research findings"
+    impact: "Published research findings",
+    hasDetailPage: true
   },
   {
     title: "Telehealth Platform Growth Strategy",
@@ -61,6 +65,14 @@ const certifications = [
 ];
 
 export const ProjectTabs = () => {
+  const navigate = useNavigate();
+
+  const handleProjectClick = (project: typeof projects[0]) => {
+    if (project.hasDetailPage) {
+      navigate('/genre-category-project');
+    }
+  };
+
   return (
     <section id="projects" className="py-20 px-4 sm:px-6 lg:px-8 bg-white">
       <div className="max-w-7xl mx-auto">
@@ -96,7 +108,18 @@ export const ProjectTabs = () => {
                         </div>
                       </div>
                       <div className="pt-2 border-t">
-                        <p className="text-sm font-medium text-green-600">{project.impact}</p>
+                        <p className="text-sm font-medium text-green-600 mb-2">{project.impact}</p>
+                        {project.hasDetailPage && (
+                          <Button
+                            onClick={() => handleProjectClick(project)}
+                            variant="outline"
+                            size="sm"
+                            className="flex items-center space-x-2"
+                          >
+                            <span>View Details</span>
+                            <ExternalLink className="h-3 w-3" />
+                          </Button>
+                        )}
                       </div>
                     </div>
                   </CardContent>

@@ -16,9 +16,7 @@ export const ContactForm = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission here
     console.log('Form submitted:', formData);
-    // You can integrate with email service or backend here
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -49,41 +47,46 @@ export const ContactForm = () => {
                   <span>Contact Information</span>
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-center space-x-3">
-                  <Mail className="h-4 w-4 text-slate-500" />
-                  <div>
-                    <p className="font-medium">Email</p>
-                    <p className="text-slate-600">tjnolan319@gmail.com</p>
-                    <p className="text-slate-600 text-sm">tnolan@falcon.bentley.edu</p>
+              <CardContent>
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div className="space-y-4">
+                    <div className="flex items-center space-x-3">
+                      <Mail className="h-4 w-4 text-slate-500" />
+                      <div>
+                        <p className="font-medium">Email</p>
+                        <p className="text-slate-600">tjnolan319@gmail.com</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center space-x-3">
+                      <Phone className="h-4 w-4 text-slate-500" />
+                      <div>
+                        <p className="font-medium">Phone</p>
+                        <p className="text-slate-600">(978) 846-2725</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center space-x-3">
+                      <Linkedin className="h-4 w-4 text-slate-500" />
+                      <div>
+                        <p className="font-medium">LinkedIn</p>
+                        <a href="#" className="text-blue-600 hover:underline">Connect with me</a>
+                      </div>
+                    </div>
                   </div>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <Phone className="h-4 w-4 text-slate-500" />
-                  <div>
-                    <p className="font-medium">Phone</p>
-                    <p className="text-slate-600">(978) 846-2725</p>
-                  </div>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <MapPin className="h-4 w-4 text-slate-500" />
-                  <div>
-                    <p className="font-medium">Location</p>
-                    <p className="text-slate-600">Waltham, MA, US</p>
-                  </div>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <Clock className="h-4 w-4 text-slate-500" />
-                  <div>
-                    <p className="font-medium">Current Time</p>
-                    <p className="text-slate-600">Eastern Time Zone</p>
-                  </div>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <Linkedin className="h-4 w-4 text-slate-500" />
-                  <div>
-                    <p className="font-medium">LinkedIn</p>
-                    <a href="#" className="text-blue-600 hover:underline">Connect with me</a>
+                  <div className="space-y-4">
+                    <div className="flex items-center space-x-3">
+                      <Clock className="h-4 w-4 text-slate-500" />
+                      <div>
+                        <p className="font-medium">Time Zone</p>
+                        <p className="text-slate-600">Eastern Time</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center space-x-3">
+                      <MapPin className="h-4 w-4 text-slate-500" />
+                      <div>
+                        <p className="font-medium">Location</p>
+                        <p className="text-slate-600">Waltham, MA, US</p>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </CardContent>
