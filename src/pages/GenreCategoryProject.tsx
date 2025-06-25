@@ -1,8 +1,12 @@
-
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Github, ExternalLink } from "lucide-react";
+import { ArrowLeft, Github } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+
+// ✅ Added image imports
+import winProbImg from "@/assets/Win_Probability_Advantage_by_Genre-Category_Combinations.png";
+import effectSizeImg from "@/assets/Top_Genre-Category_Combinations_Ranked_by_Effect_Size.png";
+import nominationDistImg from "@/assets/Nomination_Distribution_and_Win_Significance_for_Top_6_Genres.png";
 
 export const GenreCategoryProject = () => {
   const navigate = useNavigate();
@@ -149,7 +153,7 @@ export const GenreCategoryProject = () => {
                   <p className="text-sm text-slate-600 mb-4">Heatmap showing the increased probability of winning an Oscar for specific genre-category pairs. Lighter shades indicate greater win advantage; asterisks denote statistical significance (* p&lt;0.05, ** p&lt;0.01, *** p&lt;0.001).</p>
                   <div className="w-full">
                     <img 
-                      src="/lovable-uploads/ffce0c32-70a7-44dd-9af2-709c84043a1d.png" 
+                      src={winProbImg} 
                       alt="Win Probability Advantage by Genre-Category Combinations" 
                       className="w-full h-auto rounded-lg border"
                     />
@@ -160,7 +164,7 @@ export const GenreCategoryProject = () => {
                   <p className="text-sm text-slate-600 mb-4">Bar chart ranking genre-category pairs by statistical strength (phi coefficient). Higher bars indicate stronger-than-expected relationships between genre and Oscar wins.</p>
                   <div className="w-full">
                     <img 
-                      src="/lovable-uploads/fcbe07fb-6a8c-4833-b91e-b457b639ff58.png" 
+                      src={effectSizeImg} 
                       alt="Top Genre-Category Combinations Ranked by Effect Size" 
                       className="w-full h-auto rounded-lg border"
                     />
@@ -171,7 +175,7 @@ export const GenreCategoryProject = () => {
                   <p className="text-sm text-slate-600 mb-4">Multi-panel plot showing nomination counts and significant win relationships for six top genres. Orange highlights denote statistically significant genre-category combinations with elevated win rates.</p>
                   <div className="w-full">
                     <img 
-                      src="/lovable-uploads/c36b9794-533d-486f-929b-a379d5264bad.png" 
+                      src={nominationDistImg} 
                       alt="Nomination Distribution and Win Significance for Top 6 Genres" 
                       className="w-full h-auto rounded-lg border"
                     />
