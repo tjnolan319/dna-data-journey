@@ -67,9 +67,9 @@ export const DNATimeline = () => {
       semester: "Fall",
       year: 2021,
       courses: [
-        "BAI 210 - Managerial Stat. I",
+        "BAI 210 - Managerial Statistics I",
         "MKT 265 - Marketing Principles",
-        "PSY 399 - Intro to Multicultural Psych"
+        "PSY 399 - Multicultural Psychology"
       ],
       school: "URI",
       color: "#3b82f6",
@@ -93,7 +93,7 @@ export const DNATimeline = () => {
       courses: [
         "MGT 341 - Organizational Behavior",
         "MKT 366 - Consumer Behavior",
-        "PSY 301 - Res. Mthd/Design in Behav Sci."
+        "PSY 301 - Research Methods/Design in Behavioral Sciences"
       ],
       school: "URI",
       color: "#ec4899",
@@ -104,7 +104,7 @@ export const DNATimeline = () => {
       semester: "Summer",
       year: 2022,
       courses: [
-        "MKT 475 - Social Media - Marketing"
+        "MKT 475 - Social Media Marketing"
       ],
       school: "URI",
       color: "#06b6d4",
@@ -116,13 +116,13 @@ export const DNATimeline = () => {
       year: 2022,
       courses: [
         "CSV 302 - URI Community Service",
-        "INE 315 - Legal Environ - Business",
+        "INE 315 - Legal Environment in Business",
         "MKT 367 - Marketing Research",
         "MKT 390 - Junior Career Passport Program",
         "MKT 467 - Customer Analytics",
         "MKT 468 - Global Marketing",
         "PSY 384 - Cognitive Psychology",
-        "PSY 432 - Advanced Developmental Psychol"
+        "PSY 432 - Advanced Developmental Psychology"
       ],
       school: "URI",
       color: "#84cc16",
@@ -133,13 +133,13 @@ export const DNATimeline = () => {
       semester: "Spring",
       year: 2023,
       courses: [
-        "BAI 310 - Bus. Data Analysis with Excel",
+        "BAI 310 - Business Data Analysis with Excel",
         "MGT 445 - Strategic Management",
         "MKT 465 - Marketing Communications",
-        "MKT 470 - Strategic Marketing Mgt.",
+        "MKT 470 - Strategic Marketing Management",
         "PSY 381 - Physiological Psychology",
         "PSY 435 - Applied Psychological Research",
-        "PSY 488 - Undergrad Teaching Exp in PSY"
+        "PSY 488 - Undergraduate Teaching Experience in Psychology"
       ],
       school: "URI",
       color: "#f97316",
@@ -150,9 +150,9 @@ export const DNATimeline = () => {
       semester: "Fall",
       year: 2023,
       courses: [
-        "CS 605 - Data Mgt & SQL for Analytics",
+        "CS 605 - Data Management and SQL for Analytics",
         "FI 623 - Investments",
-        "GR 603D - Leading Responsibly",
+        "GR 603 - Leading Responsibly",
         "IPM 652 - Managing with Analytics"
       ],
       school: "Bentley",
@@ -167,7 +167,7 @@ export const DNATimeline = () => {
         "GR 601 - Strategic Information Technology Alignment",
         "GR 602 - Business Process Management",
         "MA 610 - Optimization and Simulation for Business Decisions",
-        "ST 625 - Quantitative Analysis for Busi"
+        "ST 625 - Quantitative Analysis for Business"
       ],
       school: "Bentley",
       color: "#10b981",
@@ -179,7 +179,7 @@ export const DNATimeline = () => {
       year: 2024,
       courses: [
         "GR 604 - Global Strategy",
-        "GR 606 - Designing For The Value Chain"
+        "GR 606 - Designing for the Value Chain"
       ],
       school: "Bentley",
       color: "#f59e0b",
@@ -193,7 +193,7 @@ export const DNATimeline = () => {
         "CS 602 - Data-Driven Development with Python",
         "GR 645 - Law, Ethics and Social Responsibility",
         "MA 611 - Time Series Analysis",
-        "ST 635 - Intermediate Statistical Model"
+        "ST 635 - Intermediate Statistical Modeling for Business"
       ],
       school: "Bentley",
       color: "#8b5cf6",
@@ -204,9 +204,9 @@ export const DNATimeline = () => {
       semester: "Spring",
       year: 2025,
       courses: [
-        "CS 650 - Data Analytics Architectures with Big Data",
+        "CS 650 - Data Analytics Architecture with Big Data",
         "MA 705 - Data Science",
-        "MA 706 - Design of Experiments for Busi",
+        "MA 706 - Design of Experiments for Business",
         "MA 710 - Data Mining"
       ],
       school: "Bentley",
