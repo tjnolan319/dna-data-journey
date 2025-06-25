@@ -1,5 +1,6 @@
+
 import { useState } from "react";
-import { X } from "lucide-react";
+import { X, Calendar, GraduationCap } from "lucide-react";
 
 interface CourseTimelineItem {
   id: string;
@@ -8,6 +9,7 @@ interface CourseTimelineItem {
   courses: string[];
   school: "URI" | "Bentley" | "Transfer";
   color: string;
+  schoolName: string;
 }
 
 interface DetailModalProps {
@@ -21,29 +23,29 @@ const DetailModal = ({ item, isOpen, onClose }: DetailModalProps) => {
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-slate-800 rounded-xl max-w-2xl w-full max-h-[80vh] overflow-y-auto border border-slate-700">
+      <div className="bg-white rounded-xl max-w-2xl w-full max-h-[80vh] overflow-y-auto border border-slate-200 shadow-2xl">
         <div className="p-6">
           <div className="flex justify-between items-start mb-4">
             <div>
-              <h3 className="text-2xl font-bold text-white mb-1">{item.semester} {item.year}</h3>
-              <p className="text-blue-400 font-medium mb-2">
-                {item.school === "URI" ? "University of Rhode Island" : 
-                 item.school === "Bentley" ? "Bentley University" : "Transfer Credits"}
-              </p>
+              <h3 className="text-2xl font-bold text-slate-800 mb-2">{item.semester} {item.year}</h3>
+              <div className="flex items-center space-x-2 text-blue-600 font-medium mb-4">
+                <GraduationCap className="h-5 w-5" />
+                <span>{item.schoolName}</span>
+              </div>
             </div>
             <button
               onClick={onClose}
-              className="p-2 hover:bg-slate-700 rounded-full transition-colors text-slate-400 hover:text-white"
+              className="p-2 hover:bg-slate-100 rounded-full transition-colors text-slate-400 hover:text-slate-600"
             >
               <X className="h-5 w-5" />
             </button>
           </div>
           
           <div>
-            <h4 className="font-semibold text-white mb-3">Courses Taken:</h4>
-            <div className="grid gap-2">
+            <h4 className="font-semibold text-slate-800 mb-3 text-lg">Courses Taken ({item.courses.length}):</h4>
+            <div className="grid gap-3">
               {item.courses.map((course, idx) => (
-                <div key={idx} className="text-slate-300 bg-slate-700/50 p-2 rounded">
+                <div key={idx} className="text-slate-700 bg-slate-50 p-3 rounded-lg border border-slate-200 hover:bg-slate-100 transition-colors">
                   {course}
                 </div>
               ))}
@@ -63,61 +65,53 @@ export const DNATimeline = () => {
     {
       id: "1",
       semester: "Fall",
-      year: 2020,
-      courses: [
-        "BUS 111 - Intro Bus Analy & Applications"
-      ],
-      school: "URI",
-      color: "#3b82f6"
-    },
-    {
-      id: "2",
-      semester: "Fall",
       year: 2021,
       courses: [
         "BAI 210 - Managerial Stat. I",
         "MKT 265 - Marketing Principles",
-        "PSY 399 - Intro to Multicultural Psych",
-        "WRT 227 - Business Communications"
+        "PSY 399 - Intro to Multicultural Psych"
       ],
       school: "URI",
-      color: "#f59e0b"
+      color: "#3b82f6",
+      schoolName: "University of Rhode Island"
     },
     {
-      id: "3",
+      id: "2",
       semester: "Winter",
       year: 2022,
       courses: [
         "MGT 345 - Business in Society"
       ],
       school: "URI",
-      color: "#8b5cf6"
+      color: "#8b5cf6",
+      schoolName: "University of Rhode Island"
     },
     {
-      id: "4",
+      id: "3",
       semester: "Spring",
       year: 2022,
       courses: [
         "MGT 341 - Organizational Behavior",
         "MKT 366 - Consumer Behavior",
-        "PSY 301 - Res. Mthd/Design in Behav Sci.",
-        "SCA 255 - Oper. & Supply Chain Mgt"
+        "PSY 301 - Res. Mthd/Design in Behav Sci."
       ],
       school: "URI",
-      color: "#ec4899"
+      color: "#ec4899",
+      schoolName: "University of Rhode Island"
     },
     {
-      id: "5",
+      id: "4",
       semester: "Summer",
       year: 2022,
       courses: [
         "MKT 475 - Social Media - Marketing"
       ],
       school: "URI",
-      color: "#06b6d4"
+      color: "#06b6d4",
+      schoolName: "University of Rhode Island"
     },
     {
-      id: "6",
+      id: "5",
       semester: "Fall",
       year: 2022,
       courses: [
@@ -131,10 +125,11 @@ export const DNATimeline = () => {
         "PSY 432 - Advanced Developmental Psychol"
       ],
       school: "URI",
-      color: "#84cc16"
+      color: "#84cc16",
+      schoolName: "University of Rhode Island"
     },
     {
-      id: "7",
+      id: "6",
       semester: "Spring",
       year: 2023,
       courses: [
@@ -147,10 +142,11 @@ export const DNATimeline = () => {
         "PSY 488 - Undergrad Teaching Exp in PSY"
       ],
       school: "URI",
-      color: "#f97316"
+      color: "#f97316",
+      schoolName: "University of Rhode Island"
     },
     {
-      id: "8",
+      id: "7",
       semester: "Fall",
       year: 2023,
       courses: [
@@ -160,10 +156,11 @@ export const DNATimeline = () => {
         "IPM 652 - Managing with Analytics"
       ],
       school: "Bentley",
-      color: "#3b82f6"
+      color: "#3b82f6",
+      schoolName: "Bentley University"
     },
     {
-      id: "9",
+      id: "8",
       semester: "Spring",
       year: 2024,
       courses: [
@@ -173,10 +170,11 @@ export const DNATimeline = () => {
         "ST 625 - Quantitative Analysis for Busi"
       ],
       school: "Bentley",
-      color: "#10b981"
+      color: "#10b981",
+      schoolName: "Bentley University"
     },
     {
-      id: "10",
+      id: "9",
       semester: "Summer",
       year: 2024,
       courses: [
@@ -184,10 +182,11 @@ export const DNATimeline = () => {
         "GR 606 - Designing For The Value Chain"
       ],
       school: "Bentley",
-      color: "#f59e0b"
+      color: "#f59e0b",
+      schoolName: "Bentley University"
     },
     {
-      id: "11",
+      id: "10",
       semester: "Fall",
       year: 2024,
       courses: [
@@ -197,10 +196,11 @@ export const DNATimeline = () => {
         "ST 635 - Intermediate Statistical Model"
       ],
       school: "Bentley",
-      color: "#8b5cf6"
+      color: "#8b5cf6",
+      schoolName: "Bentley University"
     },
     {
-      id: "12",
+      id: "11",
       semester: "Spring",
       year: 2025,
       courses: [
@@ -210,7 +210,8 @@ export const DNATimeline = () => {
         "MA 710 - Data Mining"
       ],
       school: "Bentley",
-      color: "#ec4899"
+      color: "#ec4899",
+      schoolName: "Bentley University"
     }
   ];
 
@@ -224,163 +225,78 @@ export const DNATimeline = () => {
     setSelectedItem(null);
   };
 
-  const minYear = 2020;
-  const maxYear = 2025;
-  const totalYears = maxYear - minYear;
-  const svgWidth = 1000;
-  const svgHeight = 400;
-
-  const getXPosition = (year: number) => {
-    return ((year - minYear) / totalYears) * (svgWidth - 200) + 100;
-  };
-
-  const getYPosition = (item: CourseTimelineItem, index: number) => {
-    const baseY = svgHeight / 2;
-    const overlapOffset = 25;
-    
-    let yOffset = 0;
-    const itemsToCheck = timelineData.slice(0, index);
-    
-    for (const otherItem of itemsToCheck) {
-      if (item.year === otherItem.year) {
-        yOffset += overlapOffset;
-      }
-    }
-    
-    const side = index % 2 === 0 ? -1 : 1;
-    return baseY + (side * (40 + yOffset));
-  };
-
   return (
-    <section id="dna-timeline" className="py-20 bg-slate-900 min-h-screen">
+    <section id="dna-timeline" className="py-20 bg-gradient-to-br from-slate-50 to-blue-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">
-            🧬 Academic Journey Timeline
+          <h2 className="text-4xl font-bold mb-4 text-slate-800">
+            🧬 Academic Journey <span className="text-blue-600">Timeline</span>
           </h2>
-          <p className="text-xl text-slate-300">
-            Click on any segment to explore my coursework through college
+          <p className="text-xl text-slate-600 mb-4">
+            Click on any semester to explore my coursework through college
           </p>
-          <p className="text-sm text-slate-400 mt-2">
+          <p className="text-sm text-slate-500">
             * Only courses level 300 and above are displayed
           </p>
         </div>
 
-        <div className="bg-slate-800/50 rounded-2xl p-6 backdrop-blur-sm border border-slate-700">
-          <div className="w-full overflow-x-auto">
-            <div className="min-w-[800px] w-full">
-              <svg width={svgWidth} height={svgHeight} className="w-full h-auto">
-                <defs>
-                  <linearGradient id="gradient1" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.8" />
-                    <stop offset="25%" stopColor="#10b981" stopOpacity="0.8" />
-                    <stop offset="50%" stopColor="#f59e0b" stopOpacity="0.8" />
-                    <stop offset="75%" stopColor="#8b5cf6" stopOpacity="0.8" />
-                    <stop offset="100%" stopColor="#ec4899" stopOpacity="0.8" />
-                  </linearGradient>
-                  <linearGradient id="gradient2" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%" stopColor="#ec4899" stopOpacity="0.8" />
-                    <stop offset="25%" stopColor="#f59e0b" stopOpacity="0.8" />
-                    <stop offset="50%" stopColor="#10b981" stopOpacity="0.8" />
-                    <stop offset="75%" stopColor="#3b82f6" stopOpacity="0.8" />
-                    <stop offset="100%" stopColor="#8b5cf6" stopOpacity="0.8" />
-                  </linearGradient>
-                </defs>
-                
-                {Array.from({ length: totalYears + 1 }, (_, i) => {
-                  const year = minYear + i;
-                  const x = getXPosition(year);
-                  return (
-                    <g key={year}>
-                      <line x1={x} y1={svgHeight - 40} x2={x} y2={svgHeight - 20} stroke="rgb(148, 163, 184)" strokeWidth="2" />
-                      <text x={x} y={svgHeight - 5} textAnchor="middle" className="fill-slate-300 text-sm font-medium">
-                        {year}
-                      </text>
-                    </g>
-                  );
-                })}
-
-                <path
-                  d={`M 100 ${svgHeight/2} Q 250 ${svgHeight/2 - 60} 500 ${svgHeight/2} Q 750 ${svgHeight/2 + 60} 900 ${svgHeight/2}`}
-                  fill="none"
-                  stroke="url(#gradient1)"
-                  strokeWidth="4"
-                />
-                <path
-                  d={`M 100 ${svgHeight/2} Q 250 ${svgHeight/2 + 60} 500 ${svgHeight/2} Q 750 ${svgHeight/2 - 60} 900 ${svgHeight/2}`}
-                  fill="none"
-                  stroke="url(#gradient2)"
-                  strokeWidth="4"
-                />
-
-                {timelineData.map((item, index) => {
-                  const x = getXPosition(item.year);
-                  const y = getYPosition(item, index);
-                  const width = 80;
-
-                  return (
-                    <g key={item.id}>
-                      <rect
-                        x={x - width/2}
-                        y={y - 18}
-                        width={width}
-                        height={36}
-                        fill={item.color}
-                        rx="18"
-                        className="cursor-pointer hover:opacity-80 transition-all duration-300 hover:stroke-2 stroke-slate-300"
-                        onClick={() => handleSegmentClick(item)}
-                      />
-                      
-                      <line
-                        x1={x}
-                        y1={y}
-                        x2={x}
-                        y2={svgHeight/2}
-                        stroke={item.color}
-                        strokeWidth="2"
-                        strokeDasharray="4,2"
-                        opacity="0.7"
-                      />
-                      
-                      <text
-                        x={x}
-                        y={y + (y < svgHeight/2 ? -30 : 50)}
-                        textAnchor="middle"
-                        className="fill-white text-sm font-semibold cursor-pointer hover:fill-blue-300"
-                        onClick={() => handleSegmentClick(item)}
-                      >
-                        {item.semester}
-                      </text>
-                      
-                      <text
-                        x={x}
-                        y={y + (y < svgHeight/2 ? -15 : 65)}
-                        textAnchor="middle"
-                        className="fill-slate-300 text-xs cursor-pointer"
-                        onClick={() => handleSegmentClick(item)}
-                      >
-                        {item.year}
-                      </text>
-                      
-                      <text
-                        x={x}
-                        y={y + 4}
-                        textAnchor="middle"
-                        className="fill-white text-xs font-medium cursor-pointer"
-                        onClick={() => handleSegmentClick(item)}
-                      >
-                        {item.courses.length} courses
-                      </text>
-                    </g>
-                  );
-                })}
-              </svg>
+        <div className="bg-white rounded-2xl p-8 shadow-lg border border-slate-200">
+          <div className="relative">
+            {/* Timeline line */}
+            <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-gradient-to-b from-blue-500 via-purple-500 to-pink-500"></div>
+            
+            <div className="space-y-8">
+              {timelineData.map((item, index) => (
+                <div key={item.id} className="relative flex items-center group">
+                  {/* Timeline dot */}
+                  <div 
+                    className="absolute left-6 w-4 h-4 rounded-full border-4 border-white shadow-lg cursor-pointer transform transition-all duration-300 hover:scale-125 z-10"
+                    style={{ backgroundColor: item.color }}
+                    onClick={() => handleSegmentClick(item)}
+                  ></div>
+                  
+                  {/* Content card */}
+                  <div 
+                    className="ml-16 flex-1 bg-white rounded-lg border border-slate-200 p-6 shadow-md hover:shadow-lg transition-all duration-300 cursor-pointer group-hover:border-blue-300"
+                    onClick={() => handleSegmentClick(item)}
+                  >
+                    <div className="flex justify-between items-start mb-4">
+                      <div>
+                        <h3 className="text-xl font-bold text-slate-800 mb-1">
+                          {item.semester} {item.year}
+                        </h3>
+                        <div className="flex items-center space-x-2 text-blue-600 font-medium">
+                          <GraduationCap className="h-4 w-4" />
+                          <span className="text-sm">{item.schoolName}</span>
+                        </div>
+                      </div>
+                      <div className="flex items-center space-x-2 text-slate-500">
+                        <Calendar className="h-4 w-4" />
+                        <span className="text-sm font-medium">{item.courses.length} courses</span>
+                      </div>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                      {item.courses.slice(0, 4).map((course, idx) => (
+                        <div key={idx} className="text-sm text-slate-600 bg-slate-50 px-3 py-1 rounded-md">
+                          {course}
+                        </div>
+                      ))}
+                      {item.courses.length > 4 && (
+                        <div className="text-sm text-blue-600 font-medium px-3 py-1">
+                          +{item.courses.length - 4} more courses
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
 
-        <div className="text-center text-sm text-slate-400 mt-6">
-          Click on any segment above to explore the courses • Swipe or scroll horizontally to see the full timeline
+        <div className="text-center text-sm text-slate-500 mt-8">
+          Click on any semester above to explore the complete course list
         </div>
 
         <DetailModal 

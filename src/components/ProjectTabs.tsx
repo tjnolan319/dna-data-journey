@@ -8,12 +8,6 @@ import { useNavigate } from "react-router-dom";
 
 const projects = [
   {
-    title: "Interactive Skillset Network Diagram",
-    description: "Network visualization mapping skillsets based on GitHub project topics, with automated daily updates",
-    tech: ["Python", "Data Visualization", "GitHub API"],
-    impact: "Visual representation for non-technical users"
-  },
-  {
     title: "Genre-Category Pair Advantages at Academy Awards",
     description: "Data science analysis of Academy Award patterns using statistical methods",
     tech: ["Python", "Statistical Analysis", "Deepnote"],
@@ -33,7 +27,8 @@ const publications = [
     title: "Are my peers impulsive? Normative perceptions of impulsivity and associations with personal impulsivity and alcohol use outcomes",
     journal: "Journal of Substance Use",
     year: "2024",
-    description: "Research examining whether individuals perceived their peers' impulsivity as different from their own impulsivity and if perceptions of peers' impulsivity moderated the associations between personal impulsivity and alcohol use and consequences."
+    description: "Research examining whether individuals perceived their peers' impulsivity as different from their own impulsivity and if perceptions of peers' impulsivity moderated the associations between personal impulsivity and alcohol use and consequences.",
+    link: "https://www.tandfonline.com/doi/full/10.1080/14659891.2024.2403061?scroll=top&needAccess=true#abstract"
   }
 ];
 
@@ -81,6 +76,13 @@ const caseStudies = [
 
 const dashboards = [
   {
+    title: "Interactive Skillset Network Diagram",
+    description: "Network visualization mapping skillsets based on GitHub project topics, with automated daily updates",
+    tools: ["Python", "D3.js", "GitHub API"],
+    impact: "Visual representation for non-technical users",
+    hasDetailPage: true
+  },
+  {
     title: "Marketing Performance Analytics Dashboard",
     description: "Interactive dashboard tracking digital marketing campaign performance with real-time KPI monitoring",
     tools: ["Tableau", "Excel", "Google Analytics"],
@@ -100,6 +102,12 @@ export const ProjectTabs = () => {
   const handleProjectClick = (project: typeof projects[0]) => {
     if (project.hasDetailPage) {
       navigate('/genre-category-project');
+    }
+  };
+
+  const handleDashboardClick = (dashboard: typeof dashboards[0]) => {
+    if (dashboard.hasDetailPage) {
+      navigate('/skillset-network');
     }
   };
 
@@ -198,7 +206,18 @@ export const ProjectTabs = () => {
                         </div>
                       </div>
                       <div className="pt-2 border-t">
-                        <p className="text-sm font-medium text-green-600">{dashboard.impact}</p>
+                        <p className="text-sm font-medium text-green-600 mb-2">{dashboard.impact}</p>
+                        {dashboard.hasDetailPage && (
+                          <Button
+                            onClick={() => handleDashboardClick(dashboard)}
+                            variant="outline"
+                            size="sm"
+                            className="flex items-center space-x-2"
+                          >
+                            <span>View Details</span>
+                            <ExternalLink className="h-3 w-3" />
+                          </Button>
+                        )}
                       </div>
                     </div>
                   </CardContent>
@@ -216,7 +235,16 @@ export const ProjectTabs = () => {
                     <CardDescription>{pub.journal} • {pub.year}</CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-slate-600">{pub.description}</p>
+                    <p className="text-slate-600 mb-4">{pub.description}</p>
+                    <Button
+                      onClick={() => window.open(pub.link, '_blank')}
+                      variant="outline"
+                      size="sm"
+                      className="flex items-center space-x-2"
+                    >
+                      <span>Read Article</span>
+                      <ExternalLink className="h-3 w-3" />
+                    </Button>
                   </CardContent>
                 </Card>
               ))}
