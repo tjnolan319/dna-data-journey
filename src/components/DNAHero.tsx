@@ -1,6 +1,8 @@
-
 import { useEffect, useState } from "react";
 import { Dna } from "lucide-react";
+
+// ✅ Import your local profile image from assets
+import profilePic from "@/assets/Tim_Nolan_Profile_Pic_Cropped.jpg";
 
 export const DNAHero = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -17,7 +19,7 @@ export const DNAHero = () => {
             <div className="flex items-center space-x-4 mb-6">
               <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-blue-200 shadow-lg">
                 <img 
-                  src="/lovable-uploads/01cfb1ee-b214-4fc4-a824-19f89c135827.png" 
+                  src={profilePic} 
                   alt="Timothy Nolan" 
                   className="w-full h-full object-cover"
                 />
