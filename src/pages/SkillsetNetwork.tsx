@@ -41,10 +41,11 @@ const NetworkVisualization = () => {
       // Clear any existing SVG
       d3.select(container).selectAll("svg").remove();
 
-      // Load data from GitHub
-      d3.json<NetworkData>("https://raw.githubusercontent.com/tjnolan319/network-visualization/main/tag_network.json")
+      // Load data from GitHub - remove type argument and use type assertion
+      d3.json("https://raw.githubusercontent.com/tjnolan319/network-visualization/main/tag_network.json")
         .then((data) => {
-          if (!data) return;
+          const networkData = data as NetworkData;
+          if (!networkData) return;
 
           const svg = d3
             .select(container)
@@ -57,7 +58,7 @@ const NetworkVisualization = () => {
 
           // Compute node degrees
           const degreeMap: { [key: string]: number } = {};
-          data.links.forEach((link) => {
+          networkData.links.forEach((link) => {
             const sourceId = typeof link.source === 'string' ? link.source : link.source.id;
             const targetId = typeof link.target === 'string' ? link.target : link.target.id;
             degreeMap[sourceId] = (degreeMap[sourceId] || 0) + 1;
@@ -72,11 +73,11 @@ const NetworkVisualization = () => {
             .range([8, 25]);
 
           const simulation = d3
-            .forceSimulation(data.nodes)
+            .forceSimulation(networkData.nodes)
             .force(
               "link",
               d3
-                .forceLink(data.links)
+                .forceLink(networkData.links)
                 .id((d: any) => d.id)
                 .distance(120)
             )
@@ -89,20 +90,20 @@ const NetworkVisualization = () => {
             .attr("stroke", "#64748b")
             .attr("stroke-opacity", 0.6)
             .selectAll("line")
-            .data(data.links)
+            .data(networkData.links)
             .join("line")
             .attr("stroke-width", (d: any) => Math.sqrt(d.weight) * 2);
 
           const node = svg
             .append("g")
             .selectAll("g")
-            .data(data.nodes)
+            .data(networkData.nodes)
             .join("g")
             .attr("class", "node")
             .style("cursor", "pointer")
             .call(
-              d3
-                .drag<SVGGElement, NetworkNode>()
+              // Remove type arguments from drag function
+              d3.drag()
                 .on("start", dragstarted)
                 .on("drag", dragged)
                 .on("end", dragended)
@@ -145,7 +146,7 @@ const NetworkVisualization = () => {
           simulation.on("tick", () => {
             const padding = { top: 50, right: 50, bottom: 50, left: 50 };
             
-            data.nodes.forEach((d: any) => {
+            networkData.nodes.forEach((d: any) => {
               const radius = radiusScale(degreeMap[d.id] || 0);
               d.x = Math.max(padding.left + radius, Math.min(width - padding.right - radius, d.x));
               d.y = Math.max(padding.top + radius, Math.min(height - padding.bottom - radius, d.y));
