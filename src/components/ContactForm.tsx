@@ -1,5 +1,4 @@
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,6 +14,27 @@ export const ContactForm = () => {
     message: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [currentTime, setCurrentTime] = useState('');
+
+  // Update current time every second
+  useEffect(() => {
+    const updateTime = () => {
+      const now = new Date();
+      const estTime = now.toLocaleTimeString('en-US', {
+        timeZone: 'America/New_York',
+        hour: 'numeric',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: true
+      });
+      setCurrentTime(estTime);
+    };
+
+    updateTime(); // Set initial time
+    const interval = setInterval(updateTime, 1000); // Update every second
+
+    return () => clearInterval(interval); // Cleanup
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -107,7 +127,14 @@ export const ContactForm = () => {
                       <Clock className="h-4 w-4 text-slate-500" />
                       <div>
                         <p className="font-medium">Time Zone</p>
-                        <p className="text-slate-600">Eastern Time</p>
+                        <p className="text-slate-600">Eastern Time (EST)</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center space-x-3">
+                      <Clock className="h-4 w-4 text-slate-500" />
+                      <div>
+                        <p className="font-medium">Local Time</p>
+                        <p className="text-slate-600 font-mono">{currentTime}</p>
                       </div>
                     </div>
                     <div className="flex items-center space-x-3">
