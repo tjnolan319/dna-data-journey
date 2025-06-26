@@ -12,7 +12,7 @@ export const DNAHero = () => {
   }, []);
 
   return (
-    <section id="hero" className="min-h-screen flex items-center justify-center pt-16">
+    <section id="hero" className="min-h-screen flex items-center justify-center pt-20 md:pt-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <div className={`space-y-6 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-10'}`}>
@@ -27,7 +27,7 @@ export const DNAHero = () => {
               <div>
                 <h1 className="text-3xl font-bold text-slate-800">Timothy Nolan</h1>
                 <p className="text-lg text-slate-600">Data & Business Strategy Analyst</p>
-                <p className="text-sm text-slate-500">Waltham, MA • Available for work</p>
+                {/* <p className="text-sm text-slate-500">Waltham, MA • Available for work</p> */}
               </div>
             </div>
             
