@@ -301,3 +301,5 @@ export const ProjectTabs = () => {
     </section>
   );
 };
+
+export { projects, caseStudies, dashboards, publications, certifications };
