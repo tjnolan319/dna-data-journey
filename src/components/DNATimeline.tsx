@@ -316,10 +316,10 @@ export const DNATimeline = () => {
                   
                   <div className="space-y-8">
                     {uriData.map((item, index) => (
-                      <div key={item.id} className={`flex items-center ${index % 2 === 0 ? 'flex-row' : 'flex-row-reverse'}`}>
+                      <div key={item.id} className={`flex items-start ${index % 2 === 0 ? 'flex-row' : 'flex-row-reverse'}`}>
                         <div className={`w-5/12 ${index % 2 === 0 ? 'pr-8 text-right' : 'pl-8'}`}>
                           <div 
-                            className="group relative bg-white rounded-lg border border-slate-200 p-4 shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer hover:scale-105 hover:border-blue-300"
+                            className="group relative bg-white rounded-lg border border-slate-200 p-4 shadow-sm hover:shadow-lg transition-shadow cursor-pointer hover:border-blue-300 min-h-[140px]"
                             onClick={() => handleSegmentClick(item)}
                           >
                             <div 
@@ -337,8 +337,8 @@ export const DNATimeline = () => {
                               </div>
                             </div>
 
-                            <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 max-h-0 group-hover:max-h-96 overflow-hidden transition-all duration-500">
-                              <div className="border-t border-slate-200 pt-3 mt-3">
+                            <div className="absolute inset-x-4 top-20 bottom-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 overflow-hidden">
+                              <div className="border-t border-slate-200 pt-3">
                                 <h5 className="text-sm font-semibold text-slate-700 mb-2">Course Preview:</h5>
                                 <div className="space-y-1">
                                   {item.courses.slice(0, 2).map((course, idx) => (
@@ -361,7 +361,7 @@ export const DNATimeline = () => {
                         </div>
                         
                         {/* Timeline dot */}
-                        <div className="w-4 h-4 bg-blue-600 rounded-full border-4 border-white shadow-lg z-10"></div>
+                        <div className="w-4 h-4 bg-blue-600 rounded-full border-4 border-white shadow-lg z-10 mt-6"></div>
                         
                         <div className="w-5/12"></div>
                       </div>
@@ -382,10 +382,10 @@ export const DNATimeline = () => {
                   
                   <div className="space-y-8">
                     {bentleyData.map((item, index) => (
-                      <div key={item.id} className={`flex items-center ${index % 2 === 0 ? 'flex-row' : 'flex-row-reverse'}`}>
+                      <div key={item.id} className={`flex items-start ${index % 2 === 0 ? 'flex-row' : 'flex-row-reverse'}`}>
                         <div className={`w-5/12 ${index % 2 === 0 ? 'pr-8 text-right' : 'pl-8'}`}>
                           <div 
-                            className="group relative bg-white rounded-lg border border-slate-200 p-4 shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer hover:scale-105 hover:border-purple-300"
+                            className="group relative bg-white rounded-lg border border-slate-200 p-4 shadow-sm hover:shadow-lg transition-shadow cursor-pointer hover:border-purple-300 min-h-[140px]"
                             onClick={() => handleSegmentClick(item)}
                           >
                             <div 
@@ -403,8 +403,8 @@ export const DNATimeline = () => {
                               </div>
                             </div>
 
-                            <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 max-h-0 group-hover:max-h-96 overflow-hidden transition-all duration-500">
-                              <div className="border-t border-slate-200 pt-3 mt-3">
+                            <div className="absolute inset-x-4 top-20 bottom-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 overflow-hidden">
+                              <div className="border-t border-slate-200 pt-3">
                                 <h5 className="text-sm font-semibold text-slate-700 mb-2">Course Preview:</h5>
                                 <div className="space-y-1">
                                   {item.courses.slice(0, 2).map((course, idx) => (
@@ -427,7 +427,7 @@ export const DNATimeline = () => {
                         </div>
                         
                         {/* Timeline dot */}
-                        <div className="w-4 h-4 bg-purple-600 rounded-full border-4 border-white shadow-lg z-10"></div>
+                        <div className="w-4 h-4 bg-purple-600 rounded-full border-4 border-white shadow-lg z-10 mt-6"></div>
                         
                         <div className="w-5/12"></div>
                       </div>

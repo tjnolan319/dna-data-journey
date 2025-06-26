@@ -117,7 +117,7 @@ const StatusBanner = ({ status }: { status: string }) => {
   };
 
   return (
-    <div className={`absolute top-3 left-3 px-2 py-1 rounded text-xs font-bold z-10 ${getStatusStyles(status)}`}>
+    <div className={`absolute top-3 right-3 px-2 py-1 rounded text-xs font-bold z-10 ${getStatusStyles(status)}`}>
       {status}
     </div>
   );
@@ -155,11 +155,11 @@ export const ProjectTabs = () => {
           </TabsList>
 
           <TabsContent value="projects" className="space-y-6">
-            <div className="flex flex-col items-center space-y-6 max-w-4xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
               {projects.map((project, index) => (
-                <Card key={index} className="relative hover:shadow-lg transition-shadow w-full max-w-2xl">
+                <Card key={index} className="relative hover:shadow-lg transition-shadow">
                   {project.status && <StatusBanner status={project.status} />}
-                  <CardHeader>
+                  <CardHeader className="pt-8">
                     <CardTitle className="text-lg">{project.title}</CardTitle>
                     <CardDescription>{project.description}</CardDescription>
                   </CardHeader>
@@ -218,7 +218,7 @@ export const ProjectTabs = () => {
               {dashboards.map((dashboard, index) => (
                 <Card key={index} className="relative hover:shadow-lg transition-shadow">
                   {dashboard.status && <StatusBanner status={dashboard.status} />}
-                  <CardHeader>
+                  <CardHeader className="pt-8">
                     <CardTitle className="text-lg">{dashboard.title}</CardTitle>
                     <CardDescription>{dashboard.description}</CardDescription>
                   </CardHeader>
@@ -285,7 +285,7 @@ export const ProjectTabs = () => {
               {certifications.map((cert, index) => (
                 <Card key={index} className="relative hover:shadow-lg transition-shadow">
                   {cert.status && <StatusBanner status={cert.status} />}
-                  <CardHeader>
+                  <CardHeader className="pt-8">
                     <CardTitle className="text-lg">{cert.title}</CardTitle>
                     <CardDescription>
                       {cert.issuer} • Issued {cert.year}
