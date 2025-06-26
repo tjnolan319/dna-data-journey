@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -118,16 +119,16 @@ export const ProjectTabs = () => {
         </h2>
 
         <Tabs defaultValue="projects" className="w-full">
-          <TabsList className="grid w-full grid-cols-5 max-w-3xl mx-auto mb-8">
-            <TabsTrigger value="projects">Projects</TabsTrigger>
-            <TabsTrigger value="case-studies">Case Studies</TabsTrigger>
-            <TabsTrigger value="dashboards">Dashboards</TabsTrigger>
-            <TabsTrigger value="publications">Publications</TabsTrigger>
-            <TabsTrigger value="certifications">Certifications</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 max-w-4xl mx-auto mb-8 h-auto gap-1 p-1">
+            <TabsTrigger value="projects" className="text-xs sm:text-sm py-2 px-2">Projects</TabsTrigger>
+            <TabsTrigger value="case-studies" className="text-xs sm:text-sm py-2 px-2">Case Studies</TabsTrigger>
+            <TabsTrigger value="dashboards" className="text-xs sm:text-sm py-2 px-2">Dashboards</TabsTrigger>
+            <TabsTrigger value="publications" className="text-xs sm:text-sm py-2 px-2">Publications</TabsTrigger>
+            <TabsTrigger value="certifications" className="text-xs sm:text-sm py-2 px-2">Certifications</TabsTrigger>
           </TabsList>
 
           <TabsContent value="projects" className="space-y-6">
-            <div className="grid md:grid-cols-2 gap-6 justify-center">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
               {projects.map((project, index) => (
                 <Card key={index} className="hover:shadow-lg transition-shadow">
                   <CardHeader>
@@ -168,7 +169,7 @@ export const ProjectTabs = () => {
           </TabsContent>
 
           <TabsContent value="case-studies" className="space-y-6">
-            <div className="grid md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
               {caseStudies.map((study, index) => (
                 <Card key={index} className="hover:shadow-lg transition-shadow">
                   <CardHeader>
@@ -185,7 +186,7 @@ export const ProjectTabs = () => {
           </TabsContent>
 
           <TabsContent value="dashboards" className="space-y-6">
-            <div className="grid md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
               {dashboards.map((dashboard, index) => (
                 <Card key={index} className="hover:shadow-lg transition-shadow">
                   <CardHeader>
@@ -226,7 +227,7 @@ export const ProjectTabs = () => {
           </TabsContent>
 
           <TabsContent value="publications" className="space-y-6">
-            <div className="grid gap-6">
+            <div className="grid gap-6 max-w-4xl mx-auto">
               {publications.map((pub, index) => (
                 <Card key={index} className="hover:shadow-lg transition-shadow">
                   <CardHeader>
@@ -251,7 +252,7 @@ export const ProjectTabs = () => {
           </TabsContent>
 
           <TabsContent value="certifications" className="space-y-6">
-            <div className="grid md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
               {certifications.map((cert, index) => (
                 <Card key={index} className="hover:shadow-lg transition-shadow">
                   <CardHeader>

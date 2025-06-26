@@ -227,76 +227,76 @@ export const DNATimeline = () => {
 
   return (
     <section id="dna-timeline" className="py-20 bg-gradient-to-br from-slate-50 to-blue-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold mb-4 text-slate-800">
             🧬 Academic Journey <span className="text-blue-600">Timeline</span>
           </h2>
           <p className="text-xl text-slate-600 mb-4">
-            Click on any semester to explore my coursework through college
+            Hover over cards to preview courses, click to explore in detail
           </p>
           <p className="text-sm text-slate-500">
             * Only courses level 300 and above are displayed
           </p>
         </div>
 
-        <div className="bg-white rounded-2xl p-8 shadow-lg border border-slate-200">
-          <div className="relative">
-            {/* Timeline line */}
-            <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-gradient-to-b from-blue-500 via-purple-500 to-pink-500"></div>
-            
-            <div className="space-y-8">
-              {timelineData.map((item, index) => (
-                <div key={item.id} className="relative flex items-center group">
-                  {/* Timeline dot */}
-                  <div 
-                    className="absolute left-6 w-4 h-4 rounded-full border-4 border-white shadow-lg cursor-pointer transform transition-all duration-300 hover:scale-125 z-10"
-                    style={{ backgroundColor: item.color }}
-                    onClick={() => handleSegmentClick(item)}
-                  ></div>
-                  
-                  {/* Content card */}
-                  <div 
-                    className="ml-16 flex-1 bg-white rounded-lg border border-slate-200 p-6 shadow-md hover:shadow-lg transition-all duration-300 cursor-pointer group-hover:border-blue-300"
-                    onClick={() => handleSegmentClick(item)}
-                  >
-                    <div className="flex justify-between items-start mb-4">
-                      <div>
-                        <h3 className="text-xl font-bold text-slate-800 mb-1">
-                          {item.semester} {item.year}
-                        </h3>
-                        <div className="flex items-center space-x-2 text-blue-600 font-medium">
-                          <GraduationCap className="h-4 w-4" />
-                          <span className="text-sm">{item.schoolName}</span>
-                        </div>
-                      </div>
-                      <div className="flex items-center space-x-2 text-slate-500">
-                        <Calendar className="h-4 w-4" />
-                        <span className="text-sm font-medium">{item.courses.length} courses</span>
-                      </div>
-                    </div>
-                    
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                      {item.courses.slice(0, 4).map((course, idx) => (
-                        <div key={idx} className="text-sm text-slate-600 bg-slate-50 px-3 py-1 rounded-md">
+        <div className="bg-white rounded-2xl p-6 shadow-lg border border-slate-200">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            {timelineData.map((item, index) => (
+              <div 
+                key={item.id} 
+                className="group relative bg-white rounded-lg border border-slate-200 p-4 shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer hover:scale-105 hover:border-blue-300"
+                onClick={() => handleSegmentClick(item)}
+              >
+                {/* Colored top border */}
+                <div 
+                  className="absolute top-0 left-0 right-0 h-1 rounded-t-lg"
+                  style={{ backgroundColor: item.color }}
+                ></div>
+                
+                {/* Main content - always visible */}
+                <div className="pt-2">
+                  <h3 className="text-lg font-bold text-slate-800 mb-1">
+                    {item.semester} {item.year}
+                  </h3>
+                  <div className="flex items-center space-x-2 text-blue-600 font-medium mb-3">
+                    <GraduationCap className="h-4 w-4" />
+                    <span className="text-sm">{item.schoolName}</span>
+                  </div>
+                  <div className="flex items-center space-x-2 text-slate-500 mb-3">
+                    <Calendar className="h-4 w-4" />
+                    <span className="text-sm font-medium">{item.courses.length} courses</span>
+                  </div>
+                </div>
+
+                {/* Expandable content on hover */}
+                <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 max-h-0 group-hover:max-h-96 overflow-hidden transition-all duration-500">
+                  <div className="border-t border-slate-200 pt-3 mt-3">
+                    <h4 className="text-sm font-semibold text-slate-700 mb-2">Course Preview:</h4>
+                    <div className="space-y-1">
+                      {item.courses.slice(0, 3).map((course, idx) => (
+                        <div key={idx} className="text-xs text-slate-600 bg-slate-50 px-2 py-1 rounded">
                           {course}
                         </div>
                       ))}
-                      {item.courses.length > 4 && (
-                        <div className="text-sm text-blue-600 font-medium px-3 py-1">
-                          +{item.courses.length - 4} more courses
+                      {item.courses.length > 3 && (
+                        <div className="text-xs text-blue-600 font-medium px-2 py-1">
+                          +{item.courses.length - 3} more courses
                         </div>
                       )}
                     </div>
+                    <div className="text-xs text-slate-500 mt-2 italic">
+                      Click to view all courses
+                    </div>
                   </div>
                 </div>
-              ))}
-            </div>
+              </div>
+            ))}
           </div>
         </div>
 
         <div className="text-center text-sm text-slate-500 mt-8">
-          Click on any semester above to explore the complete course list
+          Click on any semester card to explore the complete course list
         </div>
 
         <DetailModal 
