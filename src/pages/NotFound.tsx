@@ -61,7 +61,7 @@ const NotFound = () => {
         {/* Action Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Button 
-            onClick={() => window.location.href = '/'}
+            onClick={() => window.location.href = '/dna-data-journey/'}
             className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded-md"
           >
             <Home className="h-4 w-4 mr-2" />
