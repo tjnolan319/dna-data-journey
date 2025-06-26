@@ -225,6 +225,10 @@ export const DNATimeline = () => {
     setSelectedItem(null);
   };
 
+  // Separate URI and Bentley data for timeline layout
+  const uriData = timelineData.filter(item => item.school === "URI");
+  const bentleyData = timelineData.filter(item => item.school === "Bentley");
+
   return (
     <section id="dna-timeline" className="py-20 bg-gradient-to-br from-slate-50 to-blue-50">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -241,57 +245,197 @@ export const DNATimeline = () => {
         </div>
 
         <div className="bg-white rounded-2xl p-6 shadow-lg border border-slate-200">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-            {timelineData.map((item, index) => (
-              <div 
-                key={item.id} 
-                className="group relative bg-white rounded-lg border border-slate-200 p-4 shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer hover:scale-105 hover:border-blue-300"
-                onClick={() => handleSegmentClick(item)}
-              >
-                {/* Colored top border */}
+          {/* Mobile Layout */}
+          <div className="block md:hidden">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {timelineData.map((item, index) => (
                 <div 
-                  className="absolute top-0 left-0 right-0 h-1 rounded-t-lg"
-                  style={{ backgroundColor: item.color }}
-                ></div>
-                
-                {/* Main content - always visible */}
-                <div className="pt-2">
-                  <h3 className="text-lg font-bold text-slate-800 mb-1">
-                    {item.semester} {item.year}
-                  </h3>
-                  <div className="flex items-center space-x-2 text-blue-600 font-medium mb-3">
-                    <GraduationCap className="h-4 w-4" />
-                    <span className="text-sm">{item.schoolName}</span>
+                  key={item.id} 
+                  className="group relative bg-white rounded-lg border border-slate-200 p-4 shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer hover:scale-105 hover:border-blue-300"
+                  onClick={() => handleSegmentClick(item)}
+                >
+                  {/* Colored top border */}
+                  <div 
+                    className="absolute top-0 left-0 right-0 h-1 rounded-t-lg"
+                    style={{ backgroundColor: item.color }}
+                  ></div>
+                  
+                  {/* Main content - always visible */}
+                  <div className="pt-2">
+                    <h3 className="text-lg font-bold text-slate-800 mb-1">
+                      {item.semester} {item.year}
+                    </h3>
+                    <div className="flex items-center space-x-2 text-blue-600 font-medium mb-3">
+                      <GraduationCap className="h-4 w-4" />
+                      <span className="text-sm">{item.schoolName}</span>
+                    </div>
+                    <div className="flex items-center space-x-2 text-slate-500 mb-3">
+                      <Calendar className="h-4 w-4" />
+                      <span className="text-sm font-medium">{item.courses.length} courses</span>
+                    </div>
                   </div>
-                  <div className="flex items-center space-x-2 text-slate-500 mb-3">
-                    <Calendar className="h-4 w-4" />
-                    <span className="text-sm font-medium">{item.courses.length} courses</span>
+
+                  {/* Expandable content on hover */}
+                  <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 max-h-0 group-hover:max-h-96 overflow-hidden transition-all duration-500">
+                    <div className="border-t border-slate-200 pt-3 mt-3">
+                      <h4 className="text-sm font-semibold text-slate-700 mb-2">Course Preview:</h4>
+                      <div className="space-y-1">
+                        {item.courses.slice(0, 3).map((course, idx) => (
+                          <div key={idx} className="text-xs text-slate-600 bg-slate-50 px-2 py-1 rounded">
+                            {course}
+                          </div>
+                        ))}
+                        {item.courses.length > 3 && (
+                          <div className="text-xs text-blue-600 font-medium px-2 py-1">
+                            +{item.courses.length - 3} more courses
+                          </div>
+                        )}
+                      </div>
+                      <div className="text-xs text-slate-500 mt-2 italic">
+                        Click to view all courses
+                      </div>
+                    </div>
                   </div>
                 </div>
+              ))}
+            </div>
+          </div>
 
-                {/* Expandable content on hover */}
-                <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 max-h-0 group-hover:max-h-96 overflow-hidden transition-all duration-500">
-                  <div className="border-t border-slate-200 pt-3 mt-3">
-                    <h4 className="text-sm font-semibold text-slate-700 mb-2">Course Preview:</h4>
-                    <div className="space-y-1">
-                      {item.courses.slice(0, 3).map((course, idx) => (
-                        <div key={idx} className="text-xs text-slate-600 bg-slate-50 px-2 py-1 rounded">
-                          {course}
+          {/* Desktop/Tablet Timeline Layout */}
+          <div className="hidden md:block">
+            <div className="space-y-12">
+              {/* URI Timeline */}
+              <div>
+                <div className="flex items-center mb-6">
+                  <GraduationCap className="h-6 w-6 text-blue-600 mr-3" />
+                  <h3 className="text-2xl font-bold text-slate-800">University of Rhode Island</h3>
+                </div>
+                <div className="relative">
+                  {/* Timeline line */}
+                  <div className="absolute left-1/2 transform -translate-x-1/2 w-1 bg-blue-200 h-full"></div>
+                  
+                  <div className="space-y-8">
+                    {uriData.map((item, index) => (
+                      <div key={item.id} className={`flex items-center ${index % 2 === 0 ? 'flex-row' : 'flex-row-reverse'}`}>
+                        <div className={`w-5/12 ${index % 2 === 0 ? 'pr-8 text-right' : 'pl-8'}`}>
+                          <div 
+                            className="group relative bg-white rounded-lg border border-slate-200 p-4 shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer hover:scale-105 hover:border-blue-300"
+                            onClick={() => handleSegmentClick(item)}
+                          >
+                            <div 
+                              className="absolute top-0 left-0 right-0 h-1 rounded-t-lg"
+                              style={{ backgroundColor: item.color }}
+                            ></div>
+                            
+                            <div className="pt-2">
+                              <h4 className="text-lg font-bold text-slate-800 mb-1">
+                                {item.semester} {item.year}
+                              </h4>
+                              <div className="flex items-center space-x-2 text-slate-500 mb-3">
+                                <Calendar className="h-4 w-4" />
+                                <span className="text-sm font-medium">{item.courses.length} courses</span>
+                              </div>
+                            </div>
+
+                            <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 max-h-0 group-hover:max-h-96 overflow-hidden transition-all duration-500">
+                              <div className="border-t border-slate-200 pt-3 mt-3">
+                                <h5 className="text-sm font-semibold text-slate-700 mb-2">Course Preview:</h5>
+                                <div className="space-y-1">
+                                  {item.courses.slice(0, 2).map((course, idx) => (
+                                    <div key={idx} className="text-xs text-slate-600 bg-slate-50 px-2 py-1 rounded">
+                                      {course}
+                                    </div>
+                                  ))}
+                                  {item.courses.length > 2 && (
+                                    <div className="text-xs text-blue-600 font-medium px-2 py-1">
+                                      +{item.courses.length - 2} more courses
+                                    </div>
+                                  )}
+                                </div>
+                                <div className="text-xs text-slate-500 mt-2 italic">
+                                  Click to view all courses
+                                </div>
+                              </div>
+                            </div>
+                          </div>
                         </div>
-                      ))}
-                      {item.courses.length > 3 && (
-                        <div className="text-xs text-blue-600 font-medium px-2 py-1">
-                          +{item.courses.length - 3} more courses
-                        </div>
-                      )}
-                    </div>
-                    <div className="text-xs text-slate-500 mt-2 italic">
-                      Click to view all courses
-                    </div>
+                        
+                        {/* Timeline dot */}
+                        <div className="w-4 h-4 bg-blue-600 rounded-full border-4 border-white shadow-lg z-10"></div>
+                        
+                        <div className="w-5/12"></div>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>
-            ))}
+
+              {/* Bentley Timeline */}
+              <div>
+                <div className="flex items-center mb-6">
+                  <GraduationCap className="h-6 w-6 text-purple-600 mr-3" />
+                  <h3 className="text-2xl font-bold text-slate-800">Bentley University</h3>
+                </div>
+                <div className="relative">
+                  {/* Timeline line */}
+                  <div className="absolute left-1/2 transform -translate-x-1/2 w-1 bg-purple-200 h-full"></div>
+                  
+                  <div className="space-y-8">
+                    {bentleyData.map((item, index) => (
+                      <div key={item.id} className={`flex items-center ${index % 2 === 0 ? 'flex-row' : 'flex-row-reverse'}`}>
+                        <div className={`w-5/12 ${index % 2 === 0 ? 'pr-8 text-right' : 'pl-8'}`}>
+                          <div 
+                            className="group relative bg-white rounded-lg border border-slate-200 p-4 shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer hover:scale-105 hover:border-purple-300"
+                            onClick={() => handleSegmentClick(item)}
+                          >
+                            <div 
+                              className="absolute top-0 left-0 right-0 h-1 rounded-t-lg"
+                              style={{ backgroundColor: item.color }}
+                            ></div>
+                            
+                            <div className="pt-2">
+                              <h4 className="text-lg font-bold text-slate-800 mb-1">
+                                {item.semester} {item.year}
+                              </h4>
+                              <div className="flex items-center space-x-2 text-slate-500 mb-3">
+                                <Calendar className="h-4 w-4" />
+                                <span className="text-sm font-medium">{item.courses.length} courses</span>
+                              </div>
+                            </div>
+
+                            <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 max-h-0 group-hover:max-h-96 overflow-hidden transition-all duration-500">
+                              <div className="border-t border-slate-200 pt-3 mt-3">
+                                <h5 className="text-sm font-semibold text-slate-700 mb-2">Course Preview:</h5>
+                                <div className="space-y-1">
+                                  {item.courses.slice(0, 2).map((course, idx) => (
+                                    <div key={idx} className="text-xs text-slate-600 bg-slate-50 px-2 py-1 rounded">
+                                      {course}
+                                    </div>
+                                  ))}
+                                  {item.courses.length > 2 && (
+                                    <div className="text-xs text-blue-600 font-medium px-2 py-1">
+                                      +{item.courses.length - 2} more courses
+                                    </div>
+                                  )}
+                                </div>
+                                <div className="text-xs text-slate-500 mt-2 italic">
+                                  Click to view all courses
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        {/* Timeline dot */}
+                        <div className="w-4 h-4 bg-purple-600 rounded-full border-4 border-white shadow-lg z-10"></div>
+                        
+                        <div className="w-5/12"></div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 

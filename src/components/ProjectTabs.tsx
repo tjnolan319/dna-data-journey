@@ -12,13 +12,15 @@ const projects = [
     description: "Data science analysis of Academy Award patterns using statistical methods",
     tech: ["Python", "Statistical Analysis", "Deepnote"],
     impact: "Published research findings",
-    hasDetailPage: true
+    hasDetailPage: true,
+    status: "NEW!"
   },
   {
     title: "Telehealth Platform Growth Strategy",
     description: "Strategic scaling of clinical staff and digital marketing initiatives for healthcare startup",
     tech: ["Market Research", "SEO", "Digital Marketing"],
-    impact: "Scaled from 0 to 10 clinical staff in 18 months"
+    impact: "Scaled from 0 to 10 clinical staff in 18 months",
+    status: "UNDER CONSTRUCTION"
   }
 ];
 
@@ -37,13 +39,15 @@ const certifications = [
     title: "Alteryx Designer Cloud Core",
     issuer: "Alteryx",
     year: "2025",
-    expires: "2027"
+    expires: "2027",
+    status: "NEW!"
   },
   {
     title: "Alteryx Foundational Micro-Credential", 
     issuer: "Alteryx",
     year: "2025",
-    expires: "2027"
+    expires: "2027",
+    status: "NEW!"
   },
   {
     title: "Microsoft Office Specialist: Excel Associate",
@@ -80,13 +84,15 @@ const dashboards = [
     description: "Network visualization mapping skillsets based on GitHub project topics, with automated daily updates",
     tools: ["Python", "D3.js", "GitHub API"],
     impact: "Visual representation for non-technical users",
-    hasDetailPage: true
+    hasDetailPage: true,
+    status: "NEW!"
   },
   {
     title: "Marketing Performance Analytics Dashboard",
     description: "Interactive dashboard tracking digital marketing campaign performance with real-time KPI monitoring",
     tools: ["Tableau", "Excel", "Google Analytics"],
-    impact: "Improved campaign ROI by 25%"
+    impact: "Improved campaign ROI by 25%",
+    status: "IN PROGRESS"
   },
   {
     title: "Clinical Operations Dashboard",
@@ -95,6 +101,27 @@ const dashboards = [
     impact: "Reduced patient wait times by 30%"
   }
 ];
+
+const StatusBanner = ({ status }: { status: string }) => {
+  const getStatusStyles = (status: string) => {
+    switch (status) {
+      case "NEW!":
+        return "bg-blue-600 text-white";
+      case "IN PROGRESS":
+        return "bg-orange-500 text-white";
+      case "UNDER CONSTRUCTION":
+        return "bg-yellow-600 text-white";
+      default:
+        return "bg-gray-500 text-white";
+    }
+  };
+
+  return (
+    <div className={`absolute top-3 left-3 px-2 py-1 rounded text-xs font-bold z-10 ${getStatusStyles(status)}`}>
+      {status}
+    </div>
+  );
+};
 
 export const ProjectTabs = () => {
   const navigate = useNavigate();
@@ -128,9 +155,10 @@ export const ProjectTabs = () => {
           </TabsList>
 
           <TabsContent value="projects" className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+            <div className="flex flex-col items-center space-y-6 max-w-4xl mx-auto">
               {projects.map((project, index) => (
-                <Card key={index} className="hover:shadow-lg transition-shadow">
+                <Card key={index} className="relative hover:shadow-lg transition-shadow w-full max-w-2xl">
+                  {project.status && <StatusBanner status={project.status} />}
                   <CardHeader>
                     <CardTitle className="text-lg">{project.title}</CardTitle>
                     <CardDescription>{project.description}</CardDescription>
@@ -188,7 +216,8 @@ export const ProjectTabs = () => {
           <TabsContent value="dashboards" className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
               {dashboards.map((dashboard, index) => (
-                <Card key={index} className="hover:shadow-lg transition-shadow">
+                <Card key={index} className="relative hover:shadow-lg transition-shadow">
+                  {dashboard.status && <StatusBanner status={dashboard.status} />}
                   <CardHeader>
                     <CardTitle className="text-lg">{dashboard.title}</CardTitle>
                     <CardDescription>{dashboard.description}</CardDescription>
@@ -254,7 +283,8 @@ export const ProjectTabs = () => {
           <TabsContent value="certifications" className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
               {certifications.map((cert, index) => (
-                <Card key={index} className="hover:shadow-lg transition-shadow">
+                <Card key={index} className="relative hover:shadow-lg transition-shadow">
+                  {cert.status && <StatusBanner status={cert.status} />}
                   <CardHeader>
                     <CardTitle className="text-lg">{cert.title}</CardTitle>
                     <CardDescription>
