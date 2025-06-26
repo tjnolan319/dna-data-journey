@@ -1,9 +1,28 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Menu, X, Download, Github } from "lucide-react";
 
 export const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [currentTime, setCurrentTime] = useState("");
+
+  useEffect(() => {
+    const updateTime = () => {
+      const now = new Date();
+      const easternTime = now.toLocaleTimeString('en-US', {
+        timeZone: 'America/New_York',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true
+      });
+      setCurrentTime(easternTime);
+    };
+
+    updateTime();
+    const interval = setInterval(updateTime, 60000); // Update every minute
+
+    return () => clearInterval(interval);
+  }, []);
 
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
@@ -12,14 +31,7 @@ export const Navigation = () => {
   };
 
   const handleResumeDownload = () => {
-    // Replace with your actual resume URL
-    const resumeUrl = "/resume.pdf";
-    const link = document.createElement('a');
-    link.href = resumeUrl;
-    link.download = 'Timothy_Nolan_Resume.pdf';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    window.open('https://www.dropbox.com/scl/fo/j4xflq4pwgmowea76groj/AOGg_HW80oeWYT8kXuVcVLM?rlkey=9h0l8bken1wtdcrqul5dqy827&st=jc0bh1l9&dl=0', '_blank');
   };
 
   const handleGitHubClick = () => {
@@ -97,7 +109,7 @@ export const Navigation = () => {
             </div>
           </div>
 
-          <div className="md:hidden pt-4">
+          <div className="md:hidden pt-6">
             <button onClick={() => setIsOpen(!isOpen)}>
               {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </button>
@@ -150,6 +162,11 @@ export const Navigation = () => {
             </button>
             
             <div className="flex flex-col space-y-2 pt-4 border-t border-slate-200">
+              <div className="px-4 py-2 text-sm text-slate-600">
+                <div className="mb-1">Current Time: {currentTime} EST</div>
+                <div className="mb-1">Time Zone: Eastern Time (EST)</div>
+                <div>Location: Waltham, MA</div>
+              </div>
               <button
                 onClick={handleResumeDownload}
                 className="flex items-center justify-center space-x-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors mx-4"

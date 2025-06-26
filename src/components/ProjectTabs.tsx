@@ -117,7 +117,7 @@ const StatusBanner = ({ status }: { status: string }) => {
   };
 
   return (
-    <div className={`absolute top-3 right-3 px-2 py-1 rounded text-xs font-bold z-10 ${getStatusStyles(status)}`}>
+    <div className={`absolute top-3 left-3 px-2 py-1 rounded text-xs font-bold z-10 ${getStatusStyles(status)}`}>
       {status}
     </div>
   );
@@ -159,7 +159,7 @@ export const ProjectTabs = () => {
               {projects.map((project, index) => (
                 <Card key={index} className="relative hover:shadow-lg transition-shadow">
                   {project.status && <StatusBanner status={project.status} />}
-                  <CardHeader className="pt-8">
+                  <CardHeader className={`${project.status ? 'pt-12' : 'pt-6'}`}>
                     <CardTitle className="text-lg">{project.title}</CardTitle>
                     <CardDescription>{project.description}</CardDescription>
                   </CardHeader>
@@ -218,7 +218,7 @@ export const ProjectTabs = () => {
               {dashboards.map((dashboard, index) => (
                 <Card key={index} className="relative hover:shadow-lg transition-shadow">
                   {dashboard.status && <StatusBanner status={dashboard.status} />}
-                  <CardHeader className="pt-8">
+                  <CardHeader className={`${dashboard.status ? 'pt-12' : 'pt-6'}`}>
                     <CardTitle className="text-lg">{dashboard.title}</CardTitle>
                     <CardDescription>{dashboard.description}</CardDescription>
                   </CardHeader>
@@ -285,7 +285,7 @@ export const ProjectTabs = () => {
               {certifications.map((cert, index) => (
                 <Card key={index} className="relative hover:shadow-lg transition-shadow">
                   {cert.status && <StatusBanner status={cert.status} />}
-                  <CardHeader className="pt-8">
+                  <CardHeader className={`${cert.status ? 'pt-12' : 'pt-6'}`}>
                     <CardTitle className="text-lg">{cert.title}</CardTitle>
                     <CardDescription>
                       {cert.issuer} • Issued {cert.year}

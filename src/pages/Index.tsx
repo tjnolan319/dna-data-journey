@@ -1,6 +1,6 @@
 
 import { DNAHero } from "@/components/DNAHero";
-import { GanttChart } from "@/components/GanttChart";
+import { TimelinePreview } from "@/components/TimelinePreview";
 import { DNATimeline } from "@/components/DNATimeline";
 import { Navigation } from "@/components/Navigation";
 import { TechStack } from "@/components/TechStack";
@@ -14,7 +14,7 @@ const Index = () => {
       <Navigation />
       <DNAHero />
       <TechStack />
-      <GanttChart />
+      <TimelinePreview />
       <DataGallery />
       <ProjectTabs />
       <DNATimeline />
