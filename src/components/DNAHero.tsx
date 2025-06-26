@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
-import { Dna } from "lucide-react";
-
+import { Dna, Star, ArrowRight } from "lucide-react";
 // ✅ Import your local profile image from assets
 import profilePic from "@/assets/Tim_Nolan_Profile_Pic_Cropped.jpg";
+
+// Import the data from ProjectTabs - you'll need to export these from your ProjectTabs file
+import { projects, caseStudies, dashboards, publications, certifications } from "./ProjectTabs";
 
 export const DNAHero = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -10,6 +12,98 @@ export const DNAHero = () => {
   useEffect(() => {
     setIsVisible(true);
   }, []);
+
+  // Dynamically find all items with NEW! status
+  const getNewItems = () => {
+    const newItems = [];
+    
+    // Check projects
+    projects.forEach(project => {
+      if (project.status === "NEW!") {
+        newItems.push({
+          title: project.title,
+          type: "Project",
+          description: project.description,
+          tabValue: "projects"
+        });
+      }
+    });
+
+    // Check case studies
+    caseStudies.forEach(study => {
+      if (study.status === "NEW!") {
+        newItems.push({
+          title: study.title,
+          type: "Case Study",
+          description: study.description,
+          tabValue: "case-studies"
+        });
+      }
+    });
+
+    // Check dashboards
+    dashboards.forEach(dashboard => {
+      if (dashboard.status === "NEW!") {
+        newItems.push({
+          title: dashboard.title,
+          type: "Dashboard", 
+          description: dashboard.description,
+          tabValue: "dashboards"
+        });
+      }
+    });
+
+    // Check publications
+    publications.forEach(pub => {
+      if (pub.status === "NEW!") {
+        newItems.push({
+          title: pub.title,
+          type: "Publication",
+          description: `${pub.journal} • ${pub.year}`,
+          tabValue: "publications"
+        });
+      }
+    });
+
+    // Check certifications
+    certifications.forEach(cert => {
+      if (cert.status === "NEW!") {
+        newItems.push({
+          title: cert.title,
+          type: "Certification",
+          description: `${cert.issuer} • ${cert.year}`,
+          tabValue: "certifications"
+        });
+      }
+    });
+
+    return newItems;
+  };
+
+  const newItems = getNewItems();
+
+  const scrollToSection = (target) => {
+    const element = document.getElementById(target);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  const handleNewItemClick = (item) => {
+    // First scroll to the projects section
+    scrollToSection('projects');
+    
+    // Then trigger the appropriate tab
+    setTimeout(() => {
+      const tabsContainer = document.querySelector('[role="tablist"]');
+      if (tabsContainer) {
+        const tabToClick = tabsContainer.querySelector(`[value="${item.tabValue}"]`);
+        if (tabToClick) {
+          tabToClick.click();
+        }
+      }
+    }, 500);
+  };
 
   return (
     <section id="hero" className="min-h-screen flex items-center justify-center pt-20 md:pt-16">
@@ -38,6 +132,37 @@ export const DNAHero = () => {
             <p className="text-base text-slate-600 leading-relaxed">
               Recent MBA and MS in Business Analytics graduate from Bentley University, with undergraduate degrees in Marketing and Psychology. My background combines business, analytics, and behavioral science, applied in early-stage companies, research, and university-based entrepreneurship programs.
             </p>
+            
+            {/* What's New Section - Only show if there are NEW! items */}
+            {newItems.length > 0 && (
+              <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-4 border border-blue-200">
+                <div className="flex items-center space-x-2 mb-3">
+                  <Star className="h-5 w-5 text-blue-600" />
+                  <h3 className="text-lg font-semibold text-slate-800">What's New</h3>
+                </div>
+                <div className="space-y-2">
+                  {newItems.map((item, index) => (
+                    <div 
+                      key={index}
+                      onClick={() => handleNewItemClick(item)}
+                      className="flex items-center justify-between p-2 bg-white rounded-md hover:bg-blue-50 cursor-pointer transition-colors group"
+                    >
+                      <div className="flex-1">
+                        <div className="flex items-center space-x-2">
+                          <span className="text-xs font-medium text-blue-600 bg-blue-100 px-2 py-1 rounded-full">
+                            {item.type}
+                          </span>
+                          <span className="text-sm font-medium text-slate-800">{item.title}</span>
+                        </div>
+                        <p className="text-xs text-slate-600 mt-1">{item.description}</p>
+                      </div>
+                      <ArrowRight className="h-4 w-4 text-slate-400 group-hover:text-blue-600 transition-colors" />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
             <div className="flex flex-wrap gap-4">
               <span className="px-4 py-2 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">
                 Data Analysis
