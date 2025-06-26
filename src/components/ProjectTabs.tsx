@@ -159,7 +159,7 @@ export const ProjectTabs = () => {
               {projects.map((project, index) => (
                 <Card key={index} className="relative hover:shadow-lg transition-shadow">
                   {project.status && <StatusBanner status={project.status} />}
-                  <CardHeader className={`${project.status ? 'pt-12' : 'pt-6'}`}>
+                  <CardHeader className={`${project.status ? 'pt-16' : 'pt-6'}`}>
                     <CardTitle className="text-lg">{project.title}</CardTitle>
                     <CardDescription>{project.description}</CardDescription>
                   </CardHeader>
@@ -214,11 +214,11 @@ export const ProjectTabs = () => {
           </TabsContent>
 
           <TabsContent value="dashboards" className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
               {dashboards.map((dashboard, index) => (
                 <Card key={index} className="relative hover:shadow-lg transition-shadow">
                   {dashboard.status && <StatusBanner status={dashboard.status} />}
-                  <CardHeader className={`${dashboard.status ? 'pt-12' : 'pt-6'}`}>
+                  <CardHeader className={`${dashboard.status ? 'pt-16' : 'pt-6'}`}>
                     <CardTitle className="text-lg">{dashboard.title}</CardTitle>
                     <CardDescription>{dashboard.description}</CardDescription>
                   </CardHeader>
@@ -285,7 +285,7 @@ export const ProjectTabs = () => {
               {certifications.map((cert, index) => (
                 <Card key={index} className="relative hover:shadow-lg transition-shadow">
                   {cert.status && <StatusBanner status={cert.status} />}
-                  <CardHeader className={`${cert.status ? 'pt-12' : 'pt-6'}`}>
+                  <CardHeader className={`${cert.status ? 'pt-16' : 'pt-6'}`}>
                     <CardTitle className="text-lg">{cert.title}</CardTitle>
                     <CardDescription>
                       {cert.issuer} • Issued {cert.year}

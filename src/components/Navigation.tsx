@@ -109,7 +109,7 @@ export const Navigation = () => {
             </div>
           </div>
 
-          <div className="md:hidden pt-6">
+          <div className="md:hidden pt-8">
             <button onClick={() => setIsOpen(!isOpen)}>
               {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </button>
