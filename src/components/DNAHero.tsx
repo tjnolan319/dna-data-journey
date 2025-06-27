@@ -93,16 +93,34 @@ export const DNAHero = () => {
     // First scroll to the projects section
     scrollToSection('projects');
     
-    // Then trigger the appropriate tab
+    // Then trigger the appropriate tab with a longer delay to ensure the section is loaded
     setTimeout(() => {
-      const tabsContainer = document.querySelector('[role="tablist"]');
+      // Try multiple selectors to find the tabs
+      const tabsContainer = document.querySelector('[role="tablist"]') || 
+                           document.querySelector('.tabs-list') ||
+                           document.querySelector('[data-orientation="horizontal"]');
+      
       if (tabsContainer) {
-        const tabToClick = tabsContainer.querySelector(`[value="${item.tabValue}"]`);
+        // Look for the specific tab button
+        const tabToClick = tabsContainer.querySelector(`[value="${item.tabValue}"]`) ||
+                          tabsContainer.querySelector(`[data-value="${item.tabValue}"]`) ||
+                          tabsContainer.querySelector(`button:contains('${item.tabValue}')`);
+        
         if (tabToClick) {
           tabToClick.click();
+        } else {
+          // Fallback: try to find by text content
+          const allTabs = tabsContainer.querySelectorAll('button');
+          const targetTab = Array.from(allTabs).find(tab => {
+            const text = tab.textContent.toLowerCase();
+            return text.includes(item.tabValue.replace('-', ' '));
+          });
+          if (targetTab) {
+            targetTab.click();
+          }
         }
       }
-    }, 500);
+    }, 800); // Increased delay to ensure smooth scrolling completes
   };
 
   return (
@@ -133,36 +151,6 @@ export const DNAHero = () => {
               Recent MBA and MS in Business Analytics graduate from Bentley University, with undergraduate degrees in Marketing and Psychology. My background combines business, analytics, and behavioral science, applied in early-stage companies, research, and university-based entrepreneurship programs.
             </p>
             
-            {/* What's New Section - Only show if there are NEW! items */}
-            {newItems.length > 0 && (
-              <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-4 border border-blue-200">
-                <div className="flex items-center space-x-2 mb-3">
-                  <Star className="h-5 w-5 text-blue-600" />
-                  <h3 className="text-lg font-semibold text-slate-800">What's New</h3>
-                </div>
-                <div className="space-y-2">
-                  {newItems.map((item, index) => (
-                    <div 
-                      key={index}
-                      onClick={() => handleNewItemClick(item)}
-                      className="flex items-center justify-between p-2 bg-white rounded-md hover:bg-blue-50 cursor-pointer transition-colors group"
-                    >
-                      <div className="flex-1">
-                        <div className="flex items-center space-x-2">
-                          <span className="text-xs font-medium text-blue-600 bg-blue-100 px-2 py-1 rounded-full">
-                            {item.type}
-                          </span>
-                          <span className="text-sm font-medium text-slate-800">{item.title}</span>
-                        </div>
-                        <p className="text-xs text-slate-600 mt-1">{item.description}</p>
-                      </div>
-                      <ArrowRight className="h-4 w-4 text-slate-400 group-hover:text-blue-600 transition-colors" />
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
             <div className="flex flex-wrap gap-4">
               <span className="px-4 py-2 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">
                 Data Analysis
@@ -177,6 +165,35 @@ export const DNAHero = () => {
                 Behavioral Science
               </span>
             </div>
+
+            {/* What's New Section - Horizontal layout below skills */}
+            {newItems.length > 0 && (
+              <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-4 border border-blue-200">
+                <div className="flex items-center space-x-2 mb-3">
+                  <Star className="h-5 w-5 text-blue-600" />
+                  <h3 className="text-lg font-semibold text-slate-800">What's New</h3>
+                </div>
+                {/* Horizontal scrollable container */}
+                <div className="flex gap-3 overflow-x-auto pb-2">
+                  {newItems.map((item, index) => (
+                    <div 
+                      key={index}
+                      onClick={() => handleNewItemClick(item)}
+                      className="flex-shrink-0 w-64 p-3 bg-white rounded-md hover:bg-blue-50 cursor-pointer transition-colors group border border-gray-100 hover:border-blue-200"
+                    >
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-xs font-medium text-blue-600 bg-blue-100 px-2 py-1 rounded-full">
+                          {item.type}
+                        </span>
+                        <ArrowRight className="h-4 w-4 text-slate-400 group-hover:text-blue-600 transition-colors" />
+                      </div>
+                      <h4 className="text-sm font-medium text-slate-800 mb-1 line-clamp-2">{item.title}</h4>
+                      <p className="text-xs text-slate-600 line-clamp-2">{item.description}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
           
           <div className={`flex justify-center transition-all duration-1000 delay-300 ${isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-10'}`}>
