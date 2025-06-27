@@ -8,6 +8,7 @@ import Index from "./pages/Index";
 import GenreCategoryProject from "./pages/GenreCategoryProject";
 import SkillsetNetwork from "./pages/SkillsetNetwork";
 import TimelinePage from "./pages/TimelinePage";
+import AcademicTimelinePage from "./pages/AcademicTimelinePage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -23,6 +24,7 @@ const App = () => (
           <Route path="/genre-category-project" element={<GenreCategoryProject />} />
           <Route path="/skillset-network" element={<SkillsetNetwork />} />
           <Route path="/timeline" element={<TimelinePage />} />
+          <Route path="/academic-timeline" element={<AcademicTimelinePage />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
