@@ -1,80 +1,43 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { Dna, Star, ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
-// ✅ Import your local profile image from assets
 import profilePic from "@/assets/Tim_Nolan_Profile_Pic_Cropped.jpg";
-
-// Import the data from ProjectTabs - you'll need to export these from your ProjectTabs file
 import { projects, caseStudies, dashboards, publications, certifications } from "./ProjectTabs";
 
 export const DNAHero = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [currentNewItemIndex, setCurrentNewItemIndex] = useState(0);
+  const timeoutRef = useRef(null);
 
   useEffect(() => {
     setIsVisible(true);
   }, []);
 
-  // Dynamically find all items with NEW! status
   const getNewItems = () => {
     const newItems = [];
-    
-    // Check projects
+
     projects.forEach(project => {
       if (project.status === "NEW!") {
-        newItems.push({
-          title: project.title,
-          type: "Project",
-          description: project.description,
-          tabValue: "projects"
-        });
+        newItems.push({ title: project.title, type: "Project", description: project.description, tabValue: "projects" });
       }
     });
-
-    // Check case studies
     caseStudies.forEach(study => {
       if (study.status === "NEW!") {
-        newItems.push({
-          title: study.title,
-          type: "Case Study",
-          description: study.description,
-          tabValue: "case-studies"
-        });
+        newItems.push({ title: study.title, type: "Case Study", description: study.description, tabValue: "case-studies" });
       }
     });
-
-    // Check dashboards
     dashboards.forEach(dashboard => {
       if (dashboard.status === "NEW!") {
-        newItems.push({
-          title: dashboard.title,
-          type: "Dashboard", 
-          description: dashboard.description,
-          tabValue: "dashboards"
-        });
+        newItems.push({ title: dashboard.title, type: "Dashboard", description: dashboard.description, tabValue: "dashboards" });
       }
     });
-
-    // Check publications
     publications.forEach(pub => {
       if (pub.status === "NEW!") {
-        newItems.push({
-          title: pub.title,
-          type: "Publication",
-          description: `${pub.journal} • ${pub.year}`,
-          tabValue: "publications"
-        });
+        newItems.push({ title: pub.title, type: "Publication", description: `${pub.journal} • ${pub.year}`, tabValue: "publications" });
       }
     });
-
-    // Check certifications
     certifications.forEach(cert => {
       if (cert.status === "NEW!") {
-        newItems.push({
-          title: cert.title,
-          type: "Certification",
-          description: `${cert.issuer} • ${cert.year}`,
-          tabValue: "certifications"
-        });
+        newItems.push({ title: cert.title, type: "Certification", description: `${cert.issuer} • ${cert.year}`, tabValue: "certifications" });
       }
     });
 
@@ -83,57 +46,29 @@ export const DNAHero = () => {
 
   const newItems = getNewItems();
 
-  // Auto-slide effect for What's New carousel with reset capability
-  const resetAutoSlide = useCallback(() => {
-    if (newItems.length > 1) {
-      const interval = setInterval(() => {
-        setCurrentNewItemIndex((prev) => (prev + 1) % newItems.length);
-      }, 4000); // Change every 4 seconds
-      
-      return interval;
+  const clearAutoSlide = () => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
     }
-    return null;
+  };
+
+  const scheduleNextSlide = useCallback(() => {
+    clearAutoSlide();
+    if (newItems.length > 1) {
+      timeoutRef.current = setTimeout(() => {
+        setCurrentNewItemIndex((prev) => (prev + 1) % newItems.length);
+      }, 8000);
+    }
   }, [newItems.length]);
 
   useEffect(() => {
-    const interval = resetAutoSlide();
-    return () => {
-      if (interval) clearInterval(interval);
-    };
-  }, [resetAutoSlide]);
+    scheduleNextSlide();
+    return clearAutoSlide;
+  }, [currentNewItemIndex, scheduleNextSlide]);
 
-  const nextItem = () => {
-    setCurrentNewItemIndex((prev) => (prev + 1) % newItems.length);
-    // Reset the auto-slide timer by re-running the effect
-    setTimeout(() => {
-      const interval = resetAutoSlide();
-      return () => {
-        if (interval) clearInterval(interval);
-      };
-    }, 0);
-  };
-
-  const prevItem = () => {
-    setCurrentNewItemIndex((prev) => (prev - 1 + newItems.length) % newItems.length);
-    // Reset the auto-slide timer by re-running the effect
-    setTimeout(() => {
-      const interval = resetAutoSlide();
-      return () => {
-        if (interval) clearInterval(interval);
-      };
-    }, 0);
-  };
-
-  const goToItem = (index) => {
-    setCurrentNewItemIndex(index);
-    // Reset the auto-slide timer by re-running the effect
-    setTimeout(() => {
-      const interval = resetAutoSlide();
-      return () => {
-        if (interval) clearInterval(interval);
-      };
-    }, 0);
-  };
+  const nextItem = () => setCurrentNewItemIndex((prev) => (prev + 1) % newItems.length);
+  const prevItem = () => setCurrentNewItemIndex((prev) => (prev - 1 + newItems.length) % newItems.length);
+  const goToItem = (index) => setCurrentNewItemIndex(index);
 
   const scrollToSection = (target) => {
     const element = document.getElementById(target);
@@ -143,34 +78,21 @@ export const DNAHero = () => {
   };
 
   const handleNewItemClick = (item) => {
-    // First scroll to the projects section
     scrollToSection('projects');
-    
-    // Then trigger the appropriate tab with multiple attempts
     setTimeout(() => {
-      // Direct approach - trigger a custom event that the ProjectTabs component can listen for
-      const tabEvent = new CustomEvent('switchTab', { 
-        detail: { tabValue: item.tabValue }
-      });
+      const tabEvent = new CustomEvent('switchTab', { detail: { tabValue: item.tabValue } });
       window.dispatchEvent(tabEvent);
-      
-      // Fallback approach - try DOM manipulation
       setTimeout(() => {
-        // Try different ways to find and click the tab
         const attempts = [
           () => document.querySelector(`[data-state="inactive"][value="${item.tabValue}"]`)?.click(),
           () => document.querySelector(`button[value="${item.tabValue}"]`)?.click(),
           () => document.querySelector(`[role="tab"][data-value="${item.tabValue}"]`)?.click(),
           () => {
             const allTabs = document.querySelectorAll('[role="tab"]');
-            const targetTab = Array.from(allTabs).find(tab => 
-              tab.getAttribute('value') === item.tabValue || 
-              tab.getAttribute('data-value') === item.tabValue
-            );
+            const targetTab = Array.from(allTabs).find(tab => tab.getAttribute('value') === item.tabValue || tab.getAttribute('data-value') === item.tabValue);
             return targetTab?.click();
           }
         ];
-        
         for (const attempt of attempts) {
           try {
             if (attempt()) break;
@@ -189,43 +111,25 @@ export const DNAHero = () => {
           <div className={`space-y-4 sm:space-y-6 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-10'}`}>
             <div className="flex flex-col sm:flex-row sm:items-center space-y-4 sm:space-y-0 sm:space-x-4 mb-4 sm:mb-6">
               <div className="w-24 h-24 sm:w-32 sm:h-32 mx-auto sm:mx-0 rounded-full overflow-hidden border-4 border-blue-200 shadow-lg flex-shrink-0">
-                <img 
-                  src={profilePic} 
-                  alt="Timothy Nolan" 
-                  className="w-full h-full object-cover"
-                />
+                <img src={profilePic} alt="Timothy Nolan" className="w-full h-full object-cover" />
               </div>
               <div className="text-center sm:text-left">
                 <h1 className="text-2xl sm:text-3xl font-bold text-slate-800">Timothy Nolan</h1>
                 <p className="text-base sm:text-lg text-slate-600">Data & Business Strategy Analyst</p>
-                {/* <p className="text-sm text-slate-500">Waltham, MA • Available for work</p> */}
               </div>
             </div>
-            
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-800 leading-tight text-center sm:text-left">
-              What's in my
-              <span className="block text-blue-600">Professional DNA?</span>
+              What's in my <span className="block text-blue-600">Professional DNA?</span>
             </h2>
             <p className="text-sm sm:text-base text-slate-600 leading-relaxed text-center sm:text-left">
               Recent MBA and MS in Business Analytics graduate from Bentley University, with undergraduate degrees in Marketing and Psychology. My background combines business, analytics, and behavioral science, applied in early-stage companies, research, and university-based entrepreneurship programs.
             </p>
-            
             <div className="flex flex-wrap gap-2 sm:gap-4 justify-center sm:justify-start">
-              <span className="px-3 py-1.5 sm:px-4 sm:py-2 bg-blue-100 text-blue-800 rounded-full text-xs sm:text-sm font-medium">
-                Data Analysis
-              </span>
-              <span className="px-3 py-1.5 sm:px-4 sm:py-2 bg-green-100 text-green-800 rounded-full text-xs sm:text-sm font-medium">
-                Strategic Planning
-              </span>
-              <span className="px-3 py-1.5 sm:px-4 sm:py-2 bg-purple-100 text-purple-800 rounded-full text-xs sm:text-sm font-medium">
-                Business Intelligence
-              </span>
-              <span className="px-3 py-1.5 sm:px-4 sm:py-2 bg-orange-100 text-orange-800 rounded-full text-xs sm:text-sm font-medium">
-                Behavioral Science
-              </span>
+              <span className="px-3 py-1.5 sm:px-4 sm:py-2 bg-blue-100 text-blue-800 rounded-full text-xs sm:text-sm font-medium">Data Analysis</span>
+              <span className="px-3 py-1.5 sm:px-4 sm:py-2 bg-green-100 text-green-800 rounded-full text-xs sm:text-sm font-medium">Strategic Planning</span>
+              <span className="px-3 py-1.5 sm:px-4 sm:py-2 bg-purple-100 text-purple-800 rounded-full text-xs sm:text-sm font-medium">Business Intelligence</span>
+              <span className="px-3 py-1.5 sm:px-4 sm:py-2 bg-orange-100 text-orange-800 rounded-full text-xs sm:text-sm font-medium">Behavioral Science</span>
             </div>
-
-            {/* What's New Section - Carousel style */}
             {newItems.length > 0 && (
               <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-3 sm:p-4 border border-blue-200">
                 <div className="flex items-center justify-between mb-2 sm:mb-3">
@@ -235,43 +139,24 @@ export const DNAHero = () => {
                   </div>
                   {newItems.length > 1 && (
                     <div className="flex items-center space-x-1 sm:space-x-2">
-                      <button
-                        onClick={prevItem}
-                        className="p-1 rounded-full hover:bg-blue-100 text-slate-600 hover:text-blue-600 transition-colors"
-                        aria-label="Previous item"
-                      >
+                      <button onClick={prevItem} className="p-1 rounded-full hover:bg-blue-100 text-slate-600 hover:text-blue-600 transition-colors" aria-label="Previous item">
                         <ChevronLeft className="h-3 w-3 sm:h-4 sm:w-4" />
                       </button>
                       <span className="text-xs text-slate-500 min-w-0">
                         {currentNewItemIndex + 1} / {newItems.length}
                       </span>
-                      <button
-                        onClick={nextItem}
-                        className="p-1 rounded-full hover:bg-blue-100 text-slate-600 hover:text-blue-600 transition-colors"
-                        aria-label="Next item"
-                      >
+                      <button onClick={nextItem} className="p-1 rounded-full hover:bg-blue-100 text-slate-600 hover:text-blue-600 transition-colors" aria-label="Next item">
                         <ChevronRight className="h-3 w-3 sm:h-4 sm:w-4" />
                       </button>
                     </div>
                   )}
                 </div>
-                
-                {/* Carousel container */}
                 <div className="relative overflow-hidden">
-                  <div 
-                    className="flex transition-transform duration-500 ease-in-out"
-                    style={{ transform: `translateX(-${currentNewItemIndex * 100}%)` }}
-                  >
+                  <div className="flex transition-transform duration-500 ease-in-out" style={{ transform: `translateX(-${currentNewItemIndex * 100}%)` }}>
                     {newItems.map((item, index) => (
-                      <div 
-                        key={index}
-                        onClick={() => handleNewItemClick(item)}
-                        className="w-full flex-shrink-0 p-2 sm:p-3 bg-white rounded-md hover:bg-blue-50 cursor-pointer transition-colors group border border-gray-100 hover:border-blue-200"
-                      >
+                      <div key={index} onClick={() => handleNewItemClick(item)} className="w-full flex-shrink-0 p-2 sm:p-3 bg-white rounded-md hover:bg-blue-50 cursor-pointer transition-colors group border border-gray-100 hover:border-blue-200">
                         <div className="flex items-center justify-between mb-1 sm:mb-2">
-                          <span className="text-xs font-medium text-blue-600 bg-blue-100 px-2 py-0.5 sm:py-1 rounded-full">
-                            {item.type}
-                          </span>
+                          <span className="text-xs font-medium text-blue-600 bg-blue-100 px-2 py-0.5 sm:py-1 rounded-full">{item.type}</span>
                           <ArrowRight className="h-3 w-3 sm:h-4 sm:w-4 text-slate-400 group-hover:text-blue-600 transition-colors" />
                         </div>
                         <h4 className="text-xs sm:text-sm font-medium text-slate-800 mb-1 line-clamp-2">{item.title}</h4>
@@ -280,28 +165,16 @@ export const DNAHero = () => {
                     ))}
                   </div>
                 </div>
-                
-                {/* Dots indicator */}
                 {newItems.length > 1 && (
                   <div className="flex justify-center space-x-1 sm:space-x-2 mt-2 sm:mt-3">
                     {newItems.map((_, index) => (
-                      <button
-                        key={index}
-                        onClick={() => goToItem(index)}
-                        className={`w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full transition-colors ${
-                          index === currentNewItemIndex 
-                            ? 'bg-blue-600' 
-                            : 'bg-slate-300 hover:bg-slate-400'
-                        }`}
-                        aria-label={`Go to item ${index + 1}`}
-                      />
+                      <button key={index} onClick={() => goToItem(index)} className={`w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full transition-colors ${index === currentNewItemIndex ? 'bg-blue-600' : 'bg-slate-300 hover:bg-slate-400'}`} aria-label={`Go to item ${index + 1}`} />
                     ))}
                   </div>
                 )}
               </div>
             )}
           </div>
-          
           <div className={`flex justify-center transition-all duration-1000 delay-300 ${isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-10'}`}>
             <div className="relative">
               <div className="w-48 h-48 sm:w-56 sm:h-56 lg:w-64 lg:h-64 bg-gradient-to-br from-blue-400 to-purple-600 rounded-full animate-pulse opacity-20"></div>
