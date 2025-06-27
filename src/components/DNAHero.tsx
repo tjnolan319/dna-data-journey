@@ -1,3 +1,4 @@
+
 import { useEffect, useState, useCallback } from "react";
 import { Dna, Star, ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 // ✅ Import your local profile image from assets
@@ -20,7 +21,7 @@ export const DNAHero = () => {
     
     // Check projects
     projects.forEach(project => {
-      if (project.status === "NEW!") {
+      if ('status' in project && project.status === "NEW!") {
         newItems.push({
           title: project.title,
           type: "Project",
@@ -32,7 +33,7 @@ export const DNAHero = () => {
 
     // Check case studies
     caseStudies.forEach(study => {
-      if (study.status === "NEW!") {
+      if ('status' in study && study.status === "NEW!") {
         newItems.push({
           title: study.title,
           type: "Case Study",
@@ -44,7 +45,7 @@ export const DNAHero = () => {
 
     // Check dashboards
     dashboards.forEach(dashboard => {
-      if (dashboard.status === "NEW!") {
+      if ('status' in dashboard && dashboard.status === "NEW!") {
         newItems.push({
           title: dashboard.title,
           type: "Dashboard", 
@@ -56,7 +57,7 @@ export const DNAHero = () => {
 
     // Check publications
     publications.forEach(pub => {
-      if (pub.status === "NEW!") {
+      if ('status' in pub && pub.status === "NEW!") {
         newItems.push({
           title: pub.title,
           type: "Publication",
@@ -68,7 +69,7 @@ export const DNAHero = () => {
 
     // Check certifications
     certifications.forEach(cert => {
-      if (cert.status === "NEW!") {
+      if ('status' in cert && cert.status === "NEW!") {
         newItems.push({
           title: cert.title,
           type: "Certification",
@@ -158,15 +159,24 @@ export const DNAHero = () => {
       setTimeout(() => {
         // Try different ways to find and click the tab
         const attempts = [
-          () => document.querySelector(`[data-state="inactive"][value="${item.tabValue}"]`)?.click(),
-          () => document.querySelector(`button[value="${item.tabValue}"]`)?.click(),
-          () => document.querySelector(`[role="tab"][data-value="${item.tabValue}"]`)?.click(),
+          () => {
+            const element = document.querySelector(`[data-state="inactive"][value="${item.tabValue}"]`) as HTMLElement;
+            return element?.click();
+          },
+          () => {
+            const element = document.querySelector(`button[value="${item.tabValue}"]`) as HTMLElement;
+            return element?.click();
+          },
+          () => {
+            const element = document.querySelector(`[role="tab"][data-value="${item.tabValue}"]`) as HTMLElement;
+            return element?.click();
+          },
           () => {
             const allTabs = document.querySelectorAll('[role="tab"]');
             const targetTab = Array.from(allTabs).find(tab => 
               tab.getAttribute('value') === item.tabValue || 
               tab.getAttribute('data-value') === item.tabValue
-            );
+            ) as HTMLElement;
             return targetTab?.click();
           }
         ];
@@ -183,12 +193,12 @@ export const DNAHero = () => {
   };
 
   return (
-    <section id="hero" className="min-h-screen flex items-center justify-center pt-20 md:pt-16">
+    <section id="hero" className="min-h-screen flex items-center justify-center pt-16 md:pt-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-          <div className={`space-y-4 sm:space-y-6 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-10'}`}>
-            <div className="flex flex-col sm:flex-row sm:items-center space-y-4 sm:space-y-0 sm:space-x-4 mb-4 sm:mb-6">
-              <div className="w-24 h-24 sm:w-32 sm:h-32 mx-auto sm:mx-0 rounded-full overflow-hidden border-4 border-blue-200 shadow-lg flex-shrink-0">
+        <div className="grid lg:grid-cols-2 gap-6 lg:gap-12 items-center">
+          <div className={`space-y-3 sm:space-y-4 md:space-y-6 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-10'}`}>
+            <div className="flex flex-col sm:flex-row sm:items-center space-y-3 sm:space-y-0 sm:space-x-4 mb-3 sm:mb-4 md:mb-6">
+              <div className="w-20 h-20 sm:w-24 sm:h-24 md:w-32 md:h-32 mx-auto sm:mx-0 rounded-full overflow-hidden border-4 border-blue-200 shadow-lg flex-shrink-0">
                 <img 
                   src={profilePic} 
                   alt="Timothy Nolan" 
@@ -196,61 +206,61 @@ export const DNAHero = () => {
                 />
               </div>
               <div className="text-center sm:text-left">
-                <h1 className="text-2xl sm:text-3xl font-bold text-slate-800">Timothy Nolan</h1>
-                <p className="text-base sm:text-lg text-slate-600">Data & Business Strategy Analyst</p>
+                <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-slate-800">Timothy Nolan</h1>
+                <p className="text-sm sm:text-base md:text-lg text-slate-600">Data & Business Strategy Analyst</p>
                 {/* <p className="text-sm text-slate-500">Waltham, MA • Available for work</p> */}
               </div>
             </div>
             
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-800 leading-tight text-center sm:text-left">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-slate-800 leading-tight text-center sm:text-left">
               What's in my
               <span className="block text-blue-600">Professional DNA?</span>
             </h2>
-            <p className="text-sm sm:text-base text-slate-600 leading-relaxed text-center sm:text-left">
+            <p className="text-xs sm:text-sm md:text-base text-slate-600 leading-relaxed text-center sm:text-left">
               Recent MBA and MS in Business Analytics graduate from Bentley University, with undergraduate degrees in Marketing and Psychology. My background combines business, analytics, and behavioral science, applied in early-stage companies, research, and university-based entrepreneurship programs.
             </p>
             
-            <div className="flex flex-wrap gap-2 sm:gap-4 justify-center sm:justify-start">
-              <span className="px-3 py-1.5 sm:px-4 sm:py-2 bg-blue-100 text-blue-800 rounded-full text-xs sm:text-sm font-medium">
+            <div className="flex flex-wrap gap-1.5 sm:gap-2 md:gap-4 justify-center sm:justify-start">
+              <span className="px-2 py-1 sm:px-3 sm:py-1.5 md:px-4 md:py-2 bg-blue-100 text-blue-800 rounded-full text-xs sm:text-sm font-medium">
                 Data Analysis
               </span>
-              <span className="px-3 py-1.5 sm:px-4 sm:py-2 bg-green-100 text-green-800 rounded-full text-xs sm:text-sm font-medium">
+              <span className="px-2 py-1 sm:px-3 sm:py-1.5 md:px-4 md:py-2 bg-green-100 text-green-800 rounded-full text-xs sm:text-sm font-medium">
                 Strategic Planning
               </span>
-              <span className="px-3 py-1.5 sm:px-4 sm:py-2 bg-purple-100 text-purple-800 rounded-full text-xs sm:text-sm font-medium">
+              <span className="px-2 py-1 sm:px-3 sm:py-1.5 md:px-4 md:py-2 bg-purple-100 text-purple-800 rounded-full text-xs sm:text-sm font-medium">
                 Business Intelligence
               </span>
-              <span className="px-3 py-1.5 sm:px-4 sm:py-2 bg-orange-100 text-orange-800 rounded-full text-xs sm:text-sm font-medium">
+              <span className="px-2 py-1 sm:px-3 sm:py-1.5 md:px-4 md:py-2 bg-orange-100 text-orange-800 rounded-full text-xs sm:text-sm font-medium">
                 Behavioral Science
               </span>
             </div>
 
             {/* What's New Section - Carousel style */}
             {newItems.length > 0 && (
-              <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-3 sm:p-4 border border-blue-200">
-                <div className="flex items-center justify-between mb-2 sm:mb-3">
-                  <div className="flex items-center space-x-2">
-                    <Star className="h-4 w-4 sm:h-5 sm:w-5 text-blue-600" />
-                    <h3 className="text-base sm:text-lg font-semibold text-slate-800">What's New</h3>
+              <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-2.5 sm:p-3 md:p-4 border border-blue-200">
+                <div className="flex items-center justify-between mb-1.5 sm:mb-2 md:mb-3">
+                  <div className="flex items-center space-x-1.5 sm:space-x-2">
+                    <Star className="h-3.5 w-3.5 sm:h-4 sm:w-4 md:h-5 md:w-5 text-blue-600" />
+                    <h3 className="text-sm sm:text-base md:text-lg font-semibold text-slate-800">What's New</h3>
                   </div>
                   {newItems.length > 1 && (
                     <div className="flex items-center space-x-1 sm:space-x-2">
                       <button
                         onClick={prevItem}
-                        className="p-1 rounded-full hover:bg-blue-100 text-slate-600 hover:text-blue-600 transition-colors"
+                        className="p-0.5 sm:p-1 rounded-full hover:bg-blue-100 text-slate-600 hover:text-blue-600 transition-colors"
                         aria-label="Previous item"
                       >
-                        <ChevronLeft className="h-3 w-3 sm:h-4 sm:w-4" />
+                        <ChevronLeft className="h-2.5 w-2.5 sm:h-3 sm:w-3 md:h-4 md:w-4" />
                       </button>
                       <span className="text-xs text-slate-500 min-w-0">
                         {currentNewItemIndex + 1} / {newItems.length}
                       </span>
                       <button
                         onClick={nextItem}
-                        className="p-1 rounded-full hover:bg-blue-100 text-slate-600 hover:text-blue-600 transition-colors"
+                        className="p-0.5 sm:p-1 rounded-full hover:bg-blue-100 text-slate-600 hover:text-blue-600 transition-colors"
                         aria-label="Next item"
                       >
-                        <ChevronRight className="h-3 w-3 sm:h-4 sm:w-4" />
+                        <ChevronRight className="h-2.5 w-2.5 sm:h-3 sm:w-3 md:h-4 md:w-4" />
                       </button>
                     </div>
                   )}
@@ -266,13 +276,13 @@ export const DNAHero = () => {
                       <div 
                         key={index}
                         onClick={() => handleNewItemClick(item)}
-                        className="w-full flex-shrink-0 p-2 sm:p-3 bg-white rounded-md hover:bg-blue-50 cursor-pointer transition-colors group border border-gray-100 hover:border-blue-200"
+                        className="w-full flex-shrink-0 p-1.5 sm:p-2 md:p-3 bg-white rounded-md hover:bg-blue-50 cursor-pointer transition-colors group border border-gray-100 hover:border-blue-200"
                       >
                         <div className="flex items-center justify-between mb-1 sm:mb-2">
-                          <span className="text-xs font-medium text-blue-600 bg-blue-100 px-2 py-0.5 sm:py-1 rounded-full">
+                          <span className="text-xs font-medium text-blue-600 bg-blue-100 px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-full">
                             {item.type}
                           </span>
-                          <ArrowRight className="h-3 w-3 sm:h-4 sm:w-4 text-slate-400 group-hover:text-blue-600 transition-colors" />
+                          <ArrowRight className="h-2.5 w-2.5 sm:h-3 sm:w-3 md:h-4 md:w-4 text-slate-400 group-hover:text-blue-600 transition-colors" />
                         </div>
                         <h4 className="text-xs sm:text-sm font-medium text-slate-800 mb-1 line-clamp-2">{item.title}</h4>
                         <p className="text-xs text-slate-600 line-clamp-2">{item.description}</p>
@@ -283,12 +293,12 @@ export const DNAHero = () => {
                 
                 {/* Dots indicator */}
                 {newItems.length > 1 && (
-                  <div className="flex justify-center space-x-1 sm:space-x-2 mt-2 sm:mt-3">
+                  <div className="flex justify-center space-x-1 sm:space-x-2 mt-1.5 sm:mt-2 md:mt-3">
                     {newItems.map((_, index) => (
                       <button
                         key={index}
                         onClick={() => goToItem(index)}
-                        className={`w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full transition-colors ${
+                        className={`w-1 h-1 sm:w-1.5 sm:h-1.5 md:w-2 md:h-2 rounded-full transition-colors ${
                           index === currentNewItemIndex 
                             ? 'bg-blue-600' 
                             : 'bg-slate-300 hover:bg-slate-400'
@@ -304,12 +314,12 @@ export const DNAHero = () => {
           
           <div className={`flex justify-center transition-all duration-1000 delay-300 ${isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-10'}`}>
             <div className="relative">
-              <div className="w-48 h-48 sm:w-56 sm:h-56 lg:w-64 lg:h-64 bg-gradient-to-br from-blue-400 to-purple-600 rounded-full animate-pulse opacity-20"></div>
+              <div className="w-36 h-36 sm:w-44 sm:h-44 md:w-56 md:h-56 lg:w-64 lg:h-64 bg-gradient-to-br from-blue-400 to-purple-600 rounded-full animate-pulse opacity-20"></div>
               <div className="absolute inset-0 flex items-center justify-center">
-                <Dna className="h-24 w-24 sm:h-28 sm:w-28 lg:h-32 lg:w-32 text-blue-600 animate-spin" style={{ animationDuration: '8s' }} />
+                <Dna className="h-18 w-18 sm:h-22 sm:w-22 md:h-28 md:w-28 lg:h-32 lg:w-32 text-blue-600 animate-spin" style={{ animationDuration: '8s' }} />
               </div>
               <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-36 h-36 sm:w-42 sm:h-42 lg:w-48 lg:h-48 border-4 border-blue-300 rounded-full animate-ping opacity-30"></div>
+                <div className="w-28 h-28 sm:w-36 sm:h-36 md:w-42 md:h-42 lg:w-48 lg:h-48 border-4 border-blue-300 rounded-full animate-ping opacity-30"></div>
               </div>
             </div>
           </div>
