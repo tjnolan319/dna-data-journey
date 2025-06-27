@@ -105,33 +105,33 @@ export const DNAHero = () => {
   };
 
   return (
-    <section id="hero" className="min-h-screen flex items-center justify-center pt-20 md:pt-16">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-          <div className={`space-y-4 sm:space-y-6 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-10'}`}>
-            <div className="flex flex-col sm:flex-row sm:items-center space-y-4 sm:space-y-0 sm:space-x-4 mb-4 sm:mb-6">
-              <div className="w-24 h-24 sm:w-32 sm:h-32 mx-auto sm:mx-0 rounded-full overflow-hidden border-4 border-blue-200 shadow-lg flex-shrink-0">
+    <section id="hero" className="min-h-[80vh] md:min-h-screen flex items-center justify-center pt-16 pb-8 md:pt-20 md:pb-0">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+        <div className="grid lg:grid-cols-2 gap-6 md:gap-8 lg:gap-12 items-center">
+          <div className={`space-y-3 sm:space-y-4 md:space-y-6 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-10'}`}>
+            <div className="flex flex-col sm:flex-row sm:items-center space-y-3 sm:space-y-0 sm:space-x-4 mb-3 sm:mb-4 md:mb-6">
+              <div className="w-20 h-20 sm:w-24 sm:h-24 md:w-32 md:h-32 mx-auto sm:mx-0 rounded-full overflow-hidden border-4 border-blue-200 shadow-lg flex-shrink-0">
                 <img src={profilePic} alt="Timothy Nolan" className="w-full h-full object-cover" />
               </div>
               <div className="text-center sm:text-left">
-                <h1 className="text-2xl sm:text-3xl font-bold text-slate-800">Timothy Nolan</h1>
-                <p className="text-base sm:text-lg text-slate-600">Data & Business Strategy Analyst</p>
+                <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-slate-800">Timothy Nolan</h1>
+                <p className="text-sm sm:text-base md:text-lg text-slate-600">Data & Business Strategy Analyst</p>
               </div>
             </div>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-800 leading-tight text-center sm:text-left">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-slate-800 leading-tight text-center sm:text-left">
               What's in my <span className="block text-blue-600">Professional DNA?</span>
             </h2>
-            <p className="text-sm sm:text-base text-slate-600 leading-relaxed text-center sm:text-left">
+            <p className="text-xs sm:text-sm md:text-base text-slate-600 leading-relaxed text-center sm:text-left">
               Recent MBA and MS in Business Analytics graduate from Bentley University, with undergraduate degrees in Marketing and Psychology. My background combines business, analytics, and behavioral science, applied in early-stage companies, research, and university-based entrepreneurship programs.
             </p>
-            <div className="flex flex-wrap gap-2 sm:gap-4 justify-center sm:justify-start">
-              <span className="px-3 py-1.5 sm:px-4 sm:py-2 bg-blue-100 text-blue-800 rounded-full text-xs sm:text-sm font-medium">Data Analysis</span>
-              <span className="px-3 py-1.5 sm:px-4 sm:py-2 bg-green-100 text-green-800 rounded-full text-xs sm:text-sm font-medium">Strategic Planning</span>
-              <span className="px-3 py-1.5 sm:px-4 sm:py-2 bg-purple-100 text-purple-800 rounded-full text-xs sm:text-sm font-medium">Business Intelligence</span>
-              <span className="px-3 py-1.5 sm:px-4 sm:py-2 bg-orange-100 text-orange-800 rounded-full text-xs sm:text-sm font-medium">Behavioral Science</span>
+            <div className="flex flex-wrap gap-1.5 sm:gap-2 md:gap-4 justify-center sm:justify-start">
+              <span className="px-2 py-1 sm:px-3 sm:py-1.5 md:px-4 md:py-2 bg-blue-100 text-blue-800 rounded-full text-xs sm:text-sm font-medium">Data Analysis</span>
+              <span className="px-2 py-1 sm:px-3 sm:py-1.5 md:px-4 md:py-2 bg-green-100 text-green-800 rounded-full text-xs sm:text-sm font-medium">Strategic Planning</span>
+              <span className="px-2 py-1 sm:px-3 sm:py-1.5 md:px-4 md:py-2 bg-purple-100 text-purple-800 rounded-full text-xs sm:text-sm font-medium">Business Intelligence</span>
+              <span className="px-2 py-1 sm:px-3 sm:py-1.5 md:px-4 md:py-2 bg-orange-100 text-orange-800 rounded-full text-xs sm:text-sm font-medium">Behavioral Science</span>
             </div>
             {newItems.length > 0 && (
-              <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-3 sm:p-4 border border-blue-200">
+              <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-2.5 sm:p-3 md:p-4 border border-blue-200">
                 <div className="flex items-center justify-between mb-2 sm:mb-3">
                   <div className="flex items-center space-x-2">
                     <Star className="h-4 w-4 sm:h-5 sm:w-5 text-blue-600" />
@@ -177,12 +177,12 @@ export const DNAHero = () => {
           </div>
           <div className={`flex justify-center transition-all duration-1000 delay-300 ${isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-10'}`}>
             <div className="relative">
-              <div className="w-48 h-48 sm:w-56 sm:h-56 lg:w-64 lg:h-64 bg-gradient-to-br from-blue-400 to-purple-600 rounded-full animate-pulse opacity-20"></div>
+              <div className="w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 lg:w-56 lg:h-56 xl:w-64 xl:h-64 bg-gradient-to-br from-blue-400 to-purple-600 rounded-full animate-pulse opacity-20"></div>
               <div className="absolute inset-0 flex items-center justify-center">
-                <Dna className="h-24 w-24 sm:h-28 sm:w-28 lg:h-32 lg:w-32 text-blue-600 animate-spin" style={{ animationDuration: '8s' }} />
+                <Dna className="h-16 w-16 sm:h-20 sm:w-20 md:h-24 md:w-24 lg:h-28 lg:w-28 xl:h-32 xl:w-32 text-blue-600 animate-spin" style={{ animationDuration: '8s' }} />
               </div>
               <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-36 h-36 sm:w-42 sm:h-42 lg:w-48 lg:h-48 border-4 border-blue-300 rounded-full animate-ping opacity-30"></div>
+                <div className="w-24 h-24 sm:w-30 sm:h-30 md:w-36 md:h-36 lg:w-42 lg:h-42 xl:w-48 xl:h-48 border-4 border-blue-300 rounded-full animate-ping opacity-30"></div>
               </div>
             </div>
           </div>
