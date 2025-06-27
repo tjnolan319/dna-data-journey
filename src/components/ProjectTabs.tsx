@@ -1,5 +1,4 @@
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -125,6 +124,22 @@ const StatusBanner = ({ status }: { status: string }) => {
 
 export const ProjectTabs = () => {
   const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState("projects");
+
+  // Listen for tab switch events from the hero section
+  useEffect(() => {
+    const handleTabSwitch = (event) => {
+      if (event.detail && event.detail.tabValue) {
+        setActiveTab(event.detail.tabValue);
+      }
+    };
+
+    window.addEventListener('switchTab', handleTabSwitch);
+    
+    return () => {
+      window.removeEventListener('switchTab', handleTabSwitch);
+    };
+  }, []);
 
   const handleProjectClick = (project: typeof projects[0]) => {
     if (project.hasDetailPage) {
@@ -145,7 +160,7 @@ export const ProjectTabs = () => {
           My Professional <span className="text-blue-600">Portfolio</span>
         </h2>
 
-        <Tabs defaultValue="projects" className="w-full">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 max-w-4xl mx-auto mb-8 h-auto gap-1 p-1">
             <TabsTrigger value="projects" className="text-xs sm:text-sm py-2 px-2">Projects</TabsTrigger>
             <TabsTrigger value="case-studies" className="text-xs sm:text-sm py-2 px-2">Case Studies</TabsTrigger>
