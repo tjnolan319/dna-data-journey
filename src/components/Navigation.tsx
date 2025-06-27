@@ -79,12 +79,6 @@ export const Navigation = () => {
               Portfolio
             </button>
             <button 
-              onClick={() => scrollToSection('dna-timeline')}
-              className="text-slate-600 hover:text-blue-600 transition-colors"
-            >
-              Experience
-            </button>
-            <button 
               onClick={() => scrollToSection('contact')}
               className="text-slate-600 hover:text-blue-600 transition-colors"
             >
@@ -147,12 +141,6 @@ export const Navigation = () => {
               className="block w-full text-left px-4 py-2 text-slate-600 hover:text-blue-600"
             >
               Portfolio
-            </button>
-            <button 
-              onClick={() => scrollToSection('dna-timeline')}
-              className="block w-full text-left px-4 py-2 text-slate-600 hover:text-blue-600"
-            >
-              Experience
             </button>
             <button 
               onClick={() => scrollToSection('contact')}
