@@ -1,4 +1,3 @@
-
 import { useEffect, useState, useCallback } from "react";
 import { Dna, Star, ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 // ✅ Import your local profile image from assets
@@ -87,11 +86,9 @@ export const DNAHero = () => {
   // Auto-slide effect for What's New carousel with reset capability
   const resetAutoSlide = useCallback(() => {
     if (newItems.length > 1) {
-      const interval = setInterval(() => {
+      return setInterval(() => {
         setCurrentNewItemIndex((prev) => (prev + 1) % newItems.length);
       }, 4000); // Change every 4 seconds
-      
-      return interval;
     }
     return null;
   }, [newItems.length]);
@@ -105,35 +102,14 @@ export const DNAHero = () => {
 
   const nextItem = () => {
     setCurrentNewItemIndex((prev) => (prev + 1) % newItems.length);
-    // Reset the auto-slide timer by re-running the effect
-    setTimeout(() => {
-      const interval = resetAutoSlide();
-      return () => {
-        if (interval) clearInterval(interval);
-      };
-    }, 0);
   };
 
   const prevItem = () => {
     setCurrentNewItemIndex((prev) => (prev - 1 + newItems.length) % newItems.length);
-    // Reset the auto-slide timer by re-running the effect
-    setTimeout(() => {
-      const interval = resetAutoSlide();
-      return () => {
-        if (interval) clearInterval(interval);
-      };
-    }, 0);
   };
 
   const goToItem = (index) => {
     setCurrentNewItemIndex(index);
-    // Reset the auto-slide timer by re-running the effect
-    setTimeout(() => {
-      const interval = resetAutoSlide();
-      return () => {
-        if (interval) clearInterval(interval);
-      };
-    }, 0);
   };
 
   const scrollToSection = (target) => {
@@ -161,15 +137,27 @@ export const DNAHero = () => {
         const attempts = [
           () => {
             const element = document.querySelector(`[data-state="inactive"][value="${item.tabValue}"]`) as HTMLElement;
-            return element?.click();
+            if (element) {
+              element.click();
+              return true;
+            }
+            return false;
           },
           () => {
             const element = document.querySelector(`button[value="${item.tabValue}"]`) as HTMLElement;
-            return element?.click();
+            if (element) {
+              element.click();
+              return true;
+            }
+            return false;
           },
           () => {
             const element = document.querySelector(`[role="tab"][data-value="${item.tabValue}"]`) as HTMLElement;
-            return element?.click();
+            if (element) {
+              element.click();
+              return true;
+            }
+            return false;
           },
           () => {
             const allTabs = document.querySelectorAll('[role="tab"]');
@@ -177,7 +165,11 @@ export const DNAHero = () => {
               tab.getAttribute('value') === item.tabValue || 
               tab.getAttribute('data-value') === item.tabValue
             ) as HTMLElement;
-            return targetTab?.click();
+            if (targetTab) {
+              targetTab.click();
+              return true;
+            }
+            return false;
           }
         ];
         
