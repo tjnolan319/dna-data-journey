@@ -94,10 +94,11 @@ const dashboards = [
     status: "IN PROGRESS"
   },
   {
-    title: "Clinical Operations Dashboard",
-    description: "Comprehensive dashboard for healthcare provider scheduling and patient flow optimization",
-    tools: ["Power BI", "SQL", "Excel"],
-    impact: "Reduced patient wait times by 30%"
+    title: "Real-Time River Conditions Tracker",
+    description: "Predictive dashboard for kayaking safety and enjoyment based on weather and river flow patterns",
+    tools: ["Python", "USGS API", "OpenWeather API", "Tableau"],
+    impact: "Improved paddle planning with risk scores for multiple locations",
+    status: "IN PROGRESS"
   }
 ];
 
