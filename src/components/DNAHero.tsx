@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Dna, Star, ArrowRight } from "lucide-react";
+import { Dna, Star, ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 // ✅ Import your local profile image from assets
 import profilePic from "@/assets/Tim_Nolan_Profile_Pic_Cropped.jpg";
 
@@ -8,6 +8,7 @@ import { projects, caseStudies, dashboards, publications, certifications } from 
 
 export const DNAHero = () => {
   const [isVisible, setIsVisible] = useState(false);
+  const [currentNewItemIndex, setCurrentNewItemIndex] = useState(0);
 
   useEffect(() => {
     setIsVisible(true);
@@ -82,6 +83,25 @@ export const DNAHero = () => {
 
   const newItems = getNewItems();
 
+  // Auto-slide effect for What's New carousel
+  useEffect(() => {
+    if (newItems.length > 1) {
+      const interval = setInterval(() => {
+        setCurrentNewItemIndex((prev) => (prev + 1) % newItems.length);
+      }, 4000); // Change every 4 seconds
+      
+      return () => clearInterval(interval);
+    }
+  }, [newItems.length]);
+
+  const nextItem = () => {
+    setCurrentNewItemIndex((prev) => (prev + 1) % newItems.length);
+  };
+
+  const prevItem = () => {
+    setCurrentNewItemIndex((prev) => (prev - 1 + newItems.length) % newItems.length);
+  };
+
   const scrollToSection = (target) => {
     const element = document.getElementById(target);
     if (element) {
@@ -93,34 +113,40 @@ export const DNAHero = () => {
     // First scroll to the projects section
     scrollToSection('projects');
     
-    // Then trigger the appropriate tab with a longer delay to ensure the section is loaded
+    // Then trigger the appropriate tab with multiple attempts
     setTimeout(() => {
-      // Try multiple selectors to find the tabs
-      const tabsContainer = document.querySelector('[role="tablist"]') || 
-                           document.querySelector('.tabs-list') ||
-                           document.querySelector('[data-orientation="horizontal"]');
+      // Direct approach - trigger a custom event that the ProjectTabs component can listen for
+      const tabEvent = new CustomEvent('switchTab', { 
+        detail: { tabValue: item.tabValue }
+      });
+      window.dispatchEvent(tabEvent);
       
-      if (tabsContainer) {
-        // Look for the specific tab button
-        const tabToClick = tabsContainer.querySelector(`[value="${item.tabValue}"]`) ||
-                          tabsContainer.querySelector(`[data-value="${item.tabValue}"]`) ||
-                          tabsContainer.querySelector(`button:contains('${item.tabValue}')`);
+      // Fallback approach - try DOM manipulation
+      setTimeout(() => {
+        // Try different ways to find and click the tab
+        const attempts = [
+          () => document.querySelector(`[data-state="inactive"][value="${item.tabValue}"]`)?.click(),
+          () => document.querySelector(`button[value="${item.tabValue}"]`)?.click(),
+          () => document.querySelector(`[role="tab"][data-value="${item.tabValue}"]`)?.click(),
+          () => {
+            const allTabs = document.querySelectorAll('[role="tab"]');
+            const targetTab = Array.from(allTabs).find(tab => 
+              tab.getAttribute('value') === item.tabValue || 
+              tab.getAttribute('data-value') === item.tabValue
+            );
+            return targetTab?.click();
+          }
+        ];
         
-        if (tabToClick) {
-          tabToClick.click();
-        } else {
-          // Fallback: try to find by text content
-          const allTabs = tabsContainer.querySelectorAll('button');
-          const targetTab = Array.from(allTabs).find(tab => {
-            const text = tab.textContent.toLowerCase();
-            return text.includes(item.tabValue.replace('-', ' '));
-          });
-          if (targetTab) {
-            targetTab.click();
+        for (const attempt of attempts) {
+          try {
+            if (attempt()) break;
+          } catch (e) {
+            console.log('Tab click attempt failed:', e);
           }
         }
-      }
-    }, 800); // Increased delay to ensure smooth scrolling completes
+      }, 200);
+    }, 800);
   };
 
   return (
@@ -166,32 +192,79 @@ export const DNAHero = () => {
               </span>
             </div>
 
-            {/* What's New Section - Horizontal layout below skills */}
+            {/* What's New Section - Carousel style */}
             {newItems.length > 0 && (
               <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-4 border border-blue-200">
-                <div className="flex items-center space-x-2 mb-3">
-                  <Star className="h-5 w-5 text-blue-600" />
-                  <h3 className="text-lg font-semibold text-slate-800">What's New</h3>
-                </div>
-                {/* Horizontal scrollable container */}
-                <div className="flex gap-3 overflow-x-auto pb-2">
-                  {newItems.map((item, index) => (
-                    <div 
-                      key={index}
-                      onClick={() => handleNewItemClick(item)}
-                      className="flex-shrink-0 w-64 p-3 bg-white rounded-md hover:bg-blue-50 cursor-pointer transition-colors group border border-gray-100 hover:border-blue-200"
-                    >
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-xs font-medium text-blue-600 bg-blue-100 px-2 py-1 rounded-full">
-                          {item.type}
-                        </span>
-                        <ArrowRight className="h-4 w-4 text-slate-400 group-hover:text-blue-600 transition-colors" />
-                      </div>
-                      <h4 className="text-sm font-medium text-slate-800 mb-1 line-clamp-2">{item.title}</h4>
-                      <p className="text-xs text-slate-600 line-clamp-2">{item.description}</p>
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center space-x-2">
+                    <Star className="h-5 w-5 text-blue-600" />
+                    <h3 className="text-lg font-semibold text-slate-800">What's New</h3>
+                  </div>
+                  {newItems.length > 1 && (
+                    <div className="flex items-center space-x-2">
+                      <button
+                        onClick={prevItem}
+                        className="p-1 rounded-full hover:bg-blue-100 text-slate-600 hover:text-blue-600 transition-colors"
+                        aria-label="Previous item"
+                      >
+                        <ChevronLeft className="h-4 w-4" />
+                      </button>
+                      <span className="text-xs text-slate-500">
+                        {currentNewItemIndex + 1} / {newItems.length}
+                      </span>
+                      <button
+                        onClick={nextItem}
+                        className="p-1 rounded-full hover:bg-blue-100 text-slate-600 hover:text-blue-600 transition-colors"
+                        aria-label="Next item"
+                      >
+                        <ChevronRight className="h-4 w-4" />
+                      </button>
                     </div>
-                  ))}
+                  )}
                 </div>
+                
+                {/* Carousel container */}
+                <div className="relative overflow-hidden">
+                  <div 
+                    className="flex transition-transform duration-500 ease-in-out"
+                    style={{ transform: `translateX(-${currentNewItemIndex * 100}%)` }}
+                  >
+                    {newItems.map((item, index) => (
+                      <div 
+                        key={index}
+                        onClick={() => handleNewItemClick(item)}
+                        className="w-full flex-shrink-0 p-3 bg-white rounded-md hover:bg-blue-50 cursor-pointer transition-colors group border border-gray-100 hover:border-blue-200"
+                      >
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-xs font-medium text-blue-600 bg-blue-100 px-2 py-1 rounded-full">
+                            {item.type}
+                          </span>
+                          <ArrowRight className="h-4 w-4 text-slate-400 group-hover:text-blue-600 transition-colors" />
+                        </div>
+                        <h4 className="text-sm font-medium text-slate-800 mb-1">{item.title}</h4>
+                        <p className="text-xs text-slate-600">{item.description}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                
+                {/* Dots indicator */}
+                {newItems.length > 1 && (
+                  <div className="flex justify-center space-x-2 mt-3">
+                    {newItems.map((_, index) => (
+                      <button
+                        key={index}
+                        onClick={() => setCurrentNewItemIndex(index)}
+                        className={`w-2 h-2 rounded-full transition-colors ${
+                          index === currentNewItemIndex 
+                            ? 'bg-blue-600' 
+                            : 'bg-slate-300 hover:bg-slate-400'
+                        }`}
+                        aria-label={`Go to item ${index + 1}`}
+                      />
+                    ))}
+                  </div>
+                )}
               </div>
             )}
           </div>
