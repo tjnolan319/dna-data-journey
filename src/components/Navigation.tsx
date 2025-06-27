@@ -61,6 +61,12 @@ export const Navigation = () => {
               Tech Stack
             </button>
             <button 
+              onClick={() => scrollToSection('projects')}
+              className="text-slate-600 hover:text-blue-600 transition-colors"
+            >
+              Portfolio
+            </button>
+            <button 
               onClick={() => scrollToSection('gantt')}
               className="text-slate-600 hover:text-blue-600 transition-colors"
             >
@@ -71,12 +77,6 @@ export const Navigation = () => {
               className="text-slate-600 hover:text-blue-600 transition-colors"
             >
               Gallery
-            </button>
-            <button 
-              onClick={() => scrollToSection('projects')}
-              className="text-slate-600 hover:text-blue-600 transition-colors"
-            >
-              Portfolio
             </button>
             <button 
               onClick={() => scrollToSection('contact')}
@@ -125,6 +125,12 @@ export const Navigation = () => {
               Tech Stack
             </button>
             <button 
+              onClick={() => scrollToSection('projects')}
+              className="block w-full text-left px-4 py-2 text-slate-600 hover:text-blue-600"
+            >
+              Portfolio
+            </button>
+            <button 
               onClick={() => scrollToSection('gantt')}
               className="block w-full text-left px-4 py-2 text-slate-600 hover:text-blue-600"
             >
@@ -135,12 +141,6 @@ export const Navigation = () => {
               className="block w-full text-left px-4 py-2 text-slate-600 hover:text-blue-600"
             >
               Gallery
-            </button>
-            <button 
-              onClick={() => scrollToSection('projects')}
-              className="block w-full text-left px-4 py-2 text-slate-600 hover:text-blue-600"
-            >
-              Portfolio
             </button>
             <button 
               onClick={() => scrollToSection('contact')}

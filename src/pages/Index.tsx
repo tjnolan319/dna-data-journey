@@ -13,9 +13,9 @@ const Index = () => {
       <Navigation />
       <DNAHero />
       <TechStack />
+      <ProjectTabs />
       <TimelinePreview />
       <DataGallery />
-      <ProjectTabs />
       <ContactForm />
     </div>
   );
