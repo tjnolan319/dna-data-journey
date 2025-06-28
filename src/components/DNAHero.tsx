@@ -185,11 +185,11 @@ export const DNAHero = () => {
   };
 
   return (
-    <section id="hero" className="min-h-screen flex items-center justify-center pt-16 md:pt-20 px-6 sm:px-8 lg:px-8">
+    <section id="hero" className="min-h-screen flex items-center justify-center pt-16 md:pt-20 px-4 md:px-8">
       <div className="max-w-7xl mx-auto w-full">
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-          <div className={`space-y-6 sm:space-y-6 md:space-y-8 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-10'}`}>
-            <div className="flex flex-col sm:flex-row sm:items-center space-y-4 sm:space-y-0 sm:space-x-4 mb-6 sm:mb-8">
+          <div className={`space-y-6 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-10'}`}>
+            <div className="flex flex-col sm:flex-row sm:items-center space-y-4 sm:space-y-0 sm:space-x-4 mb-6">
               <div className="w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 mx-auto sm:mx-0 rounded-full overflow-hidden border-4 border-blue-200 shadow-lg flex-shrink-0">
                 <img 
                   src={profilePic} 
@@ -198,52 +198,52 @@ export const DNAHero = () => {
                 />
               </div>
               <div className="text-center sm:text-left">
-                <h1 className="text-2xl sm:text-2xl md:text-3xl font-bold text-slate-800">Timothy Nolan</h1>
-                <p className="text-base sm:text-base md:text-lg text-slate-600 mt-1">Data & Business Strategy Analyst</p>
+                <h1 className="text-2xl md:text-3xl font-bold text-slate-800">Timothy Nolan</h1>
+                <p className="text-base md:text-lg text-slate-600 mt-1">Data & Business Strategy Analyst</p>
               </div>
             </div>
             
-            <h2 className="text-3xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-slate-800 leading-tight text-center sm:text-left">
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-slate-800 leading-tight text-center sm:text-left">
               What's in my
               <span className="block text-blue-600">Professional DNA?</span>
             </h2>
-            <p className="text-base sm:text-base md:text-lg text-slate-600 leading-relaxed text-center sm:text-left">
+            <p className="text-base md:text-lg text-slate-600 leading-relaxed text-center sm:text-left">
               Recent MBA and MS in Business Analytics graduate from Bentley University, with undergraduate degrees in Marketing and Psychology. My background combines business, analytics, and behavioral science, applied in early-stage companies, research, and university-based entrepreneurship programs.
             </p>
             
-            <div className="flex flex-wrap gap-3 sm:gap-3 md:gap-4 justify-center sm:justify-start">
-              <span className="px-4 py-2 sm:px-4 sm:py-2 bg-blue-100 text-blue-800 rounded-full text-sm sm:text-sm font-medium">
+            <div className="flex flex-wrap gap-2 justify-center sm:justify-start">
+              <span className="px-3 py-1.5 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">
                 Data Analysis
               </span>
-              <span className="px-4 py-2 sm:px-4 sm:py-2 bg-green-100 text-green-800 rounded-full text-sm sm:text-sm font-medium">
+              <span className="px-3 py-1.5 bg-green-100 text-green-800 rounded-full text-sm font-medium">
                 Strategic Planning
               </span>
-              <span className="px-4 py-2 sm:px-4 sm:py-2 bg-purple-100 text-purple-800 rounded-full text-sm sm:text-sm font-medium">
+              <span className="px-3 py-1.5 bg-purple-100 text-purple-800 rounded-full text-sm font-medium">
                 Business Intelligence
               </span>
-              <span className="px-4 py-2 sm:px-4 sm:py-2 bg-orange-100 text-orange-800 rounded-full text-sm sm:text-sm font-medium">
+              <span className="px-3 py-1.5 bg-orange-100 text-orange-800 rounded-full text-sm font-medium">
                 Behavioral Science
               </span>
             </div>
 
             {/* What's New Section - Carousel style */}
             {newItems.length > 0 && (
-              <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-4 sm:p-5 border border-blue-200">
-                <div className="flex items-center justify-between mb-3 sm:mb-4">
+              <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-4 border border-blue-200">
+                <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center space-x-2">
-                    <Star className="h-5 w-5 sm:h-5 sm:w-5 text-blue-600 flex-shrink-0" />
-                    <h3 className="text-base sm:text-base md:text-lg font-semibold text-slate-800">What's New</h3>
+                    <Star className="h-5 w-5 text-blue-600 flex-shrink-0" />
+                    <h3 className="text-base md:text-lg font-semibold text-slate-800">What's New</h3>
                   </div>
                   {newItems.length > 1 && (
-                    <div className="flex items-center space-x-2 sm:space-x-2">
+                    <div className="flex items-center space-x-1">
                       <button
                         onClick={prevItem}
                         className="p-1.5 rounded-full hover:bg-blue-100 text-slate-600 hover:text-blue-600 transition-colors"
                         aria-label="Previous item"
                       >
-                        <ChevronLeft className="h-4 w-4 sm:h-4 sm:w-4" />
+                        <ChevronLeft className="h-4 w-4" />
                       </button>
-                      <span className="text-sm text-slate-500 min-w-0">
+                      <span className="text-sm text-slate-500 px-2">
                         {currentNewItemIndex + 1} / {newItems.length}
                       </span>
                       <button
@@ -251,7 +251,7 @@ export const DNAHero = () => {
                         className="p-1.5 rounded-full hover:bg-blue-100 text-slate-600 hover:text-blue-600 transition-colors"
                         aria-label="Next item"
                       >
-                        <ChevronRight className="h-4 w-4 sm:h-4 sm:w-4" />
+                        <ChevronRight className="h-4 w-4" />
                       </button>
                     </div>
                   )}
@@ -267,16 +267,16 @@ export const DNAHero = () => {
                       <div 
                         key={index}
                         onClick={() => handleNewItemClick(item)}
-                        className="w-full flex-shrink-0 p-4 sm:p-4 bg-white rounded-md hover:bg-blue-50 cursor-pointer transition-colors group border border-gray-100 hover:border-blue-200"
+                        className="w-full flex-shrink-0 p-3 bg-white rounded-md hover:bg-blue-50 cursor-pointer transition-colors group border border-gray-100 hover:border-blue-200"
                       >
                         <div className="flex items-center justify-between mb-2">
-                          <span className="text-sm font-medium text-blue-600 bg-blue-100 px-3 py-1 rounded-full">
+                          <span className="text-xs font-medium text-blue-600 bg-blue-100 px-2 py-1 rounded-full">
                             {item.type}
                           </span>
-                          <ArrowRight className="h-4 w-4 sm:h-4 sm:w-4 text-slate-400 group-hover:text-blue-600 transition-colors flex-shrink-0" />
+                          <ArrowRight className="h-4 w-4 text-slate-400 group-hover:text-blue-600 transition-colors flex-shrink-0" />
                         </div>
-                        <h4 className="text-sm sm:text-sm font-medium text-slate-800 mb-2 line-clamp-2 leading-tight">{item.title}</h4>
-                        <p className="text-sm text-slate-600 line-clamp-2 leading-tight">{item.description}</p>
+                        <h4 className="text-sm font-medium text-slate-800 mb-1 line-clamp-2">{item.title}</h4>
+                        <p className="text-xs text-slate-600 line-clamp-2">{item.description}</p>
                       </div>
                     ))}
                   </div>
@@ -284,12 +284,12 @@ export const DNAHero = () => {
                 
                 {/* Dots indicator */}
                 {newItems.length > 1 && (
-                  <div className="flex justify-center space-x-2 sm:space-x-2 mt-3 sm:mt-4">
+                  <div className="flex justify-center space-x-1 mt-3">
                     {newItems.map((_, index) => (
                       <button
                         key={index}
                         onClick={() => goToItem(index)}
-                        className={`w-2 h-2 sm:w-2 sm:h-2 rounded-full transition-colors ${
+                        className={`w-2 h-2 rounded-full transition-colors ${
                           index === currentNewItemIndex 
                             ? 'bg-blue-600' 
                             : 'bg-slate-300 hover:bg-slate-400'
