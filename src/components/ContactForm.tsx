@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -24,7 +25,6 @@ export const ContactForm = () => {
         timeZone: 'America/New_York',
         hour: 'numeric',
         minute: '2-digit',
-        second: '2-digit',
         hour12: true
       });
       setCurrentTime(estTime);
@@ -84,7 +84,7 @@ export const ContactForm = () => {
             Let's <span className="text-blue-600">Connect</span>
           </h2>
           <p className="text-xl text-slate-600">
-            Ready to discuss data-driven opportunities and strategic insights
+            Ready to discuss data-driven opportunities
           </p>
         </div>
 
@@ -94,55 +94,44 @@ export const ContactForm = () => {
               <CardHeader>
                 <CardTitle className="flex items-center space-x-2">
                   <Mail className="h-5 w-5 text-blue-600" />
-                  <span>Contact Information</span>
+                  <span>Contact Details</span>
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="grid md:grid-cols-2 gap-6">
-                  <div className="space-y-4">
-                    <div className="flex items-center space-x-3">
-                      <Mail className="h-4 w-4 text-slate-500" />
-                      <div>
-                        <p className="font-medium">Email</p>
-                        <p className="text-slate-600">tjnolan319@gmail.com</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center space-x-3">
-                      <Phone className="h-4 w-4 text-slate-500" />
-                      <div>
-                        <p className="font-medium">Phone</p>
-                        <p className="text-slate-600">(978) 846-2725</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center space-x-3">
-                      <Linkedin className="h-4 w-4 text-slate-500" />
-                      <div>
-                        <p className="font-medium">LinkedIn</p>
-                        <a href="https://www.linkedin.com/in/tjnolan319/" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Connect with me</a>
-                      </div>
+                <div className="space-y-4">
+                  <div className="flex items-center space-x-3">
+                    <Mail className="h-4 w-4 text-slate-500" />
+                    <div>
+                      <p className="font-medium">Email</p>
+                      <p className="text-slate-600">tjnolan319@gmail.com</p>
                     </div>
                   </div>
-                  <div className="space-y-4">
-                    <div className="flex items-center space-x-3">
-                      <Clock className="h-4 w-4 text-slate-500" />
-                      <div>
-                        <p className="font-medium">Time Zone</p>
-                        <p className="text-slate-600">Eastern Time (EST)</p>
-                      </div>
+                  <div className="flex items-center space-x-3">
+                    <Phone className="h-4 w-4 text-slate-500" />
+                    <div>
+                      <p className="font-medium">Phone</p>
+                      <p className="text-slate-600">(978) 846-2725</p>
                     </div>
-                    <div className="flex items-center space-x-3">
-                      <Clock className="h-4 w-4 text-slate-500" />
-                      <div>
-                        <p className="font-medium">Local Time</p>
-                        <p className="text-slate-600 font-mono">{currentTime}</p>
-                      </div>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <Linkedin className="h-4 w-4 text-slate-500" />
+                    <div>
+                      <p className="font-medium">LinkedIn</p>
+                      <a href="https://www.linkedin.com/in/tjnolan319/" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Connect with me</a>
                     </div>
-                    <div className="flex items-center space-x-3">
-                      <MapPin className="h-4 w-4 text-slate-500" />
-                      <div>
-                        <p className="font-medium">Location</p>
-                        <p className="text-slate-600">Waltham, MA, US</p>
-                      </div>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <MapPin className="h-4 w-4 text-slate-500" />
+                    <div>
+                      <p className="font-medium">Location</p>
+                      <p className="text-slate-600">Waltham, MA, US</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <Clock className="h-4 w-4 text-slate-500" />
+                    <div>
+                      <p className="font-medium">Local Time (EST)</p>
+                      <p className="text-slate-600 font-mono">{currentTime}</p>
                     </div>
                   </div>
                 </div>
@@ -159,7 +148,7 @@ export const ContactForm = () => {
                   <span className="font-medium text-green-700">Available for work</span>
                 </div>
                 <p className="text-slate-600 mt-2">
-                  Open to full-time opportunities in data analytics, business strategy, and consulting roles.
+                  Open to full-time opportunities in data analytics and business strategy.
                 </p>
               </CardContent>
             </Card>
@@ -169,7 +158,7 @@ export const ContactForm = () => {
             <CardHeader>
               <CardTitle>Send Message</CardTitle>
               <CardDescription>
-                Reach out to discuss opportunities or ask questions about my work
+                Reach out to discuss opportunities or projects
               </CardDescription>
             </CardHeader>
             <CardContent>

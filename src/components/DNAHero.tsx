@@ -1,3 +1,4 @@
+
 import { useEffect, useState, useCallback } from "react";
 import { Dna, Star, ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 // ✅ Import your local profile image from assets
@@ -24,7 +25,7 @@ export const DNAHero = () => {
         newItems.push({
           title: project.title,
           type: "Project",
-          description: project.description,
+          description: project.description.length > 60 ? project.description.substring(0, 60) + "..." : project.description,
           tabValue: "projects"
         });
       }
@@ -36,7 +37,7 @@ export const DNAHero = () => {
         newItems.push({
           title: study.title,
           type: "Case Study",
-          description: study.description,
+          description: study.description.length > 60 ? study.description.substring(0, 60) + "..." : study.description,
           tabValue: "case-studies"
         });
       }
@@ -48,7 +49,7 @@ export const DNAHero = () => {
         newItems.push({
           title: dashboard.title,
           type: "Dashboard", 
-          description: dashboard.description,
+          description: dashboard.description.length > 60 ? dashboard.description.substring(0, 60) + "..." : dashboard.description,
           tabValue: "dashboards"
         });
       }
@@ -208,7 +209,7 @@ export const DNAHero = () => {
               <span className="block text-blue-600">Professional DNA?</span>
             </h2>
             <p className="text-base md:text-lg text-slate-600 leading-relaxed text-center sm:text-left">
-              Recent MBA and MS in Business Analytics graduate from Bentley University, with undergraduate degrees in Marketing and Psychology. My background combines business, analytics, and behavioral science, applied in early-stage companies, research, and university-based entrepreneurship programs.
+              Recent MBA & MS Business Analytics graduate from Bentley University. I combine business strategy, data analytics, and behavioral science in early-stage companies and research environments.
             </p>
             
             <div className="flex flex-wrap gap-2 justify-center sm:justify-start">
@@ -232,7 +233,7 @@ export const DNAHero = () => {
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center space-x-2">
                     <Star className="h-5 w-5 text-blue-600 flex-shrink-0" />
-                    <h3 className="text-base md:text-lg font-semibold text-slate-800">What's New</h3>
+                    <h3 className="text-base md:text-lg font-semibold text-slate-800">Latest Updates</h3>
                   </div>
                   {newItems.length > 1 && (
                     <div className="flex items-center space-x-1">

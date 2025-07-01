@@ -23,24 +23,24 @@ export const TimelinePreview = () => {
           <div className="bg-slate-50 rounded-2xl p-8 backdrop-blur-sm border border-slate-200">
             <div className="text-center mb-6">
               <h3 className="text-2xl font-bold text-slate-800 mb-2">Career Timeline</h3>
-              <p className="text-slate-600">Professional journey in project management style</p>
+              <p className="text-slate-600">Professional journey & achievements</p>
             </div>
             
             <div className="grid grid-cols-1 gap-6 mb-8">
               <div className="flex flex-col items-center">
                 <Calendar className="h-10 w-10 text-blue-600 mb-3" />
-                <h4 className="text-lg font-semibold text-slate-800 mb-2">Interactive Timeline</h4>
-                <p className="text-slate-600 text-sm text-center">Explore my professional journey with an interactive Gantt chart visualization</p>
+                <h4 className="text-lg font-semibold text-slate-800 mb-2">Interactive Gantt Chart</h4>
+                <p className="text-slate-600 text-sm text-center">Visual timeline of roles, projects, and milestones</p>
               </div>
               <div className="flex flex-col items-center">
                 <Clock className="h-10 w-10 text-purple-600 mb-3" />
-                <h4 className="text-lg font-semibold text-slate-800 mb-2">Detailed Timeline</h4>
-                <p className="text-slate-600 text-sm text-center">Click on any timeline item to view detailed achievements and skills developed</p>
+                <h4 className="text-lg font-semibold text-slate-800 mb-2">Detailed Insights</h4>
+                <p className="text-slate-600 text-sm text-center">Click any period to see accomplishments and skills gained</p>
               </div>
               <div className="flex flex-col items-center">
                 <TrendingUp className="h-10 w-10 text-pink-600 mb-3" />
-                <h4 className="text-lg font-semibold text-slate-800 mb-2">Career Progression</h4>
-                <p className="text-slate-600 text-sm text-center">See how my education and work experiences build upon each other</p>
+                <h4 className="text-lg font-semibold text-slate-800 mb-2">Growth Tracking</h4>
+                <p className="text-slate-600 text-sm text-center">See how experiences connect and build momentum</p>
               </div>
             </div>
 
@@ -56,24 +56,24 @@ export const TimelinePreview = () => {
           <div className="bg-slate-50 rounded-2xl p-8 backdrop-blur-sm border border-slate-200">
             <div className="text-center mb-6">
               <h3 className="text-2xl font-bold text-slate-800 mb-2">Academic Timeline</h3>
-              <p className="text-slate-600">Educational journey through courses and semesters</p>
+              <p className="text-slate-600">Educational foundation & coursework</p>
             </div>
             
             <div className="grid grid-cols-1 gap-6 mb-8">
               <div className="flex flex-col items-center">
                 <GraduationCap className="h-10 w-10 text-green-600 mb-3" />
-                <h4 className="text-lg font-semibold text-slate-800 mb-2">Course Timeline</h4>
-                <p className="text-slate-600 text-sm text-center">Browse through my academic journey semester by semester</p>
+                <h4 className="text-lg font-semibold text-slate-800 mb-2">Semester Overview</h4>
+                <p className="text-slate-600 text-sm text-center">Navigate through undergraduate and graduate programs</p>
               </div>
               <div className="flex flex-col items-center">
                 <Calendar className="h-10 w-10 text-orange-600 mb-3" />
-                <h4 className="text-lg font-semibold text-slate-800 mb-2">Detailed Courses</h4>
-                <p className="text-slate-600 text-sm text-center">Click on any semester to view all courses taken during that period</p>
+                <h4 className="text-lg font-semibold text-slate-800 mb-2">Course Details</h4>
+                <p className="text-slate-600 text-sm text-center">Explore specific courses and learning outcomes</p>
               </div>
               <div className="flex flex-col items-center">
                 <TrendingUp className="h-10 w-10 text-purple-600 mb-3" />
-                <h4 className="text-lg font-semibold text-slate-800 mb-2">Academic Progression</h4>
-                <p className="text-slate-600 text-sm text-center">See how my coursework built from undergraduate to graduate level</p>
+                <h4 className="text-lg font-semibold text-slate-800 mb-2">Skill Development</h4>
+                <p className="text-slate-600 text-sm text-center">Track knowledge progression from basics to advanced topics</p>
               </div>
             </div>
 

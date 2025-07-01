@@ -7,22 +7,22 @@ const visualizations = [
   {
     title: "Sales Performance Analytics",
     image: "https://images.unsplash.com/photo-1605810230434-7631ac76ec81?w=600&h=400&fit=crop",
-    description: "Interactive dashboard showing quarterly sales trends and forecasting models"
+    description: "Quarterly trends & forecasting models"
   },
   {
     title: "Customer Journey Mapping",
     image: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=600&h=400&fit=crop",
-    description: "Comprehensive analysis of customer touchpoints and conversion funnels"
+    description: "Touchpoint analysis & conversion tracking"
   },
   {
     title: "Market Segmentation Analysis",
     image: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=600&h=400&fit=crop",
-    description: "Advanced clustering visualization for target market identification"
+    description: "Advanced clustering for target identification"
   },
   {
     title: "Financial Performance Dashboard",
     image: "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=600&h=400&fit=crop",
-    description: "Real-time financial KPIs and predictive analytics platform"
+    description: "Real-time KPIs & predictive analytics"
   }
 ];
 
@@ -52,8 +52,8 @@ export const DataGallery = () => {
           <h2 className="text-4xl font-bold text-slate-800 mb-4">
             Data Visualization <span className="text-blue-600">Gallery</span>
           </h2>
-          <p className="text-xl text-slate-600 max-w-3xl mx-auto">
-            Explore my portfolio of interactive dashboards and analytical visualizations that transform complex data into actionable insights
+          <p className="text-xl text-slate-600 max-w-2xl mx-auto">
+            Interactive dashboards and analytical visualizations that transform data into insights
           </p>
         </div>
 
