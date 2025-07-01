@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -12,8 +11,10 @@ export const ContactForm = () => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    message: ''
+    message: '',
+    _gotcha: ''
   });
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [currentTime, setCurrentTime] = useState('');
 
@@ -35,46 +36,41 @@ export const ContactForm = () => {
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-  setIsSubmitting(true);
+    e.preventDefault();
+    setIsSubmitting(true);
 
-  try {
-    const response = await fetch("https://formspree.io/f/mkgbyeyp", {
-      method: "POST",
-      headers: {
-        "Accept": "application/json",
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        name: formData.name,
-        email: formData.email,
-        message: formData.message
-      })
-    });
-
-    if (response.ok) {
-      toast("Message sent!", {
-        description: "Thanks for reaching out. I’ll be in touch shortly.",
-        duration: 5000,
+    try {
+      const response = await fetch("https://formspree.io/f/mkgbyeyp", {
+        method: "POST",
+        headers: {
+          "Accept": "application/json",
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(formData)
       });
 
-      setFormData({ name: '', email: '', message: '' });
-    } else {
-      toast("Submission failed", {
-        description: "Please try again or email me directly.",
+      if (response.ok) {
+        toast("Message sent!", {
+          description: "Thanks for reaching out. I’ll be in touch shortly.",
+          duration: 5000,
+        });
+
+        setFormData({ name: '', email: '', message: '', _gotcha: '' });
+      } else {
+        toast("Submission failed", {
+          description: "Please try again or email me directly.",
+          duration: 5000,
+        });
+      }
+    } catch (error) {
+      toast("Error", {
+        description: "Something went wrong. Please try again later.",
         duration: 5000,
       });
     }
-  } catch (error) {
-    toast("Error", {
-      description: "Something went wrong. Please try again later.",
-      duration: 5000,
-    });
-  }
 
-  setIsSubmitting(false);
-};
-
+    setIsSubmitting(false);
+  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({
@@ -198,6 +194,14 @@ export const ContactForm = () => {
                     required
                   />
                 </div>
+                <input
+                  type="text"
+                  name="_gotcha"
+                  value={formData._gotcha}
+                  onChange={handleInputChange}
+                  style={{ display: 'none' }}
+                  tabIndex={-1}
+                />
                 <Button type="submit" className="w-full" disabled={isSubmitting}>
                   {isSubmitting ? (
                     <div className="flex items-center space-x-2">
