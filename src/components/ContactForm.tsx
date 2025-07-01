@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Mail, Phone, Linkedin, MapPin, Clock, CheckCircle } from "lucide-react";
+import { Mail, Linkedin, MapPin, Clock, CheckCircle } from "lucide-react";
 import { toast } from "@/components/ui/sonner";
 
 export const ContactForm = () => {
@@ -17,7 +17,6 @@ export const ContactForm = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [currentTime, setCurrentTime] = useState('');
 
-  // Update current time every second
   useEffect(() => {
     const updateTime = () => {
       const now = new Date();
@@ -30,40 +29,32 @@ export const ContactForm = () => {
       setCurrentTime(estTime);
     };
 
-    updateTime(); // Set initial time
-    const interval = setInterval(updateTime, 1000); // Update every second
-
-    return () => clearInterval(interval); // Cleanup
+    updateTime();
+    const interval = setInterval(updateTime, 1000);
+    return () => clearInterval(interval);
   }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     
-    console.log('Form submitted:', formData);
-    
-    // Create mailto link
     const subject = `Message from ${formData.name}`;
     const body = `Name: ${formData.name}\nEmail: ${formData.email}\n\nMessage:\n${formData.message}`;
     const mailtoLink = `mailto:tjnolan319@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     
-    // Open email client
     window.location.href = mailtoLink;
     
-    // Show success toast
     toast("Message prepared!", {
       description: "Your email client should open with the message ready to send.",
       duration: 5000,
     });
     
-    // Reset form
     setFormData({
       name: '',
       email: '',
       message: ''
     });
     
-    // Reset button text after 2 seconds
     setTimeout(() => {
       setIsSubmitting(false);
     }, 2000);
@@ -90,7 +81,7 @@ export const ContactForm = () => {
 
         <div className="grid lg:grid-cols-2 gap-12 items-start">
           <div className="space-y-6">
-            <Card>
+            <Card className="h-full">
               <CardHeader>
                 <CardTitle className="flex items-center space-x-2">
                   <Mail className="h-5 w-5 text-blue-600" />
@@ -104,13 +95,6 @@ export const ContactForm = () => {
                     <div>
                       <p className="font-medium">Email</p>
                       <p className="text-slate-600">tjnolan319@gmail.com</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center space-x-3">
-                    <Phone className="h-4 w-4 text-slate-500" />
-                    <div>
-                      <p className="font-medium">Phone</p>
-                      <p className="text-slate-600">(978) 846-2725</p>
                     </div>
                   </div>
                   <div className="flex items-center space-x-3">
@@ -138,23 +122,23 @@ export const ContactForm = () => {
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className="h-full">
               <CardHeader>
                 <CardTitle>Availability</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center space-x-2 mb-3">
                   <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
                   <span className="font-medium text-green-700">Available for work</span>
                 </div>
-                <p className="text-slate-600 mt-2">
+                <p className="text-slate-600">
                   Open to full-time opportunities in data analytics and business strategy.
                 </p>
               </CardContent>
             </Card>
           </div>
 
-          <Card>
+          <Card className="h-full">
             <CardHeader>
               <CardTitle>Send Message</CardTitle>
               <CardDescription>
