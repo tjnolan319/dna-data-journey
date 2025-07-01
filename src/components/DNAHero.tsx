@@ -6,6 +6,8 @@ import { projects, caseStudies, dashboards, publications, certifications } from 
 export const DNAHero = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [currentNewItemIndex, setCurrentNewItemIndex] = useState(0);
+  const [clickCount, setClickCount] = useState(0);
+  const [easterEggFound, setEasterEggFound] = useState(false);
 
   useEffect(() => {
     setIsVisible(true);
@@ -86,6 +88,16 @@ export const DNAHero = () => {
         }
       }, 200);
     }, 800);
+  };
+
+  const handleDnaClick = () => {
+    setClickCount(prev => {
+      const nextCount = prev + 1;
+      if (nextCount === 13 && !easterEggFound) {
+        setEasterEggFound(true);
+      }
+      return nextCount;
+    });
   };
 
   return (
@@ -176,7 +188,7 @@ export const DNAHero = () => {
           </div>
 
           <div className={`flex justify-center transition-all duration-1000 delay-300 ${isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-10'}`}>
-            <div className="relative">
+            <div className="relative cursor-pointer" onClick={handleDnaClick}>
               <div className="w-40 h-40 sm:w-48 sm:h-48 md:w-56 md:h-56 lg:w-64 lg:h-64 bg-gradient-to-br from-blue-400 to-purple-600 rounded-full animate-pulse opacity-20"></div>
               <div className="absolute inset-0 flex items-center justify-center">
                 <Dna className="h-20 w-20 sm:h-24 sm:w-24 md:h-28 md:w-28 lg:w-32 lg:h-32 text-blue-600 animate-spin" style={{ animationDuration: '8s' }} />
@@ -184,6 +196,11 @@ export const DNAHero = () => {
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="w-32 h-32 sm:w-40 sm:h-40 md:w-42 md:h-42 lg:w-48 lg:h-48 border-4 border-blue-300 rounded-full animate-ping opacity-30"></div>
               </div>
+              {clickCount === 13 && easterEggFound && (
+                <div className="absolute top-full mt-2 text-center w-full text-sm text-pink-600 font-semibold animate-bounce">
+                  You found an easter egg!
+                </div>
+              )}
             </div>
           </div>
         </div>
