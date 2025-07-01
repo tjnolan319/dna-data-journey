@@ -1,186 +1,317 @@
 
-import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { ChevronLeft, ChevronRight, ExternalLink, Calendar, TrendingUp, Database } from "lucide-react";
-import profileImage from "@/assets/Tim_Nolan_Profile_Pic_Cropped.jpg";
+import { useEffect, useState, useCallback } from "react";
+import { Dna, Star, ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
+// ✅ Import your local profile image from assets
+import profilePic from "@/assets/Tim_Nolan_Profile_Pic_Cropped.jpg";
 
-const portfolioItems = [
-  {
-    id: "genre-analysis",
-    title: "Emmy Genre Analysis",
-    category: "Statistical Modeling",
-    description: "Advanced statistical analysis revealing genre bias in Emmy nominations using logistic regression and effect size calculations.",
-    tags: ["Python", "Statistical Analysis", "Data Visualization"],
-    color: "bg-blue-600",
-    route: "/genre-category-analysis"
-  },
-  {
-    id: "network-analysis", 
-    title: "Skillset Network",
-    category: "Network Visualization",
-    description: "Interactive D3.js network showing skill relationships and career progression through connected competencies.",
-    tags: ["D3.js", "Network Analysis", "Interactive Viz"],
-    color: "bg-purple-600",
-    route: "/skillset-network"
-  }
-];
-
-const whatsNewItems = [
-  {
-    icon: <Calendar className="h-5 w-5" />,
-    title: "Timeline Views",
-    description: "Interactive Gantt charts for career & academic progression"
-  },
-  {
-    icon: <TrendingUp className="h-5 w-5" />,
-    title: "Advanced Analytics",
-    description: "Statistical modeling with effect size calculations"
-  },
-  {
-    icon: <Database className="h-5 w-5" />,
-    title: "Data Architecture",
-    description: "Big data processing and visualization pipelines"
-  }
-];
+// Import the data from ProjectTabs - you'll need to export these from your ProjectTabs file
+import { projects, caseStudies, dashboards, publications, certifications } from "./ProjectTabs";
 
 export const DNAHero = () => {
-  const [currentSlide, setCurrentSlide] = useState(0);
+  const [isVisible, setIsVisible] = useState(false);
+  const [currentNewItemIndex, setCurrentNewItemIndex] = useState(0);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % portfolioItems.length);
-    }, 4000);
-    return () => clearInterval(interval);
+    setIsVisible(true);
   }, []);
 
-  const nextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % portfolioItems.length);
+  // Dynamically find all items with NEW! status
+  const getNewItems = () => {
+    const newItems = [];
+    
+    // Check projects
+    projects.forEach(project => {
+      if ('status' in project && project.status === "NEW!") {
+        newItems.push({
+          title: project.title,
+          type: "Project",
+          description: project.description.length > 60 ? project.description.substring(0, 60) + "..." : project.description,
+          tabValue: "projects"
+        });
+      }
+    });
+
+    // Check case studies
+    caseStudies.forEach(study => {
+      if ('status' in study && study.status === "NEW!") {
+        newItems.push({
+          title: study.title,
+          type: "Case Study",
+          description: study.description.length > 60 ? study.description.substring(0, 60) + "..." : study.description,
+          tabValue: "case-studies"
+        });
+      }
+    });
+
+    // Check dashboards
+    dashboards.forEach(dashboard => {
+      if ('status' in dashboard && dashboard.status === "NEW!") {
+        newItems.push({
+          title: dashboard.title,
+          type: "Dashboard", 
+          description: dashboard.description.length > 60 ? dashboard.description.substring(0, 60) + "..." : dashboard.description,
+          tabValue: "dashboards"
+        });
+      }
+    });
+
+    // Check publications
+    publications.forEach(pub => {
+      if ('status' in pub && pub.status === "NEW!") {
+        newItems.push({
+          title: pub.title,
+          type: "Publication",
+          description: `${pub.journal} • ${pub.year}`,
+          tabValue: "publications"
+        });
+      }
+    });
+
+    // Check certifications
+    certifications.forEach(cert => {
+      if ('status' in cert && cert.status === "NEW!") {
+        newItems.push({
+          title: cert.title,
+          type: "Certification",
+          description: `${cert.issuer} • ${cert.year}`,
+          tabValue: "certifications"
+        });
+      }
+    });
+
+    return newItems;
   };
 
-  const prevSlide = () => {
-    setCurrentSlide((prev) => (prev - 1 + portfolioItems.length) % portfolioItems.length);
+  const newItems = getNewItems();
+
+  // Auto-slide effect for What's New carousel with reset capability
+  const resetAutoSlide = useCallback(() => {
+    if (newItems.length > 1) {
+      return setInterval(() => {
+        setCurrentNewItemIndex((prev) => (prev + 1) % newItems.length);
+      }, 4000); // Change every 4 seconds
+    }
+    return null;
+  }, [newItems.length]);
+
+  useEffect(() => {
+    const interval = resetAutoSlide();
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [resetAutoSlide]);
+
+  const nextItem = () => {
+    setCurrentNewItemIndex((prev) => (prev + 1) % newItems.length);
   };
 
-  const goToSlide = (index: number) => {
-    setCurrentSlide(index);
+  const prevItem = () => {
+    setCurrentNewItemIndex((prev) => (prev - 1 + newItems.length) % newItems.length);
+  };
+
+  const goToItem = (index) => {
+    setCurrentNewItemIndex(index);
+  };
+
+  const scrollToSection = (target) => {
+    const element = document.getElementById(target);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  const handleNewItemClick = (item) => {
+    // First scroll to the projects section
+    scrollToSection('projects');
+    
+    // Then trigger the appropriate tab with multiple attempts
+    setTimeout(() => {
+      // Direct approach - trigger a custom event that the ProjectTabs component can listen for
+      const tabEvent = new CustomEvent('switchTab', { 
+        detail: { tabValue: item.tabValue }
+      });
+      window.dispatchEvent(tabEvent);
+      
+      // Fallback approach - try DOM manipulation
+      setTimeout(() => {
+        // Try different ways to find and click the tab
+        const attempts = [
+          () => {
+            const element = document.querySelector(`[data-state="inactive"][value="${item.tabValue}"]`) as HTMLElement;
+            if (element) {
+              element.click();
+              return true;
+            }
+            return false;
+          },
+          () => {
+            const element = document.querySelector(`button[value="${item.tabValue}"]`) as HTMLElement;
+            if (element) {
+              element.click();
+              return true;
+            }
+            return false;
+          },
+          () => {
+            const element = document.querySelector(`[role="tab"][data-value="${item.tabValue}"]`) as HTMLElement;
+            if (element) {
+              element.click();
+              return true;
+            }
+            return false;
+          },
+          () => {
+            const allTabs = document.querySelectorAll('[role="tab"]');
+            const targetTab = Array.from(allTabs).find(tab => 
+              tab.getAttribute('value') === item.tabValue || 
+              tab.getAttribute('data-value') === item.tabValue
+            ) as HTMLElement;
+            if (targetTab) {
+              targetTab.click();
+              return true;
+            }
+            return false;
+          }
+        ];
+        
+        for (const attempt of attempts) {
+          try {
+            if (attempt()) break;
+          } catch (e) {
+            console.log('Tab click attempt failed:', e);
+          }
+        }
+      }, 200);
+    }, 800);
   };
 
   return (
-    <section id="hero" className="relative min-h-screen flex items-center justify-center py-20 px-4 sm:px-6 lg:px-8 overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-600 via-purple-700 to-blue-800"></div>
-      <div className="absolute inset-0 bg-black/20"></div>
-      
-      <div className="relative z-10 max-w-7xl mx-auto">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
-          <div className="text-white space-y-8">
-            <div className="space-y-6">
-              <div className="flex items-center space-x-4">
+    <section id="hero" className="min-h-screen flex items-center justify-center pt-16 md:pt-20 px-4 md:px-8">
+      <div className="max-w-7xl mx-auto w-full">
+        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+          <div className={`space-y-6 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-10'}`}>
+            <div className="flex flex-col sm:flex-row sm:items-center space-y-4 sm:space-y-0 sm:space-x-4 mb-6">
+              <div className="w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 mx-auto sm:mx-0 rounded-full overflow-hidden border-4 border-blue-200 shadow-lg flex-shrink-0">
                 <img 
-                  src={profileImage} 
-                  alt="Tim Nolan" 
-                  className="w-20 h-20 rounded-full border-4 border-white/20 object-cover"
+                  src={profilePic} 
+                  alt="Timothy Nolan" 
+                  className="w-full h-full object-cover"
                 />
-                <div>
-                  <h1 className="text-4xl lg:text-6xl font-bold mb-2">
-                    Tim Nolan
-                  </h1>
-                  <p className="text-xl lg:text-2xl text-blue-200">
-                    Data Analyst & Business Strategist
-                  </p>
-                </div>
               </div>
-              
-              <p className="text-lg lg:text-xl text-blue-100 leading-relaxed max-w-2xl">
-                Transforming complex data into strategic insights through advanced analytics, statistical modeling, and interactive visualizations that drive business decisions.
-              </p>
+              <div className="text-center sm:text-left">
+                <h1 className="text-2xl md:text-3xl font-bold text-slate-800">Timothy Nolan</h1>
+                <p className="text-base md:text-lg text-slate-600 mt-1">Data & Business Strategy Analyst</p>
+              </div>
+            </div>
+            
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-slate-800 leading-tight text-center sm:text-left">
+              What's in my
+              <span className="block text-blue-600">Professional DNA?</span>
+            </h2>
+            <p className="text-base md:text-lg text-slate-600 leading-relaxed text-center sm:text-left">
+              Recent MBA & MS Business Analytics graduate from Bentley University. I combine business strategy, data analytics, and behavioral science in early-stage companies and research environments.
+            </p>
+            
+            <div className="flex flex-wrap gap-2 justify-center sm:justify-start">
+              <span className="px-3 py-1.5 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">
+                Data Analysis
+              </span>
+              <span className="px-3 py-1.5 bg-green-100 text-green-800 rounded-full text-sm font-medium">
+                Strategic Planning
+              </span>
+              <span className="px-3 py-1.5 bg-purple-100 text-purple-800 rounded-full text-sm font-medium">
+                Business Intelligence
+              </span>
+              <span className="px-3 py-1.5 bg-orange-100 text-orange-800 rounded-full text-sm font-medium">
+                Behavioral Science
+              </span>
             </div>
 
-            <div className="space-y-6">
-              <div>
-                <h3 className="text-2xl font-bold mb-4 text-white">What's New</h3>
-                <div className="grid gap-4">
-                  {whatsNewItems.map((item, index) => (
-                    <div key={index} className="flex items-start space-x-3 bg-white/10 backdrop-blur-sm rounded-lg p-4">
-                      <div className="flex-shrink-0 w-10 h-10 bg-blue-500/30 rounded-lg flex items-center justify-center text-white">
-                        {item.icon}
-                      </div>
-                      <div>
-                        <h4 className="font-semibold text-white mb-1">{item.title}</h4>
-                        <p className="text-sm text-blue-100">{item.description}</p>
-                      </div>
+            {/* What's New Section - Carousel style */}
+            {newItems.length > 0 && (
+              <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-4 border border-blue-200">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center space-x-2">
+                    <Star className="h-5 w-5 text-blue-600 flex-shrink-0" />
+                    <h3 className="text-base md:text-lg font-semibold text-slate-800">Latest Updates</h3>
+                  </div>
+                  {newItems.length > 1 && (
+                    <div className="flex items-center space-x-1">
+                      <button
+                        onClick={prevItem}
+                        className="p-1.5 rounded-full hover:bg-blue-100 text-slate-600 hover:text-blue-600 transition-colors"
+                        aria-label="Previous item"
+                      >
+                        <ChevronLeft className="h-4 w-4" />
+                      </button>
+                      <span className="text-sm text-slate-500 px-2">
+                        {currentNewItemIndex + 1} / {newItems.length}
+                      </span>
+                      <button
+                        onClick={nextItem}
+                        className="p-1.5 rounded-full hover:bg-blue-100 text-slate-600 hover:text-blue-600 transition-colors"
+                        aria-label="Next item"
+                      >
+                        <ChevronRight className="h-4 w-4" />
+                      </button>
                     </div>
-                  ))}
+                  )}
                 </div>
+                
+                {/* Carousel container */}
+                <div className="relative overflow-hidden">
+                  <div 
+                    className="flex transition-transform duration-500 ease-in-out"
+                    style={{ transform: `translateX(-${currentNewItemIndex * 100}%)` }}
+                  >
+                    {newItems.map((item, index) => (
+                      <div 
+                        key={index}
+                        onClick={() => handleNewItemClick(item)}
+                        className="w-full flex-shrink-0 p-3 bg-white rounded-md hover:bg-blue-50 cursor-pointer transition-colors group border border-gray-100 hover:border-blue-200"
+                      >
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-xs font-medium text-blue-600 bg-blue-100 px-2 py-1 rounded-full">
+                            {item.type}
+                          </span>
+                          <ArrowRight className="h-4 w-4 text-slate-400 group-hover:text-blue-600 transition-colors flex-shrink-0" />
+                        </div>
+                        <h4 className="text-sm font-medium text-slate-800 mb-1 line-clamp-2">{item.title}</h4>
+                        <p className="text-xs text-slate-600 line-clamp-2">{item.description}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                
+                {/* Dots indicator */}
+                {newItems.length > 1 && (
+                  <div className="flex justify-center space-x-1 mt-3">
+                    {newItems.map((_, index) => (
+                      <button
+                        key={index}
+                        onClick={() => goToItem(index)}
+                        className={`w-2 h-2 rounded-full transition-colors ${
+                          index === currentNewItemIndex 
+                            ? 'bg-blue-600' 
+                            : 'bg-slate-300 hover:bg-slate-400'
+                        }`}
+                        aria-label={`Go to item ${index + 1}`}
+                      />
+                    ))}
+                  </div>
+                )}
               </div>
-            </div>
+            )}
           </div>
-
-          <div className="space-y-8">
-            <div className="bg-white/10 backdrop-blur-md rounded-2xl p-8 border border-white/20">
-              <div className="flex justify-between items-center mb-6">
-                <h3 className="text-2xl font-bold text-white">Featured Projects</h3>
-                <div className="flex space-x-2">
-                  <button
-                    onClick={prevSlide}
-                    className="p-2 rounded-full bg-white/20 hover:bg-white/30 transition-colors text-white"
-                  >
-                    <ChevronLeft className="h-5 w-5" />
-                  </button>
-                  <button
-                    onClick={nextSlide}
-                    className="p-2 rounded-full bg-white/20 hover:bg-white/30 transition-colors text-white"
-                  >
-                    <ChevronRight className="h-5 w-5" />
-                  </button>
-                </div>
+          
+          <div className={`flex justify-center transition-all duration-1000 delay-300 ${isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-10'}`}>
+            <div className="relative">
+              <div className="w-40 h-40 sm:w-48 sm:h-48 md:w-56 md:h-56 lg:w-64 lg:h-64 bg-gradient-to-br from-blue-400 to-purple-600 rounded-full animate-pulse opacity-20"></div>
+              <div className="absolute inset-0 flex items-center justify-center">
+                <Dna className="h-20 w-20 sm:h-24 sm:w-24 md:h-28 md:w-28 lg:w-32 lg:h-32 text-blue-600 animate-spin" style={{ animationDuration: '8s' }} />
               </div>
-
-              <div className="relative overflow-hidden">
-                <div 
-                  className="flex transition-transform duration-500 ease-in-out"
-                  style={{ transform: `translateX(-${currentSlide * 100}%)` }}
-                >
-                  {portfolioItems.map((item) => (
-                    <div key={item.id} className="w-full flex-shrink-0">
-                      <div className="space-y-4">
-                        <div className="flex items-center justify-between">
-                          <Badge variant="secondary" className="bg-white/20 text-white border-white/30">
-                            {item.category}
-                          </Badge>
-                        </div>
-                        <h4 className="text-xl font-bold text-white">{item.title}</h4>
-                        <p className="text-blue-100">{item.description}</p>
-                        <div className="flex flex-wrap gap-2">
-                          {item.tags.map((tag, idx) => (
-                            <Badge key={idx} variant="outline" className="border-white/30 text-white">
-                              {tag}
-                            </Badge>
-                          ))}
-                        </div>
-                        <Button 
-                          className="w-full bg-white text-blue-600 hover:bg-blue-50 font-semibold"
-                          onClick={() => window.location.href = item.route}
-                        >
-                          <ExternalLink className="h-4 w-4 mr-2" />
-                          Explore Project
-                        </Button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="flex justify-center space-x-2 mt-6">
-                {portfolioItems.map((_, index) => (
-                  <button
-                    key={index}
-                    onClick={() => goToSlide(index)}
-                    className={`w-3 h-3 rounded-full transition-colors ${
-                      index === currentSlide ? 'bg-white' : 'bg-white/30'
-                    }`}
-                  />
-                ))}
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="w-32 h-32 sm:w-40 sm:h-40 md:w-42 md:h-42 lg:w-48 lg:h-48 border-4 border-blue-300 rounded-full animate-ping opacity-30"></div>
               </div>
             </div>
           </div>
