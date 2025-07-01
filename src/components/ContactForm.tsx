@@ -34,31 +34,47 @@ export const ContactForm = () => {
     return () => clearInterval(interval);
   }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    
-    const subject = `Message from ${formData.name}`;
-    const body = `Name: ${formData.name}\nEmail: ${formData.email}\n\nMessage:\n${formData.message}`;
-    const mailtoLink = `mailto:tjnolan319@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    
-    window.location.href = mailtoLink;
-    
-    toast("Message prepared!", {
-      description: "Your email client should open with the message ready to send.",
+  const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setIsSubmitting(true);
+
+  try {
+    const response = await fetch("https://formspree.io/f/mkgbyeyp", {
+      method: "POST",
+      headers: {
+        "Accept": "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        name: formData.name,
+        email: formData.email,
+        message: formData.message
+      })
+    });
+
+    if (response.ok) {
+      toast("Message sent!", {
+        description: "Thanks for reaching out. I’ll be in touch shortly.",
+        duration: 5000,
+      });
+
+      setFormData({ name: '', email: '', message: '' });
+    } else {
+      toast("Submission failed", {
+        description: "Please try again or email me directly.",
+        duration: 5000,
+      });
+    }
+  } catch (error) {
+    toast("Error", {
+      description: "Something went wrong. Please try again later.",
       duration: 5000,
     });
-    
-    setFormData({
-      name: '',
-      email: '',
-      message: ''
-    });
-    
-    setTimeout(() => {
-      setIsSubmitting(false);
-    }, 2000);
-  };
+  }
+
+  setIsSubmitting(false);
+};
+
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({
