@@ -199,7 +199,64 @@ export const DNAHero = () => {
               <div className="w-40 h-40 sm:w-48 sm:h-48 md:w-56 md:h-56 lg:w-64 lg:h-64 bg-gradient-to-br from-blue-400 to-purple-600 rounded-full animate-pulse opacity-20"></div>
               <div className="absolute inset-0 flex items-center justify-center">
                 {showEgg ? (
-                  <div className="text-6xl sm:text-7xl md:text-8xl animate-bounce">🥚</div>
+                  <svg 
+                    className="h-20 w-20 sm:h-24 sm:w-24 md:h-28 md:w-28 lg:w-32 lg:h-32 animate-bounce" 
+                    viewBox="0 0 200 240" 
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    {/* Egg base shape */}
+                    <ellipse cx="100" cy="160" rx="60" ry="80" fill="url(#eggGradient)" stroke="#e2e8f0" strokeWidth="2"/>
+                    
+                    {/* Decorative patterns */}
+                    {/* Top zigzag band */}
+                    <path d="M50 120 L60 110 L70 120 L80 110 L90 120 L100 110 L110 120 L120 110 L130 120 L140 110 L150 120" 
+                          stroke="#ec4899" strokeWidth="3" fill="none"/>
+                    
+                    {/* Middle diamond pattern */}
+                    <polygon points="100,140 110,150 100,160 90,150" fill="#8b5cf6"/>
+                    <polygon points="80,150 90,160 80,170 70,160" fill="#3b82f6"/>
+                    <polygon points="120,150 130,160 120,170 110,160" fill="#10b981"/>
+                    
+                    {/* Bottom wavy pattern */}
+                    <path d="M60 180 Q70 175 80 180 T100 180 T120 180 T140 180" 
+                          stroke="#f59e0b" strokeWidth="3" fill="none"/>
+                    
+                    {/* Small decorative dots */}
+                    <circle cx="85" cy="135" r="3" fill="#ec4899"/>
+                    <circle cx="115" cy="135" r="3" fill="#ec4899"/>
+                    <circle cx="75" cy="190" r="2" fill="#8b5cf6"/>
+                    <circle cx="100" cy="195" r="2" fill="#3b82f6"/>
+                    <circle cx="125" cy="190" r="2" fill="#10b981"/>
+                    
+                    {/* Flower pattern on sides */}
+                    <g transform="translate(65, 165)">
+                      <circle cx="0" cy="0" r="6" fill="#fbbf24"/>
+                      <circle cx="-4" cy="-4" r="3" fill="#f59e0b"/>
+                      <circle cx="4" cy="-4" r="3" fill="#f59e0b"/>
+                      <circle cx="4" cy="4" r="3" fill="#f59e0b"/>
+                      <circle cx="-4" cy="4" r="3" fill="#f59e0b"/>
+                    </g>
+                    
+                    <g transform="translate(135, 165)">
+                      <circle cx="0" cy="0" r="6" fill="#fbbf24"/>
+                      <circle cx="-4" cy="-4" r="3" fill="#f59e0b"/>
+                      <circle cx="4" cy="-4" r="3" fill="#f59e0b"/>
+                      <circle cx="4" cy="4" r="3" fill="#f59e0b"/>
+                      <circle cx="-4" cy="4" r="3" fill="#f59e0b"/>
+                    </g>
+                    
+                    {/* Shine effect */}
+                    <ellipse cx="85" cy="140" rx="8" ry="15" fill="white" opacity="0.3"/>
+                    
+                    {/* Gradient definitions */}
+                    <defs>
+                      <linearGradient id="eggGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style={{stopColor:'#fef3c7', stopOpacity:1}} />
+                        <stop offset="50%" style={{stopColor:'#fde68a', stopOpacity:1}} />
+                        <stop offset="100%" style={{stopColor:'#f59e0b', stopOpacity:0.8}} />
+                      </linearGradient>
+                    </defs>
+                  </svg>
                 ) : (
                   <Dna className="h-20 w-20 sm:h-24 sm:w-24 md:h-28 md:w-28 lg:w-32 lg:h-32 text-blue-600 animate-spin" style={{ animationDuration: '8s' }} />
                 )}
