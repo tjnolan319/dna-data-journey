@@ -145,12 +145,20 @@ export const ProjectTabs = () => {
   const handleProjectClick = (project: typeof projects[0]) => {
     if (project.hasDetailPage) {
       navigate('/genre-category-project');
+      // Scroll to top after navigation
+      setTimeout(() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }, 100);
     }
   };
 
   const handleDashboardClick = (dashboard: typeof dashboards[0]) => {
     if (dashboard.hasDetailPage) {
       navigate('/skillset-network');
+      // Scroll to top after navigation
+      setTimeout(() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }, 100);
     }
   };
 

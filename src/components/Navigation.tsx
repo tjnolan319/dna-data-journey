@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Menu, X, Download, Github } from "lucide-react";
 
@@ -35,8 +34,7 @@ export const Navigation = () => {
   };
 
   const handleGitHubClick = () => {
-    // Replace with your actual GitHub URL - based on your portfolio it should be your GitHub username
-    window.open('https://github.com/yourusername', '_blank');
+    window.open('https://github.com/tjnolan319', '_blank');
   };
 
   return (

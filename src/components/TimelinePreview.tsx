@@ -1,7 +1,7 @@
 
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import { Calendar, Clock, TrendingUp, GraduationCap } from "lucide-react";
+import { Calendar, GraduationCap } from "lucide-react";
 
 export const TimelinePreview = () => {
   const navigate = useNavigate();
@@ -14,52 +14,30 @@ export const TimelinePreview = () => {
             🧬 Timeline Views
           </h2>
           <p className="text-xl text-slate-600 mb-8">
-            Explore my professional and academic journey
+            Interactive journey through career and academic milestones
           </p>
         </div>
 
-        {/* Combined Timeline Box */}
+        {/* Streamlined Timeline Box */}
         <div className="bg-slate-50 rounded-2xl p-8 backdrop-blur-sm border border-slate-200 max-w-4xl mx-auto">
           <div className="text-center mb-8">
-            <h3 className="text-2xl font-bold text-slate-800 mb-2">Interactive Timeline Explorer</h3>
-            <p className="text-slate-600">Visual journey through career milestones and academic achievements</p>
+            <h3 className="text-2xl font-bold text-slate-800 mb-4">Interactive Timeline Explorer</h3>
+            <p className="text-slate-600">Visual journey through professional and academic achievements</p>
           </div>
           
           <div className="grid md:grid-cols-2 gap-8 mb-8">
-            {/* Career Features */}
-            <div className="space-y-4">
-              <div className="flex items-center justify-center">
-                <Calendar className="h-8 w-8 text-blue-600 mb-2" />
-              </div>
-              <h4 className="text-lg font-semibold text-slate-800 text-center">Career Timeline</h4>
-              <p className="text-slate-600 text-sm text-center">Interactive Gantt chart of roles, projects, and milestones</p>
+            {/* Career Timeline */}
+            <div className="text-center">
+              <Calendar className="h-12 w-12 text-blue-600 mx-auto mb-4" />
+              <h4 className="text-lg font-semibold text-slate-800 mb-2">Career Timeline</h4>
+              <p className="text-slate-600 text-sm">Interactive Gantt chart of roles and projects</p>
             </div>
 
-            {/* Academic Features */}
-            <div className="space-y-4">
-              <div className="flex items-center justify-center">
-                <GraduationCap className="h-8 w-8 text-green-600 mb-2" />
-              </div>
-              <h4 className="text-lg font-semibold text-slate-800 text-center">Academic Timeline</h4>
-              <p className="text-slate-600 text-sm text-center">Course progression from undergraduate to graduate programs</p>
-            </div>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-6 mb-8">
-            <div className="flex flex-col items-center text-center">
-              <Clock className="h-6 w-6 text-purple-600 mb-2" />
-              <h5 className="font-medium text-slate-800">Detailed Insights</h5>
-              <p className="text-slate-600 text-xs">Click periods for accomplishments and skills</p>
-            </div>
-            <div className="flex flex-col items-center text-center">
-              <TrendingUp className="h-6 w-6 text-pink-600 mb-2" />
-              <h5 className="font-medium text-slate-800">Growth Tracking</h5>
-              <p className="text-slate-600 text-xs">See how experiences connect and build momentum</p>
-            </div>
-            <div className="flex flex-col items-center text-center">
-              <Calendar className="h-6 w-6 text-orange-600 mb-2" />
-              <h5 className="font-medium text-slate-800">Timeline Navigation</h5>
-              <p className="text-slate-600 text-xs">Navigate through different periods and programs</p>
+            {/* Academic Timeline */}
+            <div className="text-center">
+              <GraduationCap className="h-12 w-12 text-green-600 mx-auto mb-4" />
+              <h4 className="text-lg font-semibold text-slate-800 mb-2">Academic Timeline</h4>
+              <p className="text-slate-600 text-sm">Course progression and degree programs</p>
             </div>
           </div>
 
@@ -73,7 +51,7 @@ export const TimelinePreview = () => {
             </Button>
             <Button
               onClick={() => navigate('/academic-timeline')}
-              className="w-full bg-green-600 hover:bg-green-700 text-white px-8 py-3 text-lg"
+              className="w-full bg-green-600 hover:green-blue-700 text-white px-8 py-3 text-lg"
             >
               View Academic Timeline
             </Button>
