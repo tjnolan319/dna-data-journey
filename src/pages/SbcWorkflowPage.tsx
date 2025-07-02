@@ -34,7 +34,7 @@ const SbcWorkflowPage = () => {
         <div className="space-y-8">
           <div className="text-center">
             <h1 className="text-4xl font-bold text-slate-800 mb-4">
-              Student Business Program <span className="text-blue-600">Development</span>
+              Student Business <span className="text-blue-600">Program Development</span>
             </h1>
             <p className="text-xl text-slate-600 max-w-3xl mx-auto">
               BPMN workflow design for university-backed student entrepreneurship
