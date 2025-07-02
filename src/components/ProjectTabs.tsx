@@ -15,6 +15,13 @@ const projects = [
     status: "NEW!"
   },
   {
+    title: "Student Business Program Development (SBC Workflow)",
+    description: "Designed and refined the process model for launching a university-backed student-owned business initiative",
+    tech: ["BPMN", "Stakeholder Interviews", "Process Design", "Higher Ed Policy Alignment"],
+    impact: "Created BPMN diagram to clarify decision points and workflows between student businesses, the university, and external reviewers. Currently being implemented in pilot.",
+    hasDetailPage: true
+  },
+  {
     title: "Telehealth Platform Growth Strategy",
     description: "Strategic scaling of clinical staff and digital marketing initiatives for healthcare startup",
     tech: ["Market Research", "SEO", "Digital Marketing"],
@@ -144,7 +151,11 @@ export const ProjectTabs = () => {
 
   const handleProjectClick = (project: typeof projects[0]) => {
     if (project.hasDetailPage) {
-      navigate('/genre-category-project');
+      if (project.title === "Genre-Category Pair Advantages at Academy Awards") {
+        navigate('/genre-category-project');
+      } else if (project.title === "Student Business Program Development (SBC Workflow)") {
+        navigate('/sbc-workflow');
+      }
       // Scroll to top after navigation
       setTimeout(() => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -179,7 +190,7 @@ export const ProjectTabs = () => {
           </TabsList>
 
           <TabsContent value="projects" className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
               {projects.map((project, index) => (
                 <Card key={index} className="relative hover:shadow-lg transition-shadow">
                   {project.status && <StatusBanner status={project.status} />}
