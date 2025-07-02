@@ -1,218 +1,133 @@
-import { useEffect, useState, useCallback } from "react";
-import { Dna, Star, ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
-import profilePic from "@/assets/Tim_Nolan_Profile_Pic_Cropped.jpg";
-import { projects, caseStudies, dashboards, publications, certifications } from "./ProjectTabs";
+
+import { useState, useEffect } from "react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { MapPin, Calendar, Users, TrendingUp, ExternalLink } from "lucide-react";
+
+const projects = [
+  {
+    title: "Genre-Category Pair Advantages at Academy Awards",
+    description: "Statistical analysis of Oscar nomination patterns and win probabilities across genre-category combinations",
+    industry: "Entertainment Analytics",
+    impact: "Identified key strategic advantages for film positioning"
+  }
+];
+
+const publications = [
+  {
+    title: "Advanced Predictive Analytics in Sports Performance",
+    journal: "International Journal of Sports Analytics",
+    year: "2024",
+    description: "Comprehensive analysis of machine learning applications in professional sports forecasting",
+    link: "https://example.com/publication"
+  }
+];
 
 export const DNAHero = () => {
   const [isVisible, setIsVisible] = useState(false);
-  const [currentNewItemIndex, setCurrentNewItemIndex] = useState(0);
-  const [clickCount, setClickCount] = useState(0);
-  const [easterEggFound, setEasterEggFound] = useState(false);
-  const [showEgg, setShowEgg] = useState(false);
 
   useEffect(() => {
-    setIsVisible(true);
+    const timer = setTimeout(() => setIsVisible(true), 100);
+    return () => clearTimeout(timer);
   }, []);
 
-  const getNewItems = () => {
-    const newItems = [];
-    projects.forEach(project => {
-      if (project.status === "NEW!") {
-        newItems.push({ title: project.title, type: "Project", description: project.description.slice(0, 60) + "...", tabValue: "projects" });
-      }
-    });
-    caseStudies.forEach(study => {
-      if (study.status === "NEW!") {
-        newItems.push({ title: study.title, type: "Case Study", description: study.description.slice(0, 60) + "...", tabValue: "case-studies" });
-      }
-    });
-    dashboards.forEach(dashboard => {
-      if (dashboard.status === "NEW!") {
-        newItems.push({ title: dashboard.title, type: "Dashboard", description: dashboard.description.slice(0, 60) + "...", tabValue: "dashboards" });
-      }
-    });
-    publications.forEach(pub => {
-      if (pub.status === "NEW!") {
-        newItems.push({ title: pub.title, type: "Publication", description: `${pub.journal} • ${pub.year}`, tabValue: "publications" });
-      }
-    });
-    certifications.forEach(cert => {
-      if (cert.status === "NEW!") {
-        newItems.push({ title: cert.title, type: "Certification", description: `${cert.issuer} • ${cert.year}`, tabValue: "certifications" });
-      }
-    });
-    return newItems;
-  };
-
-  const newItems = getNewItems();
-
-  const resetAutoSlide = useCallback(() => {
-    if (newItems.length > 1) {
-      return setInterval(() => {
-        setCurrentNewItemIndex(prev => (prev + 1) % newItems.length);
-      }, 4000);
-    }
-    return null;
-  }, [newItems.length]);
-
-  useEffect(() => {
-    const interval = resetAutoSlide();
-    return () => interval && clearInterval(interval);
-  }, [resetAutoSlide]);
-
-  const nextItem = () => setCurrentNewItemIndex(prev => (prev + 1) % newItems.length);
-  const prevItem = () => setCurrentNewItemIndex(prev => (prev - 1 + newItems.length) % newItems.length);
-  const goToItem = index => setCurrentNewItemIndex(index);
-
-  const scrollToSection = target => {
-    const element = document.getElementById(target);
-    if (element) element.scrollIntoView({ behavior: 'smooth' });
-  };
-
-  const handleNewItemClick = item => {
-    scrollToSection('projects');
-    setTimeout(() => {
-      window.dispatchEvent(new CustomEvent('switchTab', { detail: { tabValue: item.tabValue } }));
-      setTimeout(() => {
-        const attempts = [
-          () => document.querySelector(`[data-state="inactive"][value="${item.tabValue}"]`),
-          () => document.querySelector(`button[value="${item.tabValue}"]`),
-          () => document.querySelector(`[role="tab"][data-value="${item.tabValue}"]`),
-          () => [...document.querySelectorAll('[role="tab"]')].find(tab => tab.getAttribute('value') === item.tabValue || tab.getAttribute('data-value') === item.tabValue),
-        ];
-        for (const tryTab of attempts) {
-          const el = tryTab();
-          if (el instanceof HTMLElement) {
-            el.click();
-            break;
-          }
-        }
-      }, 200);
-    }, 800);
-  };
-
-  const handleDnaClick = () => {
-    setClickCount(prev => {
-      const nextCount = prev + 1;
-      if (nextCount === 13 && !easterEggFound) {
-        setEasterEggFound(true);
-        setShowEgg(true);
-        // Hide the easter egg after 5 seconds
-        setTimeout(() => {
-          setShowEgg(false);
-          setEasterEggFound(false);
-        }, 5000);
-      }
-      return nextCount;
-    });
-  };
-
   return (
-    <section id="hero" className="min-h-screen flex items-center justify-center pt-16 md:pt-20 px-4 md:px-8">
-      <div className="max-w-7xl mx-auto w-full">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          <div className={`space-y-6 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-10'}`}>
-            <div className="flex flex-col sm:flex-row sm:items-center items-center sm:space-x-4 mb-6">
-              <div className="w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 rounded-full overflow-hidden border-4 border-blue-200 shadow-lg">
-                <img src={profilePic} alt="Timothy Nolan" className="w-full h-full object-cover" />
-              </div>
-              <div className="text-center sm:text-left mt-4 sm:mt-0">
-                <h1 className="text-2xl md:text-3xl font-bold text-slate-800">Timothy Nolan</h1>
-                <p className="text-base md:text-lg text-slate-600 mt-1">Data & Business Strategy Analyst</p>
-              </div>
+    <section className="relative py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-slate-50 to-blue-50 overflow-hidden">
+      {/* Background Elements */}
+      <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23e2e8f0" fill-opacity="0.3"%3E%3Ccircle cx="30" cy="30" r="1"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-40"></div>
+      
+      <div className="max-w-7xl mx-auto relative">
+        <div className={`transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+          {/* Main Hero Content */}
+          <div className="text-center mb-16">
+            <div className="flex justify-center mb-6">
+              <img 
+                src="/src/assets/Tim_Nolan_Profile_Pic_Cropped.jpg" 
+                alt="Tim Nolan" 
+                className="w-32 h-32 rounded-full border-4 border-white shadow-lg object-cover"
+              />
             </div>
-
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-slate-800 leading-tight text-center sm:text-left">
-              What's in my <span className="block text-blue-600">Professional DNA?</span>
-            </h2>
-            <p className="text-base md:text-lg text-slate-600 leading-relaxed text-center sm:text-left">
-              Recent MBA & MS Business Analytics graduate from Bentley University. I combine business strategy, data analytics, and behavioral science in early-stage companies and research environments.
+            
+            <h1 className="text-5xl md:text-6xl font-bold text-slate-800 mb-6">
+              Tim <span className="text-blue-600">Nolan</span>
+            </h1>
+            
+            <p className="text-2xl text-slate-600 mb-8 max-w-3xl mx-auto leading-relaxed">
+              Transforming complex data into <span className="text-blue-600 font-semibold">actionable insights</span> 
+              through advanced analytics and strategic visualization
             </p>
-
-            <div className="flex flex-wrap gap-2 justify-center sm:justify-start">
-              {['Data Analysis', 'Strategic Planning', 'Business Intelligence', 'Behavioral Science'].map((text, i) => (
-                <span
-                  key={i}
-                  className={`px-3 py-1.5 rounded-full text-sm font-medium ${
-                    ['bg-blue-100 text-blue-800', 'bg-green-100 text-green-800', 'bg-purple-100 text-purple-800', 'bg-orange-100 text-orange-800'][i]
-                  }`}
-                >{text}</span>
+            
+            <div className="flex flex-wrap justify-center gap-3 mb-8">
+              {['Data Science', 'Business Analytics', 'Machine Learning', 'Statistical Modeling'].map((skill) => (
+                <Badge key={skill} variant="secondary" className="px-4 py-2 text-sm bg-blue-100 text-blue-800 hover:bg-blue-200">
+                  {skill}
+                </Badge>
               ))}
             </div>
-
-            {newItems.length > 0 && (
-              <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-4 border border-blue-200">
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center space-x-2">
-                    <Star className="h-5 w-5 text-blue-600" />
-                    <h3 className="text-base md:text-lg font-semibold text-slate-800">Latest Updates</h3>
-                  </div>
-                  {newItems.length > 1 && (
-                    <div className="flex items-center space-x-1">
-                      <button onClick={prevItem} className="p-1.5 rounded-full hover:bg-blue-100 text-slate-600 hover:text-blue-600">
-                        <ChevronLeft className="h-4 w-4" />
-                      </button>
-                      <span className="text-sm text-slate-500 px-2">{currentNewItemIndex + 1} / {newItems.length}</span>
-                      <button onClick={nextItem} className="p-1.5 rounded-full hover:bg-blue-100 text-slate-600 hover:text-blue-600">
-                        <ChevronRight className="h-4 w-4" />
-                      </button>
-                    </div>
-                  )}
-                </div>
-
-                <div className="relative overflow-hidden">
-                  <div className="flex transition-transform duration-500 ease-in-out" style={{ transform: `translateX(-${currentNewItemIndex * 100}%)` }}>
-                    {newItems.map((item, index) => (
-                      <div
-                        key={index}
-                        onClick={() => handleNewItemClick(item)}
-                        className="w-full flex-shrink-0 p-3 bg-white rounded-md hover:bg-blue-50 cursor-pointer group border hover:border-blue-200"
-                      >
-                        <div className="flex items-center justify-between mb-2">
-                          <span className="text-xs font-medium text-blue-600 bg-blue-100 px-2 py-1 rounded-full">{item.type}</span>
-                          <ArrowRight className="h-4 w-4 text-slate-400 group-hover:text-blue-600" />
-                        </div>
-                        <h4 className="text-sm font-medium text-slate-800 mb-1 line-clamp-2">{item.title}</h4>
-                        <p className="text-xs text-slate-600 line-clamp-2">{item.description}</p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {newItems.length > 1 && (
-                  <div className="flex justify-center space-x-1 mt-3">
-                    {newItems.map((_, index) => (
-                      <button
-                        key={index}
-                        onClick={() => goToItem(index)}
-                        className={`w-2 h-2 rounded-full ${index === currentNewItemIndex ? 'bg-blue-600' : 'bg-slate-300 hover:bg-slate-400'}`}
-                      />
-                    ))}
-                  </div>
-                )}
+            
+            <div className="flex flex-wrap justify-center gap-6 text-slate-600">
+              <div className="flex items-center space-x-2">
+                <MapPin className="h-5 w-5" />
+                <span>Boston, MA</span>
               </div>
-            )}
+              <div className="flex items-center space-x-2">
+                <Users className="h-5 w-5" />
+                <span>Open to Opportunities</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <TrendingUp className="h-5 w-5" />
+                <span>5+ Years Experience</span>
+              </div>
+            </div>
           </div>
 
-          <div className={`flex justify-center transition-all duration-1000 delay-300 ${isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-10'}`}>
-            <div className="relative cursor-default" onClick={handleDnaClick}>
-              <div className="w-40 h-40 sm:w-48 sm:h-48 md:w-56 md:h-56 lg:w-64 lg:h-64 bg-gradient-to-br from-blue-400 to-purple-600 rounded-full animate-pulse opacity-20"></div>
-              <div className="absolute inset-0 flex items-center justify-center">
-                {showEgg ? (
-                  <div className="text-6xl sm:text-7xl md:text-8xl animate-bounce">🥚</div>
-                ) : (
-                  <Dna className="h-20 w-20 sm:h-24 sm:w-24 md:h-28 md:w-28 lg:w-32 lg:h-32 text-blue-600 animate-spin" style={{ animationDuration: '8s' }} />
-                )}
-              </div>
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-32 h-32 sm:w-40 sm:h-40 md:w-42 md:h-42 lg:w-48 lg:h-48 border-4 border-blue-300 rounded-full animate-ping opacity-30"></div>
-              </div>
-              {showEgg && (
-                <div className="absolute top-full mt-2 text-center w-full text-sm text-pink-600 font-semibold animate-bounce">
-                  You found an easter egg!
+          {/* Featured Work Grid */}
+          <div className="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
+            {/* Featured Project */}
+            <Card className="group hover:shadow-xl transition-all duration-300 border-0 shadow-lg bg-white/80 backdrop-blur-sm">
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <Badge className="bg-green-100 text-green-800 hover:bg-green-200">Featured Project</Badge>
+                  <ExternalLink className="h-4 w-4 text-slate-400 group-hover:text-blue-600 transition-colors" />
                 </div>
-              )}
-            </div>
+                <CardTitle className="text-xl group-hover:text-blue-600 transition-colors">
+                  {projects[0].title}
+                </CardTitle>
+                <CardDescription className="text-slate-600">
+                  {projects[0].industry}
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-slate-700 mb-4">{projects[0].description}</p>
+                <div className="flex items-center space-x-2 text-sm text-green-600">
+                  <TrendingUp className="h-4 w-4" />
+                  <span className="font-medium">{projects[0].impact}</span>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Featured Publication */}
+            <Card className="group hover:shadow-xl transition-all duration-300 border-0 shadow-lg bg-white/80 backdrop-blur-sm">
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <Badge className="bg-purple-100 text-purple-800 hover:bg-purple-200">Latest Publication</Badge>
+                  <ExternalLink className="h-4 w-4 text-slate-400 group-hover:text-blue-600 transition-colors" />
+                </div>
+                <CardTitle className="text-xl group-hover:text-blue-600 transition-colors">
+                  {publications[0].title}
+                </CardTitle>
+                <CardDescription className="text-slate-600">
+                  {publications[0].journal} • {publications[0].year}
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-slate-700 mb-4">{publications[0].description}</p>
+                <div className="flex items-center space-x-2 text-sm text-purple-600">
+                  <Calendar className="h-4 w-4" />
+                  <span className="font-medium">Published {publications[0].year}</span>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </div>
