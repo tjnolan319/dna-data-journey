@@ -1,20 +1,11 @@
-
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, ExternalLink } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 
 const SbcWorkflowPage = () => {
-  const navigate = useNavigate();
-
   const handleBackClick = () => {
-    navigate('/');
-    setTimeout(() => {
-      const element = document.getElementById('projects');
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth' });
-      }
-    }, 100);
+    // In a real app, this would navigate back to portfolio
+    console.log('Navigate back to portfolio');
   };
 
   return (
@@ -37,7 +28,7 @@ const SbcWorkflowPage = () => {
               Student Business <span className="text-blue-600">Program Development</span>
             </h1>
             <p className="text-xl text-slate-600 max-w-3xl mx-auto">
-              BPMN workflow design for university-backed student entrepreneurship
+              BPMN workflow design for university-backed student entrepreneurship programs
             </p>
           </div>
 
@@ -62,12 +53,16 @@ const SbcWorkflowPage = () => {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="bg-white rounded-lg shadow-lg p-6">
-                    <img 
-                      src="/lovable-uploads/86123c0e-3f79-435b-b8fe-13e85b3b7bf5.png" 
-                      alt="SBC Workflow BPMN Diagram" 
-                      className="w-full h-auto rounded-lg"
-                    />
+                  <div className="bg-white rounded-lg shadow-lg p-6 min-h-[400px] flex items-center justify-center">
+                    <div className="text-center text-slate-500">
+                      <div className="mb-4">
+                        <svg className="w-16 h-16 mx-auto mb-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2h2a2 2 0 002-2z" />
+                        </svg>
+                      </div>
+                      <p className="text-lg font-medium">BPMN Workflow Diagram</p>
+                      <p className="text-sm mt-2">Complete process model showing student business program flow</p>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
