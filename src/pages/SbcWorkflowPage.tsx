@@ -188,8 +188,13 @@ const SbcWorkflowPage = () => {
             <img
               src={bpmnImage}
               alt="BPMN Workflow Diagram of Student Business Program - Zoomed"
-              className="rounded-lg shadow-2xl w-full sm:w-auto sm:max-w-none mx-auto block"
-              style={{ minWidth: '100%', minHeight: '100vh', objectFit: 'contain' }}
+              className="rounded-lg shadow-2xl block mx-auto"
+              style={{ 
+                width: 'auto', 
+                height: 'auto',
+                maxWidth: '100%',
+                minWidth: '300px'
+              }}
               onError={(e) => {
                 e.target.style.display = 'none';
                 e.target.nextSibling.style.display = 'flex';
