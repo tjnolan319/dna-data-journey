@@ -1,10 +1,11 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, ExternalLink } from "lucide-react";
+import bpmnImage from "@/assets/BPMN_of_SBC.jpg"; 
 
 const SbcWorkflowPage = () => {
   const handleBackClick = () => {
-    // In a real app, this would navigate back to portfolio
+    
     console.log('Navigate back to portfolio');
   };
 
