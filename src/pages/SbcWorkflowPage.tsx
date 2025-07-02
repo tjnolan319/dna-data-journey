@@ -162,30 +162,27 @@ const SbcWorkflowPage = () => {
 
       {/* Zoom Modal */}
       {isZoomed && (
-        <div className="fixed inset-0 z-50 bg-black bg-opacity-75 p-4 overflow-auto">
-          <div className="min-h-full flex items-start justify-center py-8">
-            <div className="relative">
-              <Button
-                onClick={handleZoomToggle}
-                variant="outline"
-                size="sm"
-                className="fixed top-4 right-4 z-10 bg-white hover:bg-gray-100"
-              >
-                <X className="h-4 w-4" />
-              </Button>
-              <img
-                src={bpmnImage}
-                alt="BPMN Workflow Diagram of Student Business Program - Zoomed"
-                className="rounded-lg shadow-2xl max-w-none"
-                style={{ width: 'auto', height: 'auto' }}
-                onError={(e) => {
-                  e.target.style.display = 'none';
-                  e.target.nextSibling.style.display = 'flex';
-                }}
-              />
-              <div className="hidden items-center justify-center h-96 bg-gray-200 rounded-lg">
-                <p className="text-gray-600">BPMN Diagram Placeholder (Zoomed)</p>
-              </div>
+        <div className="fixed inset-0 z-50 bg-black bg-opacity-75 overflow-auto">
+          <Button
+            onClick={handleZoomToggle}
+            variant="outline"
+            size="sm"
+            className="fixed top-4 right-4 z-[60] bg-white hover:bg-gray-100"
+          >
+            <X className="h-4 w-4" />
+          </Button>
+          <div className="p-4 min-h-full">
+            <img
+              src={bpmnImage}
+              alt="BPMN Workflow Diagram of Student Business Program - Zoomed"
+              className="rounded-lg shadow-2xl w-full sm:w-auto sm:min-w-[800px] lg:min-w-[1200px] mx-auto block"
+              onError={(e) => {
+                e.target.style.display = 'none';
+                e.target.nextSibling.style.display = 'flex';
+              }}
+            />
+            <div className="hidden items-center justify-center h-96 bg-gray-200 rounded-lg mx-auto">
+              <p className="text-gray-600">BPMN Diagram Placeholder (Zoomed)</p>
             </div>
           </div>
         </div>
