@@ -1,12 +1,18 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, ExternalLink } from "lucide-react";
+import { ArrowLeft, ZoomIn, X } from "lucide-react";
+import { useState } from "react";
 import bpmnImage from "@/assets/BPMN_of_SBC.jpg";
 
 const SbcWorkflowPage = () => {
+  const [isZoomed, setIsZoomed] = useState(false);
+  
   const handleBackClick = () => {
-    // In a real app, this would navigate back to portfolio
-    console.log('Navigate back to portfolio');
+    window.history.back();
+  };
+
+  const handleZoomToggle = () => {
+    setIsZoomed(!isZoomed);
   };
 
   return (
@@ -40,13 +46,13 @@ const SbcWorkflowPage = () => {
                   <CardTitle className="flex items-center justify-between">
                     <span>SBC Workflow Process Model</span>
                     <Button
-                      onClick={() => window.open('https://github.com/tjnolan319', '_blank')}
+                      onClick={handleZoomToggle}
                       variant="outline"
                       size="sm"
                       className="flex items-center space-x-2"
                     >
-                      <span>View on GitHub</span>
-                      <ExternalLink className="h-3 w-3" />
+                      <ZoomIn className="h-3 w-3" />
+                      <span>Zoom</span>
                     </Button>
                   </CardTitle>
                   <CardDescription>
@@ -58,7 +64,8 @@ const SbcWorkflowPage = () => {
                     <img
                       src={bpmnImage}
                       alt="BPMN Workflow Diagram of Student Business Program"
-                      className="max-w-full h-auto rounded-lg shadow-md"
+                      className="max-w-full h-auto rounded-lg shadow-md cursor-pointer hover:opacity-80 transition-opacity"
+                      onClick={handleZoomToggle}
                     />
                   </div>
                 </CardContent>
@@ -138,6 +145,27 @@ const SbcWorkflowPage = () => {
           </div>
         </div>
       </div>
+
+      {/* Zoom Modal */}
+      {isZoomed && (
+        <div className="fixed inset-0 z-50 bg-black bg-opacity-75 flex items-center justify-center p-4">
+          <div className="relative max-w-7xl max-h-full">
+            <Button
+              onClick={handleZoomToggle}
+              variant="outline"
+              size="sm"
+              className="absolute top-4 right-4 z-10 bg-white hover:bg-gray-100"
+            >
+              <X className="h-4 w-4" />
+            </Button>
+            <img
+              src={bpmnImage}
+              alt="BPMN Workflow Diagram of Student Business Program - Zoomed"
+              className="max-w-full max-h-full rounded-lg shadow-2xl"
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 };
