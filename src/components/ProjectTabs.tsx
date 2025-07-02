@@ -89,7 +89,7 @@ export const ProjectTabs = () => {
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div className="flex-1">
                   <div className="flex items-center space-x-3 mb-2">
-                    <projects[activeProject].icon className="h-6 w-6 text-blue-600" />
+                    {React.createElement(projects[activeProject].icon, { className: "h-6 w-6 text-blue-600" })}
                     <Badge variant="secondary" className="bg-blue-100 text-blue-800">
                       {projects[activeProject].tagline}
                     </Badge>
