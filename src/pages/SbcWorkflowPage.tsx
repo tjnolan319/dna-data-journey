@@ -2,13 +2,20 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, ZoomIn, X } from "lucide-react";
 import { useState } from "react";
+
 import bpmnImage from "@/assets/BPMN_of_SBC.jpg";
 
 const SbcWorkflowPage = () => {
   const [isZoomed, setIsZoomed] = useState(false);
   
   const handleBackClick = () => {
-    window.history.back();
+    // Use a more reliable navigation method
+    if (window.history.length > 1) {
+      window.history.back();
+    } else {
+      // Fallback to home page
+      window.location.href = '/';
+    }
   };
 
   const handleZoomToggle = () => {
@@ -21,7 +28,7 @@ const SbcWorkflowPage = () => {
         <div className="mb-8">
           <Button
             onClick={handleBackClick}
-            variant="outline"
+            variant="ghost"
             className="flex items-center space-x-2"
           >
             <ArrowLeft className="h-4 w-4" />
@@ -66,7 +73,14 @@ const SbcWorkflowPage = () => {
                       alt="BPMN Workflow Diagram of Student Business Program"
                       className="max-w-full h-auto rounded-lg shadow-md cursor-pointer hover:opacity-80 transition-opacity"
                       onClick={handleZoomToggle}
+                      onError={(e) => {
+                        e.target.style.display = 'none';
+                        e.target.nextSibling.style.display = 'flex';
+                      }}
                     />
+                    <div className="hidden items-center justify-center h-64 bg-gray-100 rounded-lg">
+                      <p className="text-gray-500">BPMN Diagram Placeholder</p>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
@@ -162,7 +176,14 @@ const SbcWorkflowPage = () => {
               src={bpmnImage}
               alt="BPMN Workflow Diagram of Student Business Program - Zoomed"
               className="max-w-full max-h-full rounded-lg shadow-2xl"
+              onError={(e) => {
+                e.target.style.display = 'none';
+                e.target.nextSibling.style.display = 'flex';
+              }}
             />
+            <div className="hidden items-center justify-center h-96 bg-gray-200 rounded-lg">
+              <p className="text-gray-600">BPMN Diagram Placeholder (Zoomed)</p>
+            </div>
           </div>
         </div>
       )}
