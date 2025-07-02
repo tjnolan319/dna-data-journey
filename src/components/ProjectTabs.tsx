@@ -16,9 +16,9 @@ const projects = [
   },
   {
     title: "Student Business Program Development (SBC Workflow)",
-    description: "Designed and refined the process model for launching a university-backed student-owned business initiative",
+    description: "Defined the end-to-end process for turning student business proposals into university-supported ventures",
     tech: ["BPMN", "Stakeholder Interviews", "Process Design", "Higher Ed Policy Alignment"],
-    impact: "Created BPMN diagram to clarify decision points and workflows between student businesses, the university, and external reviewers. Currently being implemented in pilot.",
+    impact: "Developed a BPMN model for coordinating student ventures with university and external stakeholders",
     hasDetailPage: true
   },
   {
