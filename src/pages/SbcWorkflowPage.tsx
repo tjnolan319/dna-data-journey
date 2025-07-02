@@ -20,6 +20,12 @@ const SbcWorkflowPage = () => {
 
   const handleZoomToggle = () => {
     setIsZoomed(!isZoomed);
+    // Prevent body scroll when modal is open
+    if (!isZoomed) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
   };
 
   return (
@@ -162,7 +168,14 @@ const SbcWorkflowPage = () => {
 
       {/* Zoom Modal */}
       {isZoomed && (
-        <div className="fixed inset-0 z-50 bg-black bg-opacity-75 overflow-auto">
+        <div 
+          className="fixed inset-0 z-50 bg-black bg-opacity-90 overflow-auto"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              handleZoomToggle();
+            }
+          }}
+        >
           <Button
             onClick={handleZoomToggle}
             variant="outline"
@@ -171,11 +184,12 @@ const SbcWorkflowPage = () => {
           >
             <X className="h-4 w-4" />
           </Button>
-          <div className="p-4 min-h-full">
+          <div className="p-4">
             <img
               src={bpmnImage}
               alt="BPMN Workflow Diagram of Student Business Program - Zoomed"
-              className="rounded-lg shadow-2xl w-full sm:w-auto sm:min-w-[800px] lg:min-w-[1200px] mx-auto block"
+              className="rounded-lg shadow-2xl w-full sm:w-auto sm:max-w-none mx-auto block"
+              style={{ minWidth: '100%', minHeight: '100vh', objectFit: 'contain' }}
               onError={(e) => {
                 e.target.style.display = 'none';
                 e.target.nextSibling.style.display = 'flex';
