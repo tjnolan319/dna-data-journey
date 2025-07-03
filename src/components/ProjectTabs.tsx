@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { ExternalLink, ArrowRight, FlaskConical, BookOpen, Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { fetchProjects } from "../projectApi"; // Import your API function
+import { fetchProjects } from "../api/projectApi"; // Import your API function
 
 // Keep the static data for other tabs
 const publications = [
