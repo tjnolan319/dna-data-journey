@@ -1,7 +1,8 @@
 import { useEffect, useState, useCallback } from "react";
 import { Dna, Star, ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import profilePic from "@/assets/Tim_Nolan_Profile_Pic_Cropped.jpg";
-import { projects, caseStudies, dashboards, publications, certifications } from "./ProjectTabs";
+import { caseStudies, dashboards, publications, certifications } from "./ProjectTabs";
+import { fetchProjects } from "@/api/projectApi";
 
 export const DNAHero = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -9,18 +10,50 @@ export const DNAHero = () => {
   const [clickCount, setClickCount] = useState(0);
   const [easterEggFound, setEasterEggFound] = useState(false);
   const [showEgg, setShowEgg] = useState(false);
+  const [projects, setProjects] = useState([]);
+  const [projectsLoading, setProjectsLoading] = useState(true);
+  const [projectsError, setProjectsError] = useState(null);
 
   useEffect(() => {
     setIsVisible(true);
   }, []);
 
-  const getNewItems = () => {
+  // Fetch projects from API
+  useEffect(() => {
+    const loadProjects = async () => {
+      try {
+        setProjectsLoading(true);
+        const fetchedProjects = await fetchProjects();
+        setProjects(fetchedProjects);
+        setProjectsError(null);
+      } catch (error) {
+        console.error('Error loading projects:', error);
+        setProjectsError(error.message);
+        setProjects([]); // Fallback to empty array
+      } finally {
+        setProjectsLoading(false);
+      }
+    };
+
+    loadProjects();
+  }, []);
+
+  const getNewItems = useCallback(() => {
     const newItems = [];
+    
+    // Add projects from API
     projects.forEach(project => {
       if (project.status === "NEW!") {
-        newItems.push({ title: project.title, type: "Project", description: project.description.slice(0, 60) + "...", tabValue: "projects" });
+        newItems.push({ 
+          title: project.title, 
+          type: "Project", 
+          description: project.description ? project.description.slice(0, 60) + "..." : "No description available", 
+          tabValue: "projects" 
+        });
       }
     });
+
+    // Keep existing static data for other categories
     caseStudies.forEach(study => {
       if (study.status === "NEW!") {
         newItems.push({ title: study.title, type: "Case Study", description: study.description.slice(0, 60) + "...", tabValue: "case-studies" });
@@ -42,7 +75,7 @@ export const DNAHero = () => {
       }
     });
     return newItems;
-  };
+  }, [projects]);
 
   const newItems = getNewItems();
 
@@ -140,7 +173,33 @@ export const DNAHero = () => {
               ))}
             </div>
 
-            {newItems.length > 0 && (
+            {/* Show loading state for projects */}
+            {projectsLoading && (
+              <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-4 border border-blue-200">
+                <div className="flex items-center space-x-2 mb-3">
+                  <Star className="h-5 w-5 text-blue-600 animate-pulse" />
+                  <h3 className="text-base md:text-lg font-semibold text-slate-800">Loading Updates...</h3>
+                </div>
+                <div className="bg-white rounded-md p-3 animate-pulse">
+                  <div className="h-4 bg-slate-200 rounded w-3/4 mb-2"></div>
+                  <div className="h-3 bg-slate-200 rounded w-1/2"></div>
+                </div>
+              </div>
+            )}
+
+            {/* Show error state for projects */}
+            {projectsError && (
+              <div className="bg-gradient-to-r from-red-50 to-orange-50 rounded-lg p-4 border border-red-200">
+                <div className="flex items-center space-x-2 mb-3">
+                  <Star className="h-5 w-5 text-red-600" />
+                  <h3 className="text-base md:text-lg font-semibold text-slate-800">Unable to Load Projects</h3>
+                </div>
+                <p className="text-sm text-red-600">{projectsError}</p>
+              </div>
+            )}
+
+            {/* Show new items when not loading and no error */}
+            {!projectsLoading && !projectsError && newItems.length > 0 && (
               <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-4 border border-blue-200">
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center space-x-2">
