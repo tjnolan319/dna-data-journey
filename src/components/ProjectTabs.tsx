@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ExternalLink } from "lucide-react";
+import { ExternalLink, ArrowRight, FlaskConical, BookOpen } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const projects = [
@@ -109,6 +109,16 @@ const dashboards = [
   }
 ];
 
+const labNotes = [
+  {
+    title: "Lab Notes",
+    subtitle: "The Analytical Notebook",
+    description: "Deep dives into my professional methodology, case studies, and analytical frameworks. Where curiosity meets systematic investigation.",
+    entries: 12,
+    status: "Recently updated"
+  }
+];
+
 const StatusBanner = ({ status }: { status: string }) => {
   const getStatusStyles = (status: string) => {
     switch (status) {
@@ -181,12 +191,13 @@ export const ProjectTabs = () => {
         </h2>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 max-w-4xl mx-auto mb-8 h-auto gap-1 p-1">
+          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 max-w-5xl mx-auto mb-8 h-auto gap-1 p-1">
             <TabsTrigger value="projects" className="text-xs sm:text-sm py-2 px-2">Projects</TabsTrigger>
             <TabsTrigger value="case-studies" className="text-xs sm:text-sm py-2 px-2">Case Studies</TabsTrigger>
             <TabsTrigger value="dashboards" className="text-xs sm:text-sm py-2 px-2">Dashboards</TabsTrigger>
             <TabsTrigger value="publications" className="text-xs sm:text-sm py-2 px-2">Publications</TabsTrigger>
             <TabsTrigger value="certifications" className="text-xs sm:text-sm py-2 px-2">Certifications</TabsTrigger>
+            <TabsTrigger value="lab-notes" className="text-xs sm:text-sm py-2 px-2">Lab Notes</TabsTrigger>
           </TabsList>
 
           <TabsContent value="projects" className="space-y-6">
@@ -331,10 +342,46 @@ export const ProjectTabs = () => {
               ))}
             </div>
           </TabsContent>
+
+          <TabsContent value="lab-notes" className="space-y-6">
+            <div className="max-w-2xl mx-auto">
+              {labNotes.map((note, index) => (
+                <div key={index} className="bg-gradient-to-br from-slate-50 to-blue-50 border border-slate-200 rounded-lg p-6 hover:shadow-lg transition-all duration-300 group cursor-pointer">
+                  <div className="flex items-start justify-between">
+                    <div className="flex items-center space-x-3 mb-3">
+                      <div className="bg-blue-100 p-2 rounded-lg">
+                        <FlaskConical className="w-5 h-5 text-blue-600" />
+                      </div>
+                      <div>
+                        <h3 className="text-xl font-semibold text-slate-800">{note.title}</h3>
+                        <p className="text-sm text-slate-500">{note.subtitle}</p>
+                      </div>
+                    </div>
+                    <ArrowRight className="w-5 h-5 text-slate-400 group-hover:text-blue-600 group-hover:translate-x-1 transition-all duration-200" />
+                  </div>
+                  
+                  <p className="text-slate-600 text-sm leading-relaxed mb-4">
+                    {note.description}
+                  </p>
+                  
+                  <div className="flex items-center space-x-4 text-xs text-slate-500">
+                    <div className="flex items-center space-x-1">
+                      <BookOpen className="w-3 h-3" />
+                      <span>{note.entries} entries</span>
+                    </div>
+                    <div className="flex items-center space-x-1">
+                      <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+                      <span>{note.status}</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </TabsContent>
         </Tabs>
       </div>
     </section>
   );
 };
 
-export { projects, caseStudies, dashboards, publications, certifications };
+export { projects, caseStudies, dashboards, publications, certifications, labNotes };
