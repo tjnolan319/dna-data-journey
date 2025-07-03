@@ -159,12 +159,8 @@ export const ProjectTabs = () => {
   }, []);
 
   const handleProjectClick = (project) => {
-    if (project.hasDetailPage) {
-      if (project.title === "Genre-Category Pair Advantages at Academy Awards") {
-        navigate('/genre-category-project');
-      } else if (project.title === "Student Business Program Development (SBC Workflow)") {
-        navigate('/sbc-workflow');
-      }
+    if (project.slug) {
+      navigate(`/${project.slug}`);
       // Scroll to top after navigation
       setTimeout(() => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -235,7 +231,7 @@ export const ProjectTabs = () => {
                         </div>
                         <div className="pt-2 border-t">
                           <p className="text-sm font-medium text-green-600 mb-2">{project.impact}</p>
-                          {project.hasDetailPage && (
+                          {project.slug && (
                             <Button
                               onClick={() => handleProjectClick(project)}
                               variant="outline"
