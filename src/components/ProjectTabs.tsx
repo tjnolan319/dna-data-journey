@@ -2,34 +2,11 @@ import { useState, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ExternalLink, ArrowRight, FlaskConical, BookOpen } from "lucide-react";
+import { ExternalLink, ArrowRight, FlaskConical, BookOpen, Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { fetchProjects } from "./projectsApi"; // Import your API function
 
-const projects = [
-  {
-    title: "Genre-Category Pair Advantages at Academy Awards",
-    description: "Data science analysis of Academy Award patterns using statistical methods",
-    tech: ["Python", "Statistical Analysis", "Deepnote"],
-    impact: "Published research findings",
-    hasDetailPage: true,
-    status: "NEW!"
-  },
-  {
-    title: "Student Business Program Development (SBC Workflow)",
-    description: "Defined the end-to-end process for turning student business proposals into university-supported ventures",
-    tech: ["BPMN", "Stakeholder Interviews", "Process Design", "Higher Ed Policy Alignment"],
-    impact: "Developed a BPMN model for coordinating student ventures with university and external stakeholders",
-    hasDetailPage: true
-  },
-  {
-    title: "Telehealth Platform Growth Strategy",
-    description: "Strategic scaling of clinical staff and digital marketing initiatives for healthcare startup",
-    tech: ["Market Research", "SEO", "Digital Marketing"],
-    impact: "Scaled from 0 to 10 clinical staff in 18 months",
-    status: "UNDER CONSTRUCTION"
-  }
-];
-
+// Keep the static data for other tabs
 const publications = [
   {
     title: "Are my peers impulsive? Normative perceptions of impulsivity and associations with personal impulsivity and alcohol use outcomes",
@@ -143,6 +120,28 @@ const StatusBanner = ({ status }: { status: string }) => {
 export const ProjectTabs = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("projects");
+  const [projects, setProjects] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Fetch projects from API
+  useEffect(() => {
+    const loadProjects = async () => {
+      try {
+        setIsLoading(true);
+        const projectsData = await fetchProjects();
+        setProjects(projectsData);
+        setError(null);
+      } catch (err) {
+        setError(err.message);
+        console.error('Error fetching projects:', err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadProjects();
+  }, []);
 
   // Listen for tab switch events from the hero section
   useEffect(() => {
@@ -159,7 +158,7 @@ export const ProjectTabs = () => {
     };
   }, []);
 
-  const handleProjectClick = (project: typeof projects[0]) => {
+  const handleProjectClick = (project) => {
     if (project.hasDetailPage) {
       if (project.title === "Genre-Category Pair Advantages at Academy Awards") {
         navigate('/genre-category-project');
@@ -173,7 +172,7 @@ export const ProjectTabs = () => {
     }
   };
 
-  const handleDashboardClick = (dashboard: typeof dashboards[0]) => {
+  const handleDashboardClick = (dashboard) => {
     if (dashboard.hasDetailPage) {
       navigate('/skillset-network');
       // Scroll to top after navigation
@@ -201,45 +200,59 @@ export const ProjectTabs = () => {
           </TabsList>
 
           <TabsContent value="projects" className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-              {projects.map((project, index) => (
-                <Card key={index} className="relative hover:shadow-lg transition-shadow">
-                  {project.status && <StatusBanner status={project.status} />}
-                  <CardHeader className={`${project.status ? 'pt-16' : 'pt-6'}`}>
-                    <CardTitle className="text-lg">{project.title}</CardTitle>
-                    <CardDescription>{project.description}</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-3">
-                      <div>
-                        <h4 className="font-medium text-sm text-slate-700 mb-2">Technologies:</h4>
-                        <div className="flex flex-wrap gap-2">
-                          {project.tech.map((tech) => (
-                            <span key={tech} className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
-                              {tech}
-                            </span>
-                          ))}
+            {isLoading ? (
+              <div className="flex justify-center items-center py-12">
+                <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
+                <span className="ml-2 text-slate-600">Loading projects...</span>
+              </div>
+            ) : error ? (
+              <div className="text-center py-12">
+                <p className="text-red-600 mb-4">Error loading projects: {error}</p>
+                <Button onClick={() => window.location.reload()} variant="outline">
+                  Retry
+                </Button>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+                {projects.map((project, index) => (
+                  <Card key={project.id || index} className="relative hover:shadow-lg transition-shadow">
+                    {project.status && <StatusBanner status={project.status} />}
+                    <CardHeader className={`${project.status ? 'pt-16' : 'pt-6'}`}>
+                      <CardTitle className="text-lg">{project.title}</CardTitle>
+                      <CardDescription>{project.description}</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-3">
+                        <div>
+                          <h4 className="font-medium text-sm text-slate-700 mb-2">Technologies:</h4>
+                          <div className="flex flex-wrap gap-2">
+                            {(project.tech || []).map((tech, techIndex) => (
+                              <span key={techIndex} className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
+                                {tech}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                        <div className="pt-2 border-t">
+                          <p className="text-sm font-medium text-green-600 mb-2">{project.impact}</p>
+                          {project.hasDetailPage && (
+                            <Button
+                              onClick={() => handleProjectClick(project)}
+                              variant="outline"
+                              size="sm"
+                              className="flex items-center space-x-2"
+                            >
+                              <span>View Details</span>
+                              <ExternalLink className="h-3 w-3" />
+                            </Button>
+                          )}
                         </div>
                       </div>
-                      <div className="pt-2 border-t">
-                        <p className="text-sm font-medium text-green-600 mb-2">{project.impact}</p>
-                        {project.hasDetailPage && (
-                          <Button
-                            onClick={() => handleProjectClick(project)}
-                            variant="outline"
-                            size="sm"
-                            className="flex items-center space-x-2"
-                          >
-                            <span>View Details</span>
-                            <ExternalLink className="h-3 w-3" />
-                          </Button>
-                        )}
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            )}
           </TabsContent>
 
           <TabsContent value="case-studies" className="space-y-6">
@@ -384,4 +397,4 @@ export const ProjectTabs = () => {
   );
 };
 
-export { projects, caseStudies, dashboards, publications, certifications, labNotes };
+export { caseStudies, dashboards, publications, certifications, labNotes };
