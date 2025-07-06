@@ -7,7 +7,7 @@ export async function fetchProjects() {
     throw new Error('Missing Supabase configuration. Please check your GitHub Secrets.');
   }
   
-  const response = await fetch(`${SUPABASE_URL}/rest/v1/projects?select=*&status=neq.DRAFT`, {
+  const response = await fetch(`${SUPABASE_URL}/rest/v1/projects?select=*&or=(status.neq.DRAFT,status.is.null)`, {
     headers: {
       apikey: SUPABASE_ANON_KEY,
       Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
