@@ -536,4 +536,4 @@ export const ProjectTabs = () => {
   );
 };
 
-export { caseStudies, dashboards, publications, certifications, labNotes };
+export { ProjectTabs };

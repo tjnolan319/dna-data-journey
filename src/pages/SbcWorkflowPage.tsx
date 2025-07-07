@@ -80,8 +80,12 @@ const SbcWorkflowPage = () => {
                       className="max-w-full h-auto rounded-lg shadow-md cursor-pointer hover:opacity-80 transition-opacity"
                       onClick={handleZoomToggle}
                       onError={(e) => {
-                        e.target.style.display = 'none';
-                        e.target.nextSibling.style.display = 'flex';
+                        const target = e.target as HTMLImageElement;
+                        const nextSibling = target.nextElementSibling as HTMLElement;
+                        target.style.display = 'none';
+                        if (nextSibling) {
+                          nextSibling.style.display = 'flex';
+                        }
                       }}
                     />
                     <div className="hidden items-center justify-center h-64 bg-gray-100 rounded-lg">
@@ -196,8 +200,12 @@ const SbcWorkflowPage = () => {
                 minWidth: '300px'
               }}
               onError={(e) => {
-                e.target.style.display = 'none';
-                e.target.nextSibling.style.display = 'flex';
+                const target = e.target as HTMLImageElement;
+                const nextSibling = target.nextElementSibling as HTMLElement;
+                target.style.display = 'none';
+                if (nextSibling) {
+                  nextSibling.style.display = 'flex';
+                }
               }}
             />
             <div className="hidden items-center justify-center h-96 bg-gray-200 rounded-lg mx-auto">
