@@ -301,6 +301,30 @@ export const ProjectTabs = () => {
     loadCertifications();
   };
 
+  // Sort function for status priority
+  const sortByStatus = (items) => {
+    const statusOrder = {
+      'NEW!': 1,
+      'IN PROGRESS': 2,
+      null: 3,
+      undefined: 3,
+      'UNDER CONSTRUCTION': 4
+    };
+    
+    return [...items].sort((a, b) => {
+      const aStatus = statusOrder[a.status] || 3;
+      const bStatus = statusOrder[b.status] || 3;
+      return aStatus - bStatus;
+    });
+  };
+
+  // Grid alignment function
+  const getGridClasses = (count) => {
+    if (count === 1) return "grid grid-cols-1 gap-6 max-w-md mx-auto";
+    if (count === 2) return "grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl mx-auto";
+    return "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto";
+  };
+
   return (
     <section id="projects" className="py-20 px-4 sm:px-6 lg:px-8 bg-white">
       <div className="max-w-7xl mx-auto">
@@ -324,8 +348,8 @@ export const ProjectTabs = () => {
             ) : projectsError ? (
               <ErrorMessage message={projectsError} onRetry={retryProjects} />
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-                {projects.map((project, index) => (
+              <div className={getGridClasses(projects.length)}>
+                {sortByStatus(projects).map((project, index) => (
                   <Card key={project.id || index} className="relative hover:shadow-lg transition-shadow">
                     {project.status && <StatusBanner status={project.status} />}
                     <CardHeader className={`${project.status ? 'pt-16' : 'pt-6'}`}>
@@ -372,8 +396,8 @@ export const ProjectTabs = () => {
             ) : caseStudiesError ? (
               <ErrorMessage message={caseStudiesError} onRetry={retryCaseStudies} />
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-                {caseStudies.map((study, index) => (
+              <div className={getGridClasses(caseStudies.length)}>
+                {sortByStatus(caseStudies).map((study, index) => (
                   <Card key={study.id || index} className="relative hover:shadow-lg transition-shadow">
                     {study.status && <StatusBanner status={study.status} />}
                     <CardHeader className={`${study.status ? 'pt-16' : 'pt-6'}`}>
@@ -396,8 +420,8 @@ export const ProjectTabs = () => {
             ) : dashboardsError ? (
               <ErrorMessage message={dashboardsError} onRetry={retryDashboards} />
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-                {dashboards.map((dashboard, index) => (
+              <div className={getGridClasses(dashboards.length)}>
+                {sortByStatus(dashboards).map((dashboard, index) => (
                   <Card key={dashboard.id || index} className="relative hover:shadow-lg transition-shadow">
                     {dashboard.status && <StatusBanner status={dashboard.status} />}
                     <CardHeader className={`${dashboard.status ? 'pt-16' : 'pt-6'}`}>
@@ -444,8 +468,8 @@ export const ProjectTabs = () => {
             ) : publicationsError ? (
               <ErrorMessage message={publicationsError} onRetry={retryPublications} />
             ) : (
-              <div className="grid gap-6 max-w-4xl mx-auto">
-                {publications.map((pub, index) => (
+              <div className={getGridClasses(publications.length)}>
+                {sortByStatus(publications).map((pub, index) => (
                   <Card key={pub.id || index} className="relative hover:shadow-lg transition-shadow">
                     {pub.status && <StatusBanner status={pub.status} />}
                     <CardHeader className={`${pub.status ? 'pt-16' : 'pt-6'}`}>
@@ -478,8 +502,8 @@ export const ProjectTabs = () => {
             ) : certificationsError ? (
               <ErrorMessage message={certificationsError} onRetry={retryCertifications} />
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-                {certifications.map((cert, index) => (
+              <div className={getGridClasses(certifications.length)}>
+                {sortByStatus(certifications).map((cert, index) => (
                   <Card key={cert.id || index} className="relative hover:shadow-lg transition-shadow">
                     {cert.status && <StatusBanner status={cert.status} />}
                     <CardHeader className={`${cert.status ? 'pt-16' : 'pt-6'}`}>
