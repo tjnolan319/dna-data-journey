@@ -374,8 +374,9 @@ export const ProjectTabs = () => {
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
                 {caseStudies.map((study, index) => (
-                  <Card key={study.id || index} className="hover:shadow-lg transition-shadow">
-                    <CardHeader>
+                  <Card key={study.id || index} className="relative hover:shadow-lg transition-shadow">
+                    {study.status && <StatusBanner status={study.status} />}
+                    <CardHeader className={`${study.status ? 'pt-16' : 'pt-6'}`}>
                       <CardTitle className="text-lg">{study.title}</CardTitle>
                       <CardDescription>{study.industry}</CardDescription>
                     </CardHeader>
@@ -445,8 +446,9 @@ export const ProjectTabs = () => {
             ) : (
               <div className="grid gap-6 max-w-4xl mx-auto">
                 {publications.map((pub, index) => (
-                  <Card key={pub.id || index} className="hover:shadow-lg transition-shadow">
-                    <CardHeader>
+                  <Card key={pub.id || index} className="relative hover:shadow-lg transition-shadow">
+                    {pub.status && <StatusBanner status={pub.status} />}
+                    <CardHeader className={`${pub.status ? 'pt-16' : 'pt-6'}`}>
                       <CardTitle className="text-lg">{pub.title}</CardTitle>
                       <CardDescription>{pub.journal} • {pub.year}</CardDescription>
                     </CardHeader>
