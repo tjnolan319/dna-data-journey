@@ -1,8 +1,13 @@
 import { useEffect, useState, useCallback } from "react";
 import { Dna, Star, ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import profilePic from "@/assets/Tim_Nolan_Profile_Pic_Cropped.jpg";
-import { caseStudies, dashboards, publications, certifications } from "./ProjectTabs";
-import { fetchProjects } from "@/api/projectApi";
+import { 
+  fetchProjects, 
+  fetchCaseStudies, 
+  fetchDashboards, 
+  fetchPublications, 
+  fetchCertifications 
+} from "@/api/projectApi";
 
 export const DNAHero = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -10,9 +15,27 @@ export const DNAHero = () => {
   const [clickCount, setClickCount] = useState(0);
   const [easterEggFound, setEasterEggFound] = useState(false);
   const [showEgg, setShowEgg] = useState(false);
+  
+  // State for all data sections
   const [projects, setProjects] = useState([]);
+  const [caseStudies, setCaseStudies] = useState([]);
+  const [dashboards, setDashboards] = useState([]);
+  const [publications, setPublications] = useState([]);
+  const [certifications, setCertifications] = useState([]);
+  
+  // Loading states
   const [projectsLoading, setProjectsLoading] = useState(true);
+  const [caseStudiesLoading, setCaseStudiesLoading] = useState(true);
+  const [dashboardsLoading, setDashboardsLoading] = useState(true);
+  const [publicationsLoading, setPublicationsLoading] = useState(true);
+  const [certificationsLoading, setCertificationsLoading] = useState(true);
+  
+  // Error states
   const [projectsError, setProjectsError] = useState(null);
+  const [caseStudiesError, setCaseStudiesError] = useState(null);
+  const [dashboardsError, setDashboardsError] = useState(null);
+  const [publicationsError, setPublicationsError] = useState(null);
+  const [certificationsError, setCertificationsError] = useState(null);
 
   useEffect(() => {
     setIsVisible(true);
@@ -29,13 +52,93 @@ export const DNAHero = () => {
       } catch (error) {
         console.error('Error loading projects:', error);
         setProjectsError(error.message);
-        setProjects([]); // Fallback to empty array
+        setProjects([]);
       } finally {
         setProjectsLoading(false);
       }
     };
 
     loadProjects();
+  }, []);
+
+  // Fetch case studies from API
+  useEffect(() => {
+    const loadCaseStudies = async () => {
+      try {
+        setCaseStudiesLoading(true);
+        const fetchedCaseStudies = await fetchCaseStudies();
+        setCaseStudies(fetchedCaseStudies);
+        setCaseStudiesError(null);
+      } catch (error) {
+        console.error('Error loading case studies:', error);
+        setCaseStudiesError(error.message);
+        setCaseStudies([]);
+      } finally {
+        setCaseStudiesLoading(false);
+      }
+    };
+
+    loadCaseStudies();
+  }, []);
+
+  // Fetch dashboards from API
+  useEffect(() => {
+    const loadDashboards = async () => {
+      try {
+        setDashboardsLoading(true);
+        const fetchedDashboards = await fetchDashboards();
+        setDashboards(fetchedDashboards);
+        setDashboardsError(null);
+      } catch (error) {
+        console.error('Error loading dashboards:', error);
+        setDashboardsError(error.message);
+        setDashboards([]);
+      } finally {
+        setDashboardsLoading(false);
+      }
+    };
+
+    loadDashboards();
+  }, []);
+
+  // Fetch publications from API
+  useEffect(() => {
+    const loadPublications = async () => {
+      try {
+        setPublicationsLoading(true);
+        const fetchedPublications = await fetchPublications();
+        setPublications(fetchedPublications);
+        setPublicationsError(null);
+      } catch (error) {
+        console.error('Error loading publications:', error);
+        setPublicationsError(error.message);
+        setPublications([]);
+      } finally {
+        setPublicationsLoading(false);
+      }
+    };
+
+    loadPublications();
+  }, []);
+
+  // Fetch certifications from API
+  useEffect(() => {
+    const loadCertifications = async () => {
+      try {
+        setCertificationsLoading(true);
+        const fetchedCertifications = await fetchCertifications();
+        setCertifications(fetchedCertifications);
+        setCertificationsError(null);
+      } catch (error) {
+        console.error('Error loading certifications:', error);
+        setCertificationsError(error.message);
+        setCertifications([]);
+      } finally {
+        setCertificationsLoading(false);
+      }
+    };
+
+    loadCertifications();
   }, []);
 
   const getNewItems = useCallback(() => {
@@ -53,29 +156,56 @@ export const DNAHero = () => {
       }
     });
 
-    // Keep existing static data for other categories
+    // Add case studies from API
     caseStudies.forEach(study => {
       if (study.status === "NEW!") {
-        newItems.push({ title: study.title, type: "Case Study", description: study.description.slice(0, 60) + "...", tabValue: "case-studies" });
+        newItems.push({ 
+          title: study.title, 
+          type: "Case Study", 
+          description: study.description ? study.description.slice(0, 60) + "..." : "No description available", 
+          tabValue: "case-studies" 
+        });
       }
     });
+
+    // Add dashboards from API
     dashboards.forEach(dashboard => {
       if (dashboard.status === "NEW!") {
-        newItems.push({ title: dashboard.title, type: "Dashboard", description: dashboard.description.slice(0, 60) + "...", tabValue: "dashboards" });
+        newItems.push({ 
+          title: dashboard.title, 
+          type: "Dashboard", 
+          description: dashboard.description ? dashboard.description.slice(0, 60) + "..." : "No description available", 
+          tabValue: "dashboards" 
+        });
       }
     });
+
+    // Add publications from API
     publications.forEach(pub => {
       if (pub.status === "NEW!") {
-        newItems.push({ title: pub.title, type: "Publication", description: `${pub.journal} • ${pub.year}`, tabValue: "publications" });
+        newItems.push({ 
+          title: pub.title, 
+          type: "Publication", 
+          description: pub.journal ? `${pub.journal} • ${pub.year}` : `Published ${pub.year}`, 
+          tabValue: "publications" 
+        });
       }
     });
+
+    // Add certifications from API
     certifications.forEach(cert => {
       if (cert.status === "NEW!") {
-        newItems.push({ title: cert.title, type: "Certification", description: `${cert.issuer} • ${cert.year}`, tabValue: "certifications" });
+        newItems.push({ 
+          title: cert.title, 
+          type: "Certification", 
+          description: cert.issuer ? `${cert.issuer} • ${cert.year}` : `Issued ${cert.year}`, 
+          tabValue: "certifications" 
+        });
       }
     });
+
     return newItems;
-  }, [projects]);
+  }, [projects, caseStudies, dashboards, publications, certifications]);
 
   const newItems = getNewItems();
 
@@ -140,6 +270,15 @@ export const DNAHero = () => {
     });
   };
 
+  // Check if any data is still loading
+  const isLoading = projectsLoading || caseStudiesLoading || dashboardsLoading || publicationsLoading || certificationsLoading;
+  
+  // Check if there are any errors
+  const hasErrors = projectsError || caseStudiesError || dashboardsError || publicationsError || certificationsError;
+  
+  // Combine all error messages
+  const errorMessages = [projectsError, caseStudiesError, dashboardsError, publicationsError, certificationsError].filter(Boolean);
+
   return (
     <section id="hero" className="min-h-screen flex items-center justify-center pt-16 md:pt-20 px-4 md:px-8">
       <div className="max-w-7xl mx-auto w-full">
@@ -173,8 +312,8 @@ export const DNAHero = () => {
               ))}
             </div>
 
-            {/* Show loading state for projects */}
-            {projectsLoading && (
+            {/* Show loading state */}
+            {isLoading && (
               <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-4 border border-blue-200">
                 <div className="flex items-center space-x-2 mb-3">
                   <Star className="h-5 w-5 text-blue-600 animate-pulse" />
@@ -187,19 +326,23 @@ export const DNAHero = () => {
               </div>
             )}
 
-            {/* Show error state for projects */}
-            {projectsError && (
+            {/* Show error state */}
+            {!isLoading && hasErrors && (
               <div className="bg-gradient-to-r from-red-50 to-orange-50 rounded-lg p-4 border border-red-200">
                 <div className="flex items-center space-x-2 mb-3">
                   <Star className="h-5 w-5 text-red-600" />
-                  <h3 className="text-base md:text-lg font-semibold text-slate-800">Unable to Load Projects</h3>
+                  <h3 className="text-base md:text-lg font-semibold text-slate-800">Unable to Load Some Data</h3>
                 </div>
-                <p className="text-sm text-red-600">{projectsError}</p>
+                <div className="space-y-1">
+                  {errorMessages.map((error, index) => (
+                    <p key={index} className="text-sm text-red-600">{error}</p>
+                  ))}
+                </div>
               </div>
             )}
 
-            {/* Show new items when not loading and no error */}
-            {!projectsLoading && !projectsError && newItems.length > 0 && (
+            {/* Show new items when not loading and no errors */}
+            {!isLoading && !hasErrors && newItems.length > 0 && (
               <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-4 border border-blue-200">
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center space-x-2">
@@ -249,6 +392,17 @@ export const DNAHero = () => {
                     ))}
                   </div>
                 )}
+              </div>
+            )}
+
+            {/* Show message when no new items and not loading */}
+            {!isLoading && !hasErrors && newItems.length === 0 && (
+              <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-lg p-4 border border-slate-200">
+                <div className="flex items-center space-x-2">
+                  <Star className="h-5 w-5 text-slate-600" />
+                  <h3 className="text-base md:text-lg font-semibold text-slate-800">Portfolio Loaded</h3>
+                </div>
+                <p className="text-sm text-slate-600 mt-2">Explore my complete portfolio below to see all projects and work.</p>
               </div>
             )}
           </div>
