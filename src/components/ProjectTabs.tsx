@@ -4,88 +4,15 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { ExternalLink, ArrowRight, FlaskConical, BookOpen, Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { fetchProjects } from "../api/projectApi"; // Import your API function
+import { 
+  fetchProjects, 
+  fetchCaseStudies, 
+  fetchDashboards, 
+  fetchPublications, 
+  fetchCertifications 
+} from "../api/projectApi"; // Import your API functions
 
-// Keep the static data for other tabs
-const publications = [
-  {
-    title: "Are my peers impulsive? Normative perceptions of impulsivity and associations with personal impulsivity and alcohol use outcomes",
-    journal: "Journal of Substance Use",
-    year: "2024",
-    description: "Research examining whether individuals perceived their peers' impulsivity as different from their own impulsivity and if perceptions of peers' impulsivity moderated the associations between personal impulsivity and alcohol use and consequences.",
-    link: "https://www.tandfonline.com/doi/full/10.1080/14659891.2024.2403061?scroll=top&needAccess=true#abstract"
-  }
-];
-
-const certifications = [
-  {
-    title: "Alteryx Designer Cloud Core",
-    issuer: "Alteryx",
-    year: "2025",
-    expires: "2027",
-    status: "NEW!"
-  },
-  {
-    title: "Alteryx Foundational Micro-Credential", 
-    issuer: "Alteryx",
-    year: "2025",
-    expires: "2027",
-    status: "NEW!"
-  },
-  {
-    title: "Microsoft Office Specialist: Excel Associate",
-    issuer: "Microsoft",
-    year: "2023",
-    expires: null
-  },
-  {
-    title: "Social and Behavioral Responsible Conduct of Research",
-    issuer: "CITI Program",
-    year: "2023",
-    expires: "2026"
-  }
-];
-
-const caseStudies = [
-  {
-    title: "Healthcare Startup Digital Transformation",
-    description: "Strategic analysis and implementation of digital marketing and operational scaling for telehealth platform",
-    industry: "Healthcare Technology",
-    impact: "300% growth in clinical staff within 18 months"
-  },
-  {
-    title: "University Entrepreneurship Program Development",
-    description: "Market analysis and program design for student-run business initiatives at Bentley University",
-    industry: "Education",
-    impact: "Increased program engagement by 40%"
-  }
-];
-
-const dashboards = [
-  {
-    title: "Interactive Skillset Network Diagram",
-    description: "Network visualization mapping skillsets based on GitHub project topics, with automated daily updates",
-    tools: ["Python", "D3.js", "GitHub API"],
-    impact: "Visual representation for non-technical users",
-    hasDetailPage: true,
-    status: "NEW!"
-  },
-  {
-    title: "Marketing Performance Analytics Dashboard",
-    description: "Interactive dashboard tracking digital marketing campaign performance with real-time KPI monitoring",
-    tools: ["Tableau", "Excel", "Google Analytics"],
-    impact: "Improved campaign ROI by 25%",
-    status: "IN PROGRESS"
-  },
-  {
-    title: "Real-Time River Conditions Tracker",
-    description: "Predictive dashboard for kayaking safety and enjoyment based on weather and river flow patterns",
-    tools: ["Python", "USGS API", "OpenWeather API", "Tableau"],
-    impact: "Improved paddle planning with risk scores for multiple locations",
-    status: "IN PROGRESS"
-  }
-];
-
+// Keep the static data for lab notes only
 const labNotes = [
   {
     title: "Lab Notes",
@@ -117,30 +44,140 @@ const StatusBanner = ({ status }: { status: string }) => {
   );
 };
 
+const LoadingSpinner = ({ message }: { message: string }) => (
+  <div className="flex justify-center items-center py-12">
+    <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
+    <span className="ml-2 text-slate-600">{message}</span>
+  </div>
+);
+
+const ErrorMessage = ({ message, onRetry }: { message: string; onRetry: () => void }) => (
+  <div className="text-center py-12">
+    <p className="text-red-600 mb-4">Error loading data: {message}</p>
+    <Button onClick={onRetry} variant="outline">
+      Retry
+    </Button>
+  </div>
+);
+
 export const ProjectTabs = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("projects");
+  
+  // State for all data sections
   const [projects, setProjects] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [caseStudies, setCaseStudies] = useState([]);
+  const [dashboards, setDashboards] = useState([]);
+  const [publications, setPublications] = useState([]);
+  const [certifications, setCertifications] = useState([]);
+  
+  // Loading states
+  const [isLoadingProjects, setIsLoadingProjects] = useState(true);
+  const [isLoadingCaseStudies, setIsLoadingCaseStudies] = useState(true);
+  const [isLoadingDashboards, setIsLoadingDashboards] = useState(true);
+  const [isLoadingPublications, setIsLoadingPublications] = useState(true);
+  const [isLoadingCertifications, setIsLoadingCertifications] = useState(true);
+  
+  // Error states
+  const [projectsError, setProjectsError] = useState(null);
+  const [caseStudiesError, setCaseStudiesError] = useState(null);
+  const [dashboardsError, setDashboardsError] = useState(null);
+  const [publicationsError, setPublicationsError] = useState(null);
+  const [certificationsError, setCertificationsError] = useState(null);
 
   // Fetch projects from API
   useEffect(() => {
     const loadProjects = async () => {
       try {
-        setIsLoading(true);
+        setIsLoadingProjects(true);
         const projectsData = await fetchProjects();
         setProjects(projectsData);
-        setError(null);
+        setProjectsError(null);
       } catch (err) {
-        setError(err.message);
+        setProjectsError(err.message);
         console.error('Error fetching projects:', err);
       } finally {
-        setIsLoading(false);
+        setIsLoadingProjects(false);
       }
     };
 
     loadProjects();
+  }, []);
+
+  // Fetch case studies from API
+  useEffect(() => {
+    const loadCaseStudies = async () => {
+      try {
+        setIsLoadingCaseStudies(true);
+        const caseStudiesData = await fetchCaseStudies();
+        setCaseStudies(caseStudiesData);
+        setCaseStudiesError(null);
+      } catch (err) {
+        setCaseStudiesError(err.message);
+        console.error('Error fetching case studies:', err);
+      } finally {
+        setIsLoadingCaseStudies(false);
+      }
+    };
+
+    loadCaseStudies();
+  }, []);
+
+  // Fetch dashboards from API
+  useEffect(() => {
+    const loadDashboards = async () => {
+      try {
+        setIsLoadingDashboards(true);
+        const dashboardsData = await fetchDashboards();
+        setDashboards(dashboardsData);
+        setDashboardsError(null);
+      } catch (err) {
+        setDashboardsError(err.message);
+        console.error('Error fetching dashboards:', err);
+      } finally {
+        setIsLoadingDashboards(false);
+      }
+    };
+
+    loadDashboards();
+  }, []);
+
+  // Fetch publications from API
+  useEffect(() => {
+    const loadPublications = async () => {
+      try {
+        setIsLoadingPublications(true);
+        const publicationsData = await fetchPublications();
+        setPublications(publicationsData);
+        setPublicationsError(null);
+      } catch (err) {
+        setPublicationsError(err.message);
+        console.error('Error fetching publications:', err);
+      } finally {
+        setIsLoadingPublications(false);
+      }
+    };
+
+    loadPublications();
+  }, []);
+
+  // Fetch certifications from API
+  useEffect(() => {
+    const loadCertifications = async () => {
+      try {
+        setIsLoadingCertifications(true);
+        const certificationsData = await fetchCertifications();
+        setCertifications(certificationsData);
+        setCertificationsError(null);
+      } catch (err) {
+        setCertificationsError(err.message);
+        console.error('Error fetching certifications:', err);
+      } finally {
+        setIsLoadingCertifications(false);
+      }
+    };
+
+    loadCertifications();
   }, []);
 
   // Listen for tab switch events from the hero section
@@ -169,13 +206,99 @@ export const ProjectTabs = () => {
   };
 
   const handleDashboardClick = (dashboard) => {
-    if (dashboard.hasDetailPage) {
+    if (dashboard.hasDetailPage || dashboard.has_detail_page) {
       navigate('/skillset-network');
       // Scroll to top after navigation
       setTimeout(() => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }, 100);
     }
+  };
+
+  // Retry functions
+  const retryProjects = () => {
+    const loadProjects = async () => {
+      try {
+        setIsLoadingProjects(true);
+        const projectsData = await fetchProjects();
+        setProjects(projectsData);
+        setProjectsError(null);
+      } catch (err) {
+        setProjectsError(err.message);
+        console.error('Error fetching projects:', err);
+      } finally {
+        setIsLoadingProjects(false);
+      }
+    };
+    loadProjects();
+  };
+
+  const retryCaseStudies = () => {
+    const loadCaseStudies = async () => {
+      try {
+        setIsLoadingCaseStudies(true);
+        const caseStudiesData = await fetchCaseStudies();
+        setCaseStudies(caseStudiesData);
+        setCaseStudiesError(null);
+      } catch (err) {
+        setCaseStudiesError(err.message);
+        console.error('Error fetching case studies:', err);
+      } finally {
+        setIsLoadingCaseStudies(false);
+      }
+    };
+    loadCaseStudies();
+  };
+
+  const retryDashboards = () => {
+    const loadDashboards = async () => {
+      try {
+        setIsLoadingDashboards(true);
+        const dashboardsData = await fetchDashboards();
+        setDashboards(dashboardsData);
+        setDashboardsError(null);
+      } catch (err) {
+        setDashboardsError(err.message);
+        console.error('Error fetching dashboards:', err);
+      } finally {
+        setIsLoadingDashboards(false);
+      }
+    };
+    loadDashboards();
+  };
+
+  const retryPublications = () => {
+    const loadPublications = async () => {
+      try {
+        setIsLoadingPublications(true);
+        const publicationsData = await fetchPublications();
+        setPublications(publicationsData);
+        setPublicationsError(null);
+      } catch (err) {
+        setPublicationsError(err.message);
+        console.error('Error fetching publications:', err);
+      } finally {
+        setIsLoadingPublications(false);
+      }
+    };
+    loadPublications();
+  };
+
+  const retryCertifications = () => {
+    const loadCertifications = async () => {
+      try {
+        setIsLoadingCertifications(true);
+        const certificationsData = await fetchCertifications();
+        setCertifications(certificationsData);
+        setCertificationsError(null);
+      } catch (err) {
+        setCertificationsError(err.message);
+        console.error('Error fetching certifications:', err);
+      } finally {
+        setIsLoadingCertifications(false);
+      }
+    };
+    loadCertifications();
   };
 
   return (
@@ -196,18 +319,10 @@ export const ProjectTabs = () => {
           </TabsList>
 
           <TabsContent value="projects" className="space-y-6">
-            {isLoading ? (
-              <div className="flex justify-center items-center py-12">
-                <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
-                <span className="ml-2 text-slate-600">Loading projects...</span>
-              </div>
-            ) : error ? (
-              <div className="text-center py-12">
-                <p className="text-red-600 mb-4">Error loading projects: {error}</p>
-                <Button onClick={() => window.location.reload()} variant="outline">
-                  Retry
-                </Button>
-              </div>
+            {isLoadingProjects ? (
+              <LoadingSpinner message="Loading projects..." />
+            ) : projectsError ? (
+              <ErrorMessage message={projectsError} onRetry={retryProjects} />
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
                 {projects.map((project, index) => (
@@ -252,104 +367,130 @@ export const ProjectTabs = () => {
           </TabsContent>
 
           <TabsContent value="case-studies" className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-              {caseStudies.map((study, index) => (
-                <Card key={index} className="hover:shadow-lg transition-shadow">
-                  <CardHeader>
-                    <CardTitle className="text-lg">{study.title}</CardTitle>
-                    <CardDescription>{study.industry}</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-slate-600 mb-3">{study.description}</p>
-                    <p className="text-sm font-medium text-green-600">{study.impact}</p>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+            {isLoadingCaseStudies ? (
+              <LoadingSpinner message="Loading case studies..." />
+            ) : caseStudiesError ? (
+              <ErrorMessage message={caseStudiesError} onRetry={retryCaseStudies} />
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+                {caseStudies.map((study, index) => (
+                  <Card key={study.id || index} className="hover:shadow-lg transition-shadow">
+                    <CardHeader>
+                      <CardTitle className="text-lg">{study.title}</CardTitle>
+                      <CardDescription>{study.industry}</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-slate-600 mb-3">{study.description}</p>
+                      <p className="text-sm font-medium text-green-600">{study.impact}</p>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            )}
           </TabsContent>
 
           <TabsContent value="dashboards" className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-              {dashboards.map((dashboard, index) => (
-                <Card key={index} className="relative hover:shadow-lg transition-shadow">
-                  {dashboard.status && <StatusBanner status={dashboard.status} />}
-                  <CardHeader className={`${dashboard.status ? 'pt-16' : 'pt-6'}`}>
-                    <CardTitle className="text-lg">{dashboard.title}</CardTitle>
-                    <CardDescription>{dashboard.description}</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-3">
-                      <div>
-                        <h4 className="font-medium text-sm text-slate-700 mb-2">Tools:</h4>
-                        <div className="flex flex-wrap gap-2">
-                          {dashboard.tools.map((tool) => (
-                            <span key={tool} className="px-2 py-1 bg-purple-100 text-purple-800 text-xs rounded-full">
-                              {tool}
-                            </span>
-                          ))}
+            {isLoadingDashboards ? (
+              <LoadingSpinner message="Loading dashboards..." />
+            ) : dashboardsError ? (
+              <ErrorMessage message={dashboardsError} onRetry={retryDashboards} />
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+                {dashboards.map((dashboard, index) => (
+                  <Card key={dashboard.id || index} className="relative hover:shadow-lg transition-shadow">
+                    {dashboard.status && <StatusBanner status={dashboard.status} />}
+                    <CardHeader className={`${dashboard.status ? 'pt-16' : 'pt-6'}`}>
+                      <CardTitle className="text-lg">{dashboard.title}</CardTitle>
+                      <CardDescription>{dashboard.description}</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-3">
+                        <div>
+                          <h4 className="font-medium text-sm text-slate-700 mb-2">Tools:</h4>
+                          <div className="flex flex-wrap gap-2">
+                            {(dashboard.tools || []).map((tool, toolIndex) => (
+                              <span key={toolIndex} className="px-2 py-1 bg-purple-100 text-purple-800 text-xs rounded-full">
+                                {tool}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                        <div className="pt-2 border-t">
+                          <p className="text-sm font-medium text-green-600 mb-2">{dashboard.impact}</p>
+                          {(dashboard.hasDetailPage || dashboard.has_detail_page) && (
+                            <Button
+                              onClick={() => handleDashboardClick(dashboard)}
+                              variant="outline"
+                              size="sm"
+                              className="flex items-center space-x-2"
+                            >
+                              <span>View Details</span>
+                              <ExternalLink className="h-3 w-3" />
+                            </Button>
+                          )}
                         </div>
                       </div>
-                      <div className="pt-2 border-t">
-                        <p className="text-sm font-medium text-green-600 mb-2">{dashboard.impact}</p>
-                        {dashboard.hasDetailPage && (
-                          <Button
-                            onClick={() => handleDashboardClick(dashboard)}
-                            variant="outline"
-                            size="sm"
-                            className="flex items-center space-x-2"
-                          >
-                            <span>View Details</span>
-                            <ExternalLink className="h-3 w-3" />
-                          </Button>
-                        )}
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            )}
           </TabsContent>
 
           <TabsContent value="publications" className="space-y-6">
-            <div className="grid gap-6 max-w-4xl mx-auto">
-              {publications.map((pub, index) => (
-                <Card key={index} className="hover:shadow-lg transition-shadow">
-                  <CardHeader>
-                    <CardTitle className="text-lg">{pub.title}</CardTitle>
-                    <CardDescription>{pub.journal} • {pub.year}</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-slate-600 mb-4">{pub.description}</p>
-                    <Button
-                      onClick={() => window.open(pub.link, '_blank')}
-                      variant="outline"
-                      size="sm"
-                      className="flex items-center space-x-2"
-                    >
-                      <span>Read Article</span>
-                      <ExternalLink className="h-3 w-3" />
-                    </Button>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+            {isLoadingPublications ? (
+              <LoadingSpinner message="Loading publications..." />
+            ) : publicationsError ? (
+              <ErrorMessage message={publicationsError} onRetry={retryPublications} />
+            ) : (
+              <div className="grid gap-6 max-w-4xl mx-auto">
+                {publications.map((pub, index) => (
+                  <Card key={pub.id || index} className="hover:shadow-lg transition-shadow">
+                    <CardHeader>
+                      <CardTitle className="text-lg">{pub.title}</CardTitle>
+                      <CardDescription>{pub.journal} • {pub.year}</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-slate-600 mb-4">{pub.description}</p>
+                      {pub.link && (
+                        <Button
+                          onClick={() => window.open(pub.link, '_blank')}
+                          variant="outline"
+                          size="sm"
+                          className="flex items-center space-x-2"
+                        >
+                          <span>Read Article</span>
+                          <ExternalLink className="h-3 w-3" />
+                        </Button>
+                      )}
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            )}
           </TabsContent>
 
           <TabsContent value="certifications" className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-              {certifications.map((cert, index) => (
-                <Card key={index} className="relative hover:shadow-lg transition-shadow">
-                  {cert.status && <StatusBanner status={cert.status} />}
-                  <CardHeader className={`${cert.status ? 'pt-16' : 'pt-6'}`}>
-                    <CardTitle className="text-lg">{cert.title}</CardTitle>
-                    <CardDescription>
-                      {cert.issuer} • Issued {cert.year}
-                      {cert.expires && ` • Expires ${cert.expires}`}
-                    </CardDescription>
-                  </CardHeader>
-                </Card>
-              ))}
-            </div>
+            {isLoadingCertifications ? (
+              <LoadingSpinner message="Loading certifications..." />
+            ) : certificationsError ? (
+              <ErrorMessage message={certificationsError} onRetry={retryCertifications} />
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+                {certifications.map((cert, index) => (
+                  <Card key={cert.id || index} className="relative hover:shadow-lg transition-shadow">
+                    {cert.status && <StatusBanner status={cert.status} />}
+                    <CardHeader className={`${cert.status ? 'pt-16' : 'pt-6'}`}>
+                      <CardTitle className="text-lg">{cert.title}</CardTitle>
+                      <CardDescription>
+                        {cert.issuer} • Issued {cert.year}
+                        {cert.expires && ` • Expires ${cert.expires}`}
+                      </CardDescription>
+                    </CardHeader>
+                  </Card>
+                ))}
+              </div>
+            )}
           </TabsContent>
 
           <TabsContent value="lab-notes" className="space-y-6">
