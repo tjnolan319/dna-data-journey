@@ -16,7 +16,7 @@ import {
 const labNotes = [
   {
     title: "Lab Notes",
-    subtitle: "The Analytical Notebook (COMING SOON!)",
+    subtitle: "The Analytical Notebook (coming soon!)",
     description: "Deep dives into my professional methodology, case studies, and analytical frameworks. Where curiosity meets systematic investigation.",
     entries: 12,
     status: "Recently updated"
