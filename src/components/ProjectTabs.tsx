@@ -38,7 +38,7 @@ const StatusBanner = ({ status }: { status: string }) => {
   };
 
   return (
-    <div className={`absolute top-3 left-3 px-2 py-1 rounded text-xs font-bold z-10 ${getStatusStyles(status)}`}>
+    <div className={`absolute top-4 left-4 px-2 py-1 rounded text-xs font-bold z-10 ${getStatusStyles(status)}`}>
       {status}
     </div>
   );
@@ -301,30 +301,6 @@ export const ProjectTabs = () => {
     loadCertifications();
   };
 
-  // Sort function for status priority
-  const sortByStatus = (items) => {
-    const statusOrder = {
-      'NEW!': 1,
-      'IN PROGRESS': 2,
-      null: 3,
-      undefined: 3,
-      'UNDER CONSTRUCTION': 4
-    };
-    
-    return [...items].sort((a, b) => {
-      const aStatus = statusOrder[a.status] || 3;
-      const bStatus = statusOrder[b.status] || 3;
-      return aStatus - bStatus;
-    });
-  };
-
-  // Grid alignment function
-  const getGridClasses = (count) => {
-    if (count === 1) return "grid grid-cols-1 gap-6 max-w-md mx-auto";
-    if (count === 2) return "grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl mx-auto";
-    return "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto";
-  };
-
   return (
     <section id="projects" className="py-20 px-4 sm:px-6 lg:px-8 bg-white">
       <div className="max-w-7xl mx-auto">
@@ -348,16 +324,21 @@ export const ProjectTabs = () => {
             ) : projectsError ? (
               <ErrorMessage message={projectsError} onRetry={retryProjects} />
             ) : (
-              <div className={getGridClasses(projects.length)}>
-                {sortByStatus(projects).map((project, index) => (
-                  <Card key={project.id || index} className="relative hover:shadow-lg transition-shadow">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+                {projects.map((project, index) => (
+                  <Card key={project.id || index} className="relative hover:shadow-lg transition-shadow h-fit">
                     {project.status && <StatusBanner status={project.status} />}
-                    <CardHeader className={`${project.status ? 'pt-16' : 'pt-6'}`}>
-                      <CardTitle className="text-lg">{project.title}</CardTitle>
-                      <CardDescription>{project.description}</CardDescription>
+                    
+                    {/* Fixed header with consistent spacing */}
+                    <CardHeader className="pt-16 pb-4">
+                      <CardTitle className="text-lg leading-tight">{project.title}</CardTitle>
+                      <CardDescription className="text-sm text-slate-600 leading-relaxed">
+                        {project.description}
+                      </CardDescription>
                     </CardHeader>
-                    <CardContent>
-                      <div className="space-y-3">
+                    
+                    <CardContent className="pt-0">
+                      <div className="space-y-4">
                         <div>
                           <h4 className="font-medium text-sm text-slate-700 mb-2">Technologies:</h4>
                           <div className="flex flex-wrap gap-2">
@@ -368,14 +349,18 @@ export const ProjectTabs = () => {
                             ))}
                           </div>
                         </div>
-                        <div className="pt-2 border-t">
-                          <p className="text-sm font-medium text-green-600 mb-2">{project.impact}</p>
+                        
+                        <div className="pt-3 border-t border-slate-100">
+                          <p className="text-sm font-medium text-green-600 mb-3 leading-relaxed">
+                            {project.impact}
+                          </p>
+                          
                           {project.slug && (
                             <Button
                               onClick={() => handleProjectClick(project)}
                               variant="outline"
                               size="sm"
-                              className="flex items-center space-x-2"
+                              className="flex items-center space-x-2 hover:bg-blue-50 hover:border-blue-300"
                             >
                               <span>View Details</span>
                               <ExternalLink className="h-3 w-3" />
@@ -396,17 +381,22 @@ export const ProjectTabs = () => {
             ) : caseStudiesError ? (
               <ErrorMessage message={caseStudiesError} onRetry={retryCaseStudies} />
             ) : (
-              <div className={getGridClasses(caseStudies.length)}>
-                {sortByStatus(caseStudies).map((study, index) => (
-                  <Card key={study.id || index} className="relative hover:shadow-lg transition-shadow">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+                {caseStudies.map((study, index) => (
+                  <Card key={study.id || index} className="relative hover:shadow-lg transition-shadow h-fit">
                     {study.status && <StatusBanner status={study.status} />}
-                    <CardHeader className={`${study.status ? 'pt-16' : 'pt-6'}`}>
-                      <CardTitle className="text-lg">{study.title}</CardTitle>
-                      <CardDescription>{study.industry}</CardDescription>
+                    
+                    {/* Fixed header with consistent spacing */}
+                    <CardHeader className="pt-16 pb-4">
+                      <CardTitle className="text-lg leading-tight">{study.title}</CardTitle>
+                      <CardDescription className="text-sm text-slate-600 leading-relaxed">
+                        {study.industry}
+                      </CardDescription>
                     </CardHeader>
-                    <CardContent>
-                      <p className="text-slate-600 mb-3">{study.description}</p>
-                      <p className="text-sm font-medium text-green-600">{study.impact}</p>
+                    
+                    <CardContent className="pt-0">
+                      <p className="text-slate-600 mb-3 leading-relaxed">{study.description}</p>
+                      <p className="text-sm font-medium text-green-600 leading-relaxed">{study.impact}</p>
                     </CardContent>
                   </Card>
                 ))}
@@ -420,16 +410,21 @@ export const ProjectTabs = () => {
             ) : dashboardsError ? (
               <ErrorMessage message={dashboardsError} onRetry={retryDashboards} />
             ) : (
-              <div className={getGridClasses(dashboards.length)}>
-                {sortByStatus(dashboards).map((dashboard, index) => (
-                  <Card key={dashboard.id || index} className="relative hover:shadow-lg transition-shadow">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+                {dashboards.map((dashboard, index) => (
+                  <Card key={dashboard.id || index} className="relative hover:shadow-lg transition-shadow h-fit">
                     {dashboard.status && <StatusBanner status={dashboard.status} />}
-                    <CardHeader className={`${dashboard.status ? 'pt-16' : 'pt-6'}`}>
-                      <CardTitle className="text-lg">{dashboard.title}</CardTitle>
-                      <CardDescription>{dashboard.description}</CardDescription>
+                    
+                    {/* Fixed header with consistent spacing */}
+                    <CardHeader className="pt-16 pb-4">
+                      <CardTitle className="text-lg leading-tight">{dashboard.title}</CardTitle>
+                      <CardDescription className="text-sm text-slate-600 leading-relaxed">
+                        {dashboard.description}
+                      </CardDescription>
                     </CardHeader>
-                    <CardContent>
-                      <div className="space-y-3">
+                    
+                    <CardContent className="pt-0">
+                      <div className="space-y-4">
                         <div>
                           <h4 className="font-medium text-sm text-slate-700 mb-2">Tools:</h4>
                           <div className="flex flex-wrap gap-2">
@@ -440,14 +435,18 @@ export const ProjectTabs = () => {
                             ))}
                           </div>
                         </div>
-                        <div className="pt-2 border-t">
-                          <p className="text-sm font-medium text-green-600 mb-2">{dashboard.impact}</p>
+                        
+                        <div className="pt-3 border-t border-slate-100">
+                          <p className="text-sm font-medium text-green-600 mb-3 leading-relaxed">
+                            {dashboard.impact}
+                          </p>
+                          
                           {(dashboard.hasDetailPage || dashboard.has_detail_page) && (
                             <Button
                               onClick={() => handleDashboardClick(dashboard)}
                               variant="outline"
                               size="sm"
-                              className="flex items-center space-x-2"
+                              className="flex items-center space-x-2 hover:bg-blue-50 hover:border-blue-300"
                             >
                               <span>View Details</span>
                               <ExternalLink className="h-3 w-3" />
@@ -468,22 +467,27 @@ export const ProjectTabs = () => {
             ) : publicationsError ? (
               <ErrorMessage message={publicationsError} onRetry={retryPublications} />
             ) : (
-              <div className={getGridClasses(publications.length)}>
-                {sortByStatus(publications).map((pub, index) => (
-                  <Card key={pub.id || index} className="relative hover:shadow-lg transition-shadow">
+              <div className="grid gap-6 max-w-4xl mx-auto">
+                {publications.map((pub, index) => (
+                  <Card key={pub.id || index} className="relative hover:shadow-lg transition-shadow h-fit">
                     {pub.status && <StatusBanner status={pub.status} />}
-                    <CardHeader className={`${pub.status ? 'pt-16' : 'pt-6'}`}>
-                      <CardTitle className="text-lg">{pub.title}</CardTitle>
-                      <CardDescription>{pub.journal} • {pub.year}</CardDescription>
+                    
+                    {/* Fixed header with consistent spacing */}
+                    <CardHeader className="pt-16 pb-4">
+                      <CardTitle className="text-lg leading-tight">{pub.title}</CardTitle>
+                      <CardDescription className="text-sm text-slate-600 leading-relaxed">
+                        {pub.journal} • {pub.year}
+                      </CardDescription>
                     </CardHeader>
-                    <CardContent>
-                      <p className="text-slate-600 mb-4">{pub.description}</p>
+                    
+                    <CardContent className="pt-0">
+                      <p className="text-slate-600 mb-4 leading-relaxed">{pub.description}</p>
                       {pub.link && (
                         <Button
                           onClick={() => window.open(pub.link, '_blank')}
                           variant="outline"
                           size="sm"
-                          className="flex items-center space-x-2"
+                          className="flex items-center space-x-2 hover:bg-blue-50 hover:border-blue-300"
                         >
                           <span>Read Article</span>
                           <ExternalLink className="h-3 w-3" />
@@ -502,13 +506,15 @@ export const ProjectTabs = () => {
             ) : certificationsError ? (
               <ErrorMessage message={certificationsError} onRetry={retryCertifications} />
             ) : (
-              <div className={getGridClasses(certifications.length)}>
-                {sortByStatus(certifications).map((cert, index) => (
-                  <Card key={cert.id || index} className="relative hover:shadow-lg transition-shadow">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+                {certifications.map((cert, index) => (
+                  <Card key={cert.id || index} className="relative hover:shadow-lg transition-shadow h-fit">
                     {cert.status && <StatusBanner status={cert.status} />}
-                    <CardHeader className={`${cert.status ? 'pt-16' : 'pt-6'}`}>
-                      <CardTitle className="text-lg">{cert.title}</CardTitle>
-                      <CardDescription>
+                    
+                    {/* Fixed header with consistent spacing */}
+                    <CardHeader className="pt-16 pb-4">
+                      <CardTitle className="text-lg leading-tight">{cert.title}</CardTitle>
+                      <CardDescription className="text-sm text-slate-600 leading-relaxed">
                         {cert.issuer} • Issued {cert.year}
                         {cert.expires && ` • Expires ${cert.expires}`}
                       </CardDescription>
