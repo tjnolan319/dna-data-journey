@@ -10,6 +10,8 @@ import SkillsetNetwork from "./pages/SkillsetNetwork";
 import TimelinePage from "./pages/TimelinePage";
 import AcademicTimelinePage from "./pages/AcademicTimelinePage";
 import SbcWorkflowPage from "./pages/SbcWorkflowPage";
+import SignupPage from "./pages/SignupPage";
+import LoginPage from "./pages/LoginPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -27,6 +29,8 @@ const App = () => (
           <Route path="/timeline" element={<TimelinePage />} />
           <Route path="/academic-timeline" element={<AcademicTimelinePage />} />
           <Route path="/sbc-workflow" element={<SbcWorkflowPage />} />
+          <Route path="/signup" element={<SignupPage />} />
+          <Route path="/login" element={<LoginPage />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

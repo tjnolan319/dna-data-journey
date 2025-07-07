@@ -1,9 +1,12 @@
+
 import { useState, useEffect } from "react";
-import { Menu, X, Download, Github } from "lucide-react";
+import { Menu, X, Download, Github, LogIn, UserPlus } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [currentTime, setCurrentTime] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     const updateTime = () => {
@@ -35,6 +38,16 @@ export const Navigation = () => {
 
   const handleGitHubClick = () => {
     window.open('https://github.com/tjnolan319', '_blank');
+  };
+
+  const handleSignupClick = () => {
+    navigate('/signup');
+    setIsOpen(false);
+  };
+
+  const handleLoginClick = () => {
+    navigate('/login');
+    setIsOpen(false);
   };
 
   return (
@@ -97,6 +110,20 @@ export const Navigation = () => {
               >
                 <Github className="h-4 w-4" />
                 <span>GitHub</span>
+              </button>
+              <button
+                onClick={handleSignupClick}
+                className="flex items-center space-x-2 bg-green-600 text-white px-3 py-2 rounded-lg hover:bg-green-700 transition-colors"
+              >
+                <UserPlus className="h-4 w-4" />
+                <span>Sign Up</span>
+              </button>
+              <button
+                onClick={handleLoginClick}
+                className="flex items-center space-x-2 border border-slate-300 text-slate-700 px-3 py-2 rounded-lg hover:bg-slate-50 transition-colors"
+              >
+                <LogIn className="h-4 w-4" />
+                <span>Login</span>
               </button>
             </div>
           </div>
@@ -166,6 +193,20 @@ export const Navigation = () => {
               >
                 <Github className="h-4 w-4" />
                 <span>View GitHub</span>
+              </button>
+              <button
+                onClick={handleSignupClick}
+                className="flex items-center justify-center space-x-2 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors mx-4"
+              >
+                <UserPlus className="h-4 w-4" />
+                <span>Sign Up for Lab Notes</span>
+              </button>
+              <button
+                onClick={handleLoginClick}
+                className="flex items-center justify-center space-x-2 border border-slate-300 text-slate-700 px-4 py-2 rounded-lg hover:bg-slate-50 transition-colors mx-4"
+              >
+                <LogIn className="h-4 w-4" />
+                <span>Admin Login</span>
               </button>
             </div>
           </div>
