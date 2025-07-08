@@ -150,19 +150,35 @@ const AdminLabNoteEditor = () => {
         content: formData.content
       };
 
+      console.log('Saving note data:', noteData);
+      console.log('Is editing:', isEditing);
+      console.log('Note ID:', id);
+
       if (isEditing && id) {
-        const { error } = await supabase
+        const { data, error } = await supabase
           .from('lab_notes')
           .update(noteData as TablesUpdate<'lab_notes'>)
-          .eq('id', id);
+          .eq('id', id)
+          .select();
 
-        if (error) throw error;
+        console.log('Update response:', { data, error });
+
+        if (error) {
+          console.error('Update error:', error);
+          throw error;
+        }
       } else {
-        const { error } = await supabase
+        const { data, error } = await supabase
           .from('lab_notes')
-          .insert([noteData as TablesInsert<'lab_notes'>]);
+          .insert([noteData as TablesInsert<'lab_notes'>])
+          .select();
 
-        if (error) throw error;
+        console.log('Insert response:', { data, error });
+
+        if (error) {
+          console.error('Insert error:', error);
+          throw error;
+        }
       }
 
       toast({
@@ -175,7 +191,7 @@ const AdminLabNoteEditor = () => {
       console.error('Error saving note:', error);
       toast({
         title: "Error",
-        description: `Failed to ${isEditing ? 'update' : 'create'} the lab note.`,
+        description: `Failed to ${isEditing ? 'update' : 'create'} the lab note. ${error.message}`,
         variant: "destructive",
       });
     } finally {

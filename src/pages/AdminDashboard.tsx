@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FlaskConical, FileText, Users, Settings, LogOut } from 'lucide-react';
+import { FlaskConical, FileText, Users, Settings, LogOut, Home } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { supabase } from '@/integrations/supabase/client';
@@ -39,10 +39,16 @@ const AdminDashboard = () => {
               </div>
               <h1 className="text-xl font-semibold text-slate-900">Admin Dashboard</h1>
             </div>
-            <Button onClick={handleLogout} variant="outline" className="flex items-center space-x-2">
-              <LogOut className="w-4 h-4" />
-              <span>Logout</span>
-            </Button>
+            <div className="flex items-center space-x-3">
+              <Button onClick={() => navigate('/')} variant="outline" className="flex items-center space-x-2">
+                <Home className="w-4 h-4" />
+                <span>Homepage</span>
+              </Button>
+              <Button onClick={handleLogout} variant="outline" className="flex items-center space-x-2">
+                <LogOut className="w-4 h-4" />
+                <span>Logout</span>
+              </Button>
+            </div>
           </div>
         </div>
       </nav>
