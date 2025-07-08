@@ -62,7 +62,7 @@ const AdminLabNotes = () => {
   };
 
   const handleEdit = (noteId: string) => {
-    navigate(`/admin/lab-notes/edit/${noteId}`);
+    navigate(`/admin/lab-notes/${noteId}`);
   };
 
   const handleDelete = async (noteId: string) => {
