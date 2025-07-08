@@ -40,10 +40,33 @@ const LabNotePreview: React.FC<LabNotePreviewProps> = ({ isOpen, onClose, formDa
     return tagsString.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0);
   };
 
+  const getBoxClasses = (color: string) => {
+    const colorMap: { [key: string]: string } = {
+      'blue': 'bg-blue-50 border-blue-200 text-blue-800',
+      'green': 'bg-green-50 border-green-200 text-green-800',
+      'yellow': 'bg-yellow-50 border-yellow-200 text-yellow-800',
+      'red': 'bg-red-50 border-red-200 text-red-800',
+      'purple': 'bg-purple-50 border-purple-200 text-purple-800',
+      'orange': 'bg-orange-50 border-orange-200 text-orange-800',
+      'gray': 'bg-gray-50 border-gray-200 text-gray-800',
+      'indigo': 'bg-indigo-50 border-indigo-200 text-indigo-800',
+      'pink': 'bg-pink-50 border-pink-200 text-pink-800',
+      'teal': 'bg-teal-50 border-teal-200 text-teal-800',
+    };
+    
+    return colorMap[color.toLowerCase()] || colorMap['gray'];
+  };
+
   const formatMarkdown = (text: string) => {
     if (!text) return '';
     
     let formatted = text;
+    
+    // Custom colored boxes - Process before other formatting
+    formatted = formatted.replace(/~box\(([^)]+)\)\s*([\s\S]*?)\s*~endbox/g, (match, color, content) => {
+      const boxClasses = getBoxClasses(color);
+      return `<div class="border-l-4 ${boxClasses} p-4 my-4 rounded-r-lg border">${content.trim()}</div>`;
+    });
     
     // Headers
     formatted = formatted.replace(/^### (.*$)/gm, '<h3 class="text-lg font-semibold mt-6 mb-3 text-slate-900">$1</h3>');
@@ -163,6 +186,27 @@ const LabNotePreview: React.FC<LabNotePreviewProps> = ({ isOpen, onClose, formDa
                       <span>{formatTags(formData.tags).join(', ')}</span>
                     </div>
                   )}
+                </div>
+              </div>
+            </div>
+
+            {/* Syntax Helper */}
+            <div className="bg-white rounded-xl border border-slate-200 p-6 mb-6">
+              <h3 className="text-lg font-semibold text-slate-900 mb-4">Colored Box Syntax</h3>
+              <div className="space-y-2 text-sm">
+                <p className="text-slate-600">Use the following syntax to create colored boxes:</p>
+                <code className="bg-slate-100 px-2 py-1 rounded text-sm font-mono">~box(color) Your content here ~endbox</code>
+                <p className="text-slate-600">Available colors: blue, green, yellow, red, purple, orange, gray, indigo, pink, teal</p>
+              </div>
+              <div className="mt-4 space-y-2">
+                <div className="border-l-4 bg-blue-50 border-blue-200 text-blue-800 p-4 rounded-r-lg border">
+                  <strong>Example:</strong> This is a blue box created with ~box(blue) content ~endbox
+                </div>
+                <div className="border-l-4 bg-green-50 border-green-200 text-green-800 p-4 rounded-r-lg border">
+                  <strong>Success:</strong> This is a green box for success messages
+                </div>
+                <div className="border-l-4 bg-yellow-50 border-yellow-200 text-yellow-800 p-4 rounded-r-lg border">
+                  <strong>Warning:</strong> This is a yellow box for warnings
                 </div>
               </div>
             </div>
