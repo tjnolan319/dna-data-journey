@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search, Calendar, Tag, FlaskConical, BookOpen, Clock, ArrowRight, Filter, Plus, Edit, Trash2, ArrowLeft } from 'lucide-react';
@@ -63,8 +62,8 @@ const AdminLabNotes = () => {
   };
 
   const handleEdit = (noteId: string) => {
-  navigate(`/admin/lab-notes/edit/${noteId}`);
-};
+    navigate(`/admin/lab-notes/edit/${noteId}`);
+  };
 
   const handleDelete = async (noteId: string) => {
     if (window.confirm('Are you sure you want to delete this lab note?')) {
