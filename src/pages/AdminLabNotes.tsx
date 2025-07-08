@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, Calendar, Tag, FlaskConical, BookOpen, Clock, ArrowRight, Filter, Plus, Edit, Trash2, ArrowLeft } from 'lucide-react';
+import { Search, Calendar, Tag, FlaskConical, BookOpen, Clock, ArrowRight, Filter, Plus, Edit, Trash2, ArrowLeft, Eye, CheckCircle, XCircle } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import type { Tables } from "@/integrations/supabase/types";
+import LabNotePreview from "@/components/LabNotePreview";
 
 type LabNote = Tables<'lab_notes'>;
 
@@ -16,6 +17,8 @@ const AdminLabNotes = () => {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [notes, setNotes] = useState<LabNote[]>([]);
   const [loading, setLoading] = useState(true);
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewNote, setPreviewNote] = useState<LabNote | null>(null);
 
   const categories = [
     { id: 'all', name: 'All Notes' },
@@ -93,6 +96,60 @@ const AdminLabNotes = () => {
 
   const handleCreateNew = () => {
     navigate('/admin/lab-notes/new');
+  };
+
+  const handlePreview = (note: LabNote) => {
+    // Convert the note to the expected format for the preview component
+    const formData = {
+      title: note.title || '',
+      excerpt: note.excerpt || '',
+      category: note.category || 'methodology',
+      tags: Array.isArray(note.tags) ? note.tags.join(', ') : '',
+      read_time: note.read_time || '',
+      date: note.date || new Date().toISOString().split('T')[0],
+      published: Boolean(note.published),
+      content: typeof note.content === 'object' && note.content ? {
+        analysis: (note.content as any).analysis || '',
+        methodology: (note.content as any).methodology || '',
+        code: (note.content as any).code || '',
+        insights: (note.content as any).insights || ''
+      } : {
+        analysis: '',
+        methodology: '',
+        code: '',
+        insights: ''
+      }
+    };
+    
+    setPreviewNote(formData);
+    setPreviewOpen(true);
+  };
+
+  const togglePublished = async (noteId: string, currentStatus: boolean) => {
+    try {
+      const { error } = await supabase
+        .from('lab_notes')
+        .update({ published: !currentStatus })
+        .eq('id', noteId);
+
+      if (error) throw error;
+
+      setNotes(notes.map(note => 
+        note.id === noteId ? { ...note, published: !currentStatus } : note
+      ));
+
+      toast({
+        title: "Status updated",
+        description: `Lab note ${!currentStatus ? 'published' : 'unpublished'} successfully.`,
+      });
+    } catch (error) {
+      console.error('Error updating published status:', error);
+      toast({
+        title: "Error",
+        description: "Failed to update published status.",
+        variant: "destructive",
+      });
+    }
   };
 
   if (loading) {
@@ -193,14 +250,41 @@ const AdminLabNotes = () => {
             >
               <div className="flex items-start justify-between mb-4">
                 <div className="flex-1">
-                  <h2 className="text-xl font-semibold text-slate-900 mb-2">
-                    {note.title}
-                  </h2>
+                  <div className="flex items-center space-x-2 mb-2">
+                    <h2 className="text-xl font-semibold text-slate-900">
+                      {note.title}
+                    </h2>
+                    <button
+                      onClick={() => togglePublished(note.id, note.published)}
+                      className="flex items-center space-x-1 text-sm font-medium transition-colors"
+                    >
+                      {note.published ? (
+                        <>
+                          <CheckCircle className="w-4 h-4 text-green-600" />
+                          <span className="text-green-600">Published</span>
+                        </>
+                      ) : (
+                        <>
+                          <XCircle className="w-4 h-4 text-orange-600" />
+                          <span className="text-orange-600">Draft</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
                   <p className="text-slate-600 leading-relaxed mb-4">
                     {note.excerpt}
                   </p>
                 </div>
                 <div className="flex items-center space-x-2 ml-4">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handlePreview(note)}
+                    className="flex items-center space-x-1"
+                  >
+                    <Eye className="w-4 h-4" />
+                    <span>Preview</span>
+                  </Button>
                   <Button
                     variant="outline"
                     size="sm"
@@ -263,6 +347,15 @@ const AdminLabNotes = () => {
           </div>
         )}
       </div>
+
+      {/* Preview Modal */}
+      {previewNote && (
+        <LabNotePreview
+          isOpen={previewOpen}
+          onClose={() => setPreviewOpen(false)}
+          formData={previewNote}
+        />
+      )}
     </div>
   );
 };
