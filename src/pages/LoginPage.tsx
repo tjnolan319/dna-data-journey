@@ -44,8 +44,8 @@ const LoginPage = () => {
         description: "Welcome back! You're now logged in as an admin.",
       });
 
-      // Redirect to admin dashboard or homepage
-      navigate('/');
+      // Redirect to admin dashboard
+      navigate('/admin');
     } catch (error: any) {
       toast({
         title: "Login failed",

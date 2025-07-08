@@ -12,6 +12,9 @@ import AcademicTimelinePage from "./pages/AcademicTimelinePage";
 import SbcWorkflowPage from "./pages/SbcWorkflowPage";
 import SignupPage from "./pages/SignupPage";
 import LoginPage from "./pages/LoginPage";
+import AdminDashboard from "./pages/AdminDashboard";
+import AdminLabNotes from "./pages/AdminLabNotes";
+import AdminLabNoteEditor from "./pages/AdminLabNoteEditor";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -31,6 +34,9 @@ const App = () => (
           <Route path="/sbc-workflow" element={<SbcWorkflowPage />} />
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="/admin/lab-notes" element={<AdminLabNotes />} />
+          <Route path="/admin/lab-notes/:id" element={<AdminLabNoteEditor />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
