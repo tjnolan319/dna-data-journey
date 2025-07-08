@@ -3,17 +3,6 @@ import { X, Calendar, Clock, Tag, Eye, Share2, BookOpen, TrendingUp, BarChart3, 
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
-interface LabNote {
-  id: string;
-  title: string;
-  excerpt: string;
-  category: string;
-  tags: string;
-  read_time: string;
-  date: string;
-  published: boolean;
-}
-
 interface LabNotePreviewProps {
   isOpen: boolean;
   onClose: () => void;
@@ -32,12 +21,10 @@ interface LabNotePreviewProps {
       insights: string;
     };
   };
-  allNotes?: LabNote[];
-  currentNoteId?: string;
 }
 
-const LabNotePreview: React.FC<LabNotePreviewProps> = ({ isOpen, onClose, formData, allNotes = [], currentNoteId }) => {
-  const [activeTab, setActiveTab] = useState('');
+const LabNotePreview: React.FC<LabNotePreviewProps> = ({ isOpen, onClose, formData }) => {
+  const [activeTab, setActiveTab] = useState('analysis');
 
   if (!isOpen) return null;
 
@@ -51,15 +38,6 @@ const LabNotePreview: React.FC<LabNotePreviewProps> = ({ isOpen, onClose, formDa
 
   const formatTags = (tagsString: string) => {
     return tagsString.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0);
-  };
-
-  const getRecentNotes = () => {
-    if (!allNotes || allNotes.length === 0) return [];
-    
-    return allNotes
-      .filter(note => note.id !== currentNoteId)
-      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-      .slice(0, 2);
   };
 
   const getBoxClasses = (color: string) => {
@@ -144,15 +122,6 @@ const LabNotePreview: React.FC<LabNotePreviewProps> = ({ isOpen, onClose, formDa
 
   const availableTabs = tabs.filter(tab => hasContent(tab.content));
 
-  // Set initial active tab to first available tab
-  React.useEffect(() => {
-    if (availableTabs.length > 0 && !activeTab) {
-      setActiveTab(availableTabs[0].id);
-    }
-  }, [availableTabs, activeTab]);
-
-  const recentNotes = getRecentNotes();
-
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-lg max-w-6xl w-full max-h-[95vh] overflow-hidden flex flex-col">
@@ -214,15 +183,30 @@ const LabNotePreview: React.FC<LabNotePreviewProps> = ({ isOpen, onClose, formDa
                   {formData.tags && (
                     <div className="flex items-center space-x-2">
                       <Tag className="w-4 h-4" />
-                      <div className="flex flex-wrap gap-1">
-                        {formatTags(formData.tags).map((tag, index) => (
-                          <Badge key={index} variant="outline" className="text-xs">
-                            {tag}
-                          </Badge>
-                        ))}
-                      </div>
+                      <span>{formatTags(formData.tags).join(', ')}</span>
                     </div>
                   )}
+                </div>
+              </div>
+            </div>
+
+            {/* Syntax Helper */}
+            <div className="bg-white rounded-xl border border-slate-200 p-6 mb-6">
+              <h3 className="text-lg font-semibold text-slate-900 mb-4">Colored Box Syntax</h3>
+              <div className="space-y-2 text-sm">
+                <p className="text-slate-600">Use the following syntax to create colored boxes:</p>
+                <code className="bg-slate-100 px-2 py-1 rounded text-sm font-mono">~box(color) Your content here ~endbox</code>
+                <p className="text-slate-600">Available colors: blue, green, yellow, red, purple, orange, gray, indigo, pink, teal</p>
+              </div>
+              <div className="mt-4 space-y-2">
+                <div className="border-l-4 bg-blue-50 border-blue-200 text-blue-800 p-4 rounded-r-lg border">
+                  <strong>Example:</strong> This is a blue box created with ~box(blue) content ~endbox
+                </div>
+                <div className="border-l-4 bg-green-50 border-green-200 text-green-800 p-4 rounded-r-lg border">
+                  <strong>Success:</strong> This is a green box for success messages
+                </div>
+                <div className="border-l-4 bg-yellow-50 border-yellow-200 text-yellow-800 p-4 rounded-r-lg border">
+                  <strong>Warning:</strong> This is a yellow box for warnings
                 </div>
               </div>
             </div>
@@ -290,25 +274,21 @@ const LabNotePreview: React.FC<LabNotePreviewProps> = ({ isOpen, onClose, formDa
               </div>
             )}
 
-            {/* Related Notes */}
-            {availableTabs.length > 0 && recentNotes.length > 0 && (
+            {/* Related Notes Placeholder */}
+            {availableTabs.length > 0 && (
               <div className="mt-8 bg-white rounded-xl border border-slate-200 p-6">
-                <h3 className="text-lg font-semibold text-slate-900 mb-4">Recent Lab Notes</h3>
+                <h3 className="text-lg font-semibold text-slate-900 mb-4">Related Lab Notes</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {recentNotes.map((note) => (
-                    <div key={note.id} className="border border-slate-200 rounded-lg p-4 hover:bg-slate-50 transition-colors cursor-pointer">
-                      <h4 className="font-medium text-slate-900 mb-1">{note.title}</h4>
-                      <p className="text-sm text-slate-600 mb-2">{note.excerpt}</p>
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs text-blue-600 capitalize">
-                          {note.category.replace('-', ' ')} • {note.read_time}
-                        </span>
-                        <span className="text-xs text-slate-500">
-                          {formatDate(note.date)}
-                        </span>
-                      </div>
-                    </div>
-                  ))}
+                  <div className="border border-slate-200 rounded-lg p-4 hover:bg-slate-50 transition-colors cursor-pointer">
+                    <h4 className="font-medium text-slate-900 mb-1">The Hypothesis-Driven Analysis Framework</h4>
+                    <p className="text-sm text-slate-600 mb-2">Systematic approach to business problem investigation</p>
+                    <span className="text-xs text-blue-600">Methodology • 10 min read</span>
+                  </div>
+                  <div className="border border-slate-200 rounded-lg p-4 hover:bg-slate-50 transition-colors cursor-pointer">
+                    <h4 className="font-medium text-slate-900 mb-1">Building Scalable Analytics Infrastructure</h4>
+                    <p className="text-sm text-slate-600 mb-2">Technical architecture for data-driven decision making</p>
+                    <span className="text-xs text-blue-600">Framework • 8 min read</span>
+                  </div>
                 </div>
               </div>
             )}
