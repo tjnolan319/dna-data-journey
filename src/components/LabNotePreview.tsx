@@ -1,9 +1,7 @@
-import React from 'react';
-import { X, Calendar, Clock, Tag, Eye } from 'lucide-react';
+import React, { useState } from 'react';
+import { X, Calendar, Clock, Tag, Eye, Share2, BookOpen, TrendingUp, BarChart3, Code, Lightbulb, Target, CheckCircle2 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface LabNotePreviewProps {
   isOpen: boolean;
@@ -26,6 +24,8 @@ interface LabNotePreviewProps {
 }
 
 const LabNotePreview: React.FC<LabNotePreviewProps> = ({ isOpen, onClose, formData }) => {
+  const [activeTab, setActiveTab] = useState('analysis');
+
   if (!isOpen) return null;
 
   const formatDate = (dateString: string) => {
@@ -41,7 +41,8 @@ const LabNotePreview: React.FC<LabNotePreviewProps> = ({ isOpen, onClose, formDa
   };
 
   const formatMarkdown = (text: string) => {
-    // Simple markdown parsing for preview
+    if (!text) return '';
+    
     let formatted = text;
     
     // Headers
@@ -53,175 +54,201 @@ const LabNotePreview: React.FC<LabNotePreviewProps> = ({ isOpen, onClose, formDa
     formatted = formatted.replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold">$1</strong>');
     formatted = formatted.replace(/\*(.*?)\*/g, '<em class="italic">$1</em>');
     
-    // Code blocks
+    // Code blocks with syntax highlighting indication
     formatted = formatted.replace(/```(\w+)?\n([\s\S]*?)\n```/g, 
-      '<pre class="bg-slate-100 p-4 rounded-lg overflow-x-auto mt-4 mb-4"><code class="text-sm font-mono">$2</code></pre>');
+      '<div class="bg-slate-900 rounded-lg p-4 overflow-x-auto my-4"><pre class="text-sm text-slate-300"><code>$2</code></pre></div>');
     
     // Inline code
-    formatted = formatted.replace(/`([^`]+)`/g, '<code class="bg-slate-100 px-2 py-1 rounded text-sm font-mono">$1</code>');
+    formatted = formatted.replace(/`([^`]+)`/g, '<code class="bg-slate-100 px-2 py-1 rounded text-sm font-mono text-slate-800">$1</code>');
     
-    // Line breaks
-    formatted = formatted.replace(/\n\n/g, '</p><p class="mb-4">');
+    // Lists
+    formatted = formatted.replace(/^\* (.+)$/gm, '<li class="ml-4 mb-1">• $1</li>');
+    formatted = formatted.replace(/^\- (.+)$/gm, '<li class="ml-4 mb-1">• $1</li>');
+    
+    // Links
+    formatted = formatted.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" class="text-blue-600 hover:text-blue-800 underline">$1</a>');
+    
+    // Paragraphs
+    formatted = formatted.replace(/\n\n/g, '</p><p class="mb-4 text-slate-700 leading-relaxed">');
     formatted = formatted.replace(/\n/g, '<br>');
     
-    return `<p class="mb-4">${formatted}</p>`;
+    return `<div class="prose prose-slate max-w-none"><p class="mb-4 text-slate-700 leading-relaxed">${formatted}</p></div>`;
   };
 
-  const hasContent = (content: string) => content.trim().length > 0;
+  const hasContent = (content: string) => content && content.trim().length > 0;
+
+  const getCategoryColor = (category: string) => {
+    switch (category) {
+      case 'methodology':
+        return 'bg-blue-100 text-blue-700';
+      case 'case-studies':
+        return 'bg-green-100 text-green-700';
+      case 'frameworks':
+        return 'bg-purple-100 text-purple-700';
+      default:
+        return 'bg-gray-100 text-gray-700';
+    }
+  };
+
+  const tabs = [
+    { id: 'analysis', label: 'Analysis', icon: TrendingUp, content: formData.content.analysis },
+    { id: 'methodology', label: 'Methodology', icon: Target, content: formData.content.methodology },
+    { id: 'code', label: 'Implementation', icon: Code, content: formData.content.code },
+    { id: 'insights', label: 'Strategic Insights', icon: Lightbulb, content: formData.content.insights }
+  ];
+
+  const availableTabs = tabs.filter(tab => hasContent(tab.content));
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col">
+      <div className="bg-white rounded-lg max-w-6xl w-full max-h-[95vh] overflow-hidden flex flex-col">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-slate-200">
-          <div className="flex items-center space-x-2">
-            <Eye className="w-5 h-5 text-blue-600" />
-            <h2 className="text-xl font-semibold text-slate-900">Lab Note Preview</h2>
+        <div className="bg-white border-b border-slate-200 sticky top-0 z-10">
+          <div className="flex items-center justify-between p-6">
+            <div className="flex items-center space-x-2">
+              <Eye className="w-5 h-5 text-blue-600" />
+              <h2 className="text-xl font-semibold text-slate-900">Lab Note Preview</h2>
+            </div>
+            <div className="flex items-center space-x-3">
+              <button className="p-2 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-100 transition-all">
+                <Share2 className="w-5 h-5" />
+              </button>
+              <button className="p-2 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-100 transition-all">
+                <BookOpen className="w-5 h-5" />
+              </button>
+              <Button variant="ghost" size="sm" onClick={onClose}>
+                <X className="w-4 h-4" />
+              </Button>
+            </div>
           </div>
-          <Button variant="ghost" size="sm" onClick={onClose}>
-            <X className="w-4 h-4" />
-          </Button>
         </div>
 
-        {/* Preview Content */}
-        <div className="flex-1 overflow-y-auto p-6">
-          {/* Title and Meta */}
-          <div className="mb-8">
-            <div className="flex items-center justify-between mb-4">
-              <Badge variant={formData.published ? "default" : "secondary"}>
-                {formData.published ? "Published" : "Draft"}
-              </Badge>
-              <Badge variant="outline" className="capitalize">
-                {formData.category.replace('-', ' ')}
-              </Badge>
-            </div>
-            
-            <h1 className="text-3xl font-bold text-slate-900 mb-4">
-              {formData.title || "Untitled Lab Note"}
-            </h1>
-            
-            <p className="text-lg text-slate-600 mb-6">
-              {formData.excerpt || "No excerpt provided"}
-            </p>
+        {/* Content */}
+        <div className="flex-1 overflow-y-auto bg-slate-50">
+          <div className="max-w-4xl mx-auto px-6 py-8">
+            {/* Entry Header */}
+            <div className="bg-white rounded-xl border border-slate-200 p-8 mb-6">
+              <div className="mb-6">
+                <div className="flex items-center space-x-2 mb-4">
+                  <Badge variant={formData.published ? "default" : "secondary"}>
+                    {formData.published ? "Published" : "Draft"}
+                  </Badge>
+                  <span className={`px-3 py-1 text-sm font-medium rounded-full capitalize ${getCategoryColor(formData.category)}`}>
+                    {formData.category.replace('-', ' ')}
+                  </span>
+                </div>
+                
+                <h1 className="text-3xl font-bold text-slate-900 mb-4 leading-tight">
+                  {formData.title || "Untitled Lab Note"}
+                </h1>
+                
+                <p className="text-lg text-slate-600 leading-relaxed mb-6">
+                  {formData.excerpt || "No excerpt provided"}
+                </p>
 
-            {/* Meta Information */}
-            <div className="flex flex-wrap items-center gap-6 text-sm text-slate-500">
-              <div className="flex items-center space-x-2">
-                <Calendar className="w-4 h-4" />
-                <span>{formatDate(formData.date)}</span>
+                <div className="flex items-center space-x-6 text-sm text-slate-500">
+                  <div className="flex items-center space-x-2">
+                    <Calendar className="w-4 h-4" />
+                    <span>{formatDate(formData.date)}</span>
+                  </div>
+                  {formData.read_time && (
+                    <div className="flex items-center space-x-2">
+                      <Clock className="w-4 h-4" />
+                      <span>{formData.read_time}</span>
+                    </div>
+                  )}
+                  {formData.tags && (
+                    <div className="flex items-center space-x-2">
+                      <Tag className="w-4 h-4" />
+                      <span>{formatTags(formData.tags).join(', ')}</span>
+                    </div>
+                  )}
+                </div>
               </div>
-              {formData.read_time && (
-                <div className="flex items-center space-x-2">
-                  <Clock className="w-4 h-4" />
-                  <span>{formData.read_time}</span>
-                </div>
-              )}
-              {formData.tags && (
-                <div className="flex items-center space-x-2">
-                  <Tag className="w-4 h-4" />
-                  <div className="flex flex-wrap gap-1">
-                    {formatTags(formData.tags).map((tag, index) => (
-                      <Badge key={index} variant="outline" className="text-xs">
-                        {tag}
-                      </Badge>
-                    ))}
-                  </div>
-                </div>
-              )}
             </div>
-          </div>
 
-          {/* Content Sections */}
-          <div className="space-y-8">
-            {/* Analysis Section */}
-            {hasContent(formData.content.analysis) && (
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-xl text-slate-900">Analysis</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div 
-                    className="prose prose-slate max-w-none text-slate-700 leading-relaxed"
-                    dangerouslySetInnerHTML={{ 
-                      __html: formatMarkdown(formData.content.analysis) 
-                    }}
-                  />
-                </CardContent>
-              </Card>
-            )}
-
-            {/* Methodology Section */}
-            {hasContent(formData.content.methodology) && (
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-xl text-slate-900">Methodology</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div 
-                    className="prose prose-slate max-w-none text-slate-700 leading-relaxed"
-                    dangerouslySetInnerHTML={{ 
-                      __html: formatMarkdown(formData.content.methodology) 
-                    }}
-                  />
-                </CardContent>
-              </Card>
-            )}
-
-            {/* Code Section */}
-            {hasContent(formData.content.code) && (
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-xl text-slate-900">Code & Implementation</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div 
-                    className="prose prose-slate max-w-none text-slate-700 leading-relaxed"
-                    dangerouslySetInnerHTML={{ 
-                      __html: formatMarkdown(formData.content.code) 
-                    }}
-                  />
-                </CardContent>
-              </Card>
-            )}
-
-            {/* Insights Section */}
-            {hasContent(formData.content.insights) && (
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-xl text-slate-900">Strategic Insights</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div 
-                    className="prose prose-slate max-w-none text-slate-700 leading-relaxed"
-                    dangerouslySetInnerHTML={{ 
-                      __html: formatMarkdown(formData.content.insights) 
-                    }}
-                  />
-                </CardContent>
-              </Card>
-            )}
-
-            {/* Empty State */}
-            {!hasContent(formData.content.analysis) && 
-             !hasContent(formData.content.methodology) && 
-             !hasContent(formData.content.code) && 
-             !hasContent(formData.content.insights) && (
-              <Card>
-                <CardContent className="py-12">
-                  <div className="text-center text-slate-500">
-                    <Eye className="w-12 h-12 mx-auto mb-4 text-slate-300" />
-                    <h3 className="text-lg font-medium mb-2">No content to preview</h3>
-                    <p>Add some content to the analysis, methodology, code, or insights sections to see the preview.</p>
+            {/* Content Tabs */}
+            {availableTabs.length > 0 ? (
+              <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+                <div className="border-b border-slate-200">
+                  <div className="flex overflow-x-auto">
+                    {availableTabs.map((tab) => {
+                      const Icon = tab.icon;
+                      return (
+                        <button
+                          key={tab.id}
+                          onClick={() => setActiveTab(tab.id)}
+                          className={`flex items-center space-x-2 px-6 py-4 font-medium transition-all whitespace-nowrap ${
+                            activeTab === tab.id
+                              ? 'text-blue-600 border-b-2 border-blue-600 bg-blue-50'
+                              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+                          }`}
+                        >
+                          <Icon className="w-4 h-4" />
+                          <span>{tab.label}</span>
+                        </button>
+                      );
+                    })}
                   </div>
-                </CardContent>
-              </Card>
+                </div>
+
+                <div className="p-8">
+                  {availableTabs.map((tab) => {
+                    if (activeTab !== tab.id) return null;
+                    
+                    const Icon = tab.icon;
+                    return (
+                      <div key={tab.id} className="space-y-6">
+                        <div>
+                          <h2 className="text-xl font-semibold text-slate-900 mb-6 flex items-center space-x-2">
+                            <Icon className="w-5 h-5 text-blue-600" />
+                            <span>{tab.label}</span>
+                          </h2>
+                          
+                          <div 
+                            className="prose prose-slate max-w-none"
+                            dangerouslySetInnerHTML={{ 
+                              __html: formatMarkdown(tab.content) 
+                            }}
+                          />
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            ) : (
+              /* Empty State */
+              <div className="bg-white rounded-xl border border-slate-200 p-12">
+                <div className="text-center text-slate-500">
+                  <Eye className="w-16 h-16 mx-auto mb-4 text-slate-300" />
+                  <h3 className="text-xl font-medium mb-2">No content to preview</h3>
+                  <p className="text-slate-600 max-w-md mx-auto">
+                    Add some content to the analysis, methodology, code, or insights sections to see the preview with tabbed navigation.
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {/* Related Notes Placeholder */}
+            {availableTabs.length > 0 && (
+              <div className="mt-8 bg-white rounded-xl border border-slate-200 p-6">
+                <h3 className="text-lg font-semibold text-slate-900 mb-4">Related Lab Notes</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="border border-slate-200 rounded-lg p-4 hover:bg-slate-50 transition-colors cursor-pointer">
+                    <h4 className="font-medium text-slate-900 mb-1">The Hypothesis-Driven Analysis Framework</h4>
+                    <p className="text-sm text-slate-600 mb-2">Systematic approach to business problem investigation</p>
+                    <span className="text-xs text-blue-600">Methodology • 10 min read</span>
+                  </div>
+                  <div className="border border-slate-200 rounded-lg p-4 hover:bg-slate-50 transition-colors cursor-pointer">
+                    <h4 className="font-medium text-slate-900 mb-1">Building Scalable Analytics Infrastructure</h4>
+                    <p className="text-sm text-slate-600 mb-2">Technical architecture for data-driven decision making</p>
+                    <span className="text-xs text-blue-600">Framework • 8 min read</span>
+                  </div>
+                </div>
+              </div>
             )}
           </div>
-        </div>
-
-        {/* Footer */}
-        <div className="border-t border-slate-200 p-4 flex justify-end">
-          <Button onClick={onClose}>Close Preview</Button>
         </div>
       </div>
     </div>
