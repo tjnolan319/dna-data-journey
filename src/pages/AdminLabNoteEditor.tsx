@@ -8,13 +8,19 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+import type { Tables, TablesInsert, TablesUpdate } from "@/integrations/supabase/types";
 
-interface LabNoteData {
+type LabNote = Tables<'lab_notes'>;
+
+interface LabNoteFormData {
   title: string;
   excerpt: string;
   category: string;
   tags: string;
-  readTime: string;
+  read_time: string;
+  date: string;
+  published: boolean;
   content: {
     analysis: string;
     methodology: string;
@@ -29,12 +35,14 @@ const AdminLabNoteEditor = () => {
   const { toast } = useToast();
   const isEditing = id !== 'new';
 
-  const [formData, setFormData] = useState<LabNoteData>({
+  const [formData, setFormData] = useState<LabNoteFormData>({
     title: '',
     excerpt: '',
     category: 'methodology',
     tags: '',
-    readTime: '',
+    read_time: '',
+    date: new Date().toISOString().split('T')[0],
+    published: false,
     content: {
       analysis: '',
       methodology: '',
@@ -44,35 +52,67 @@ const AdminLabNoteEditor = () => {
   });
 
   const [activeTab, setActiveTab] = useState('basic');
+  const [loading, setLoading] = useState(false);
+  const [initialLoading, setInitialLoading] = useState(isEditing);
 
   useEffect(() => {
-    if (isEditing) {
-      // In a real app, you'd fetch the note data from your backend
-      // For now, we'll simulate loading existing data
-      setFormData({
-        title: "Sample Lab Note Title",
-        excerpt: "This is a sample excerpt for demonstration purposes.",
-        category: "case-studies",
-        tags: "analysis, methodology, case-study",
-        readTime: "8 min read",
-        content: {
-          analysis: "## Analysis Content\n\nYour analysis content goes here...",
-          methodology: "## Methodology Content\n\nYour methodology content goes here...",
-          code: "```python\n# Your code examples go here\nprint('Hello, Lab Notes!')\n```",
-          insights: "## Strategic Insights\n\nYour insights content goes here..."
-        }
-      });
+    if (isEditing && id) {
+      fetchNote(id);
     }
   }, [id, isEditing]);
 
-  const handleInputChange = (field: string, value: string) => {
+  const fetchNote = async (noteId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('lab_notes')
+        .select('*')
+        .eq('id', noteId)
+        .single();
+
+      if (error) throw error;
+
+      if (data) {
+        setFormData({
+          title: data.title,
+          excerpt: data.excerpt,
+          category: data.category,
+          tags: data.tags.join(', '),
+          read_time: data.read_time,
+          date: data.date,
+          published: data.published || false,
+          content: typeof data.content === 'object' && data.content ? {
+            analysis: (data.content as any).analysis || '',
+            methodology: (data.content as any).methodology || '',
+            code: (data.content as any).code || '',
+            insights: (data.content as any).insights || ''
+          } : {
+            analysis: '',
+            methodology: '',
+            code: '',
+            insights: ''
+          }
+        });
+      }
+    } catch (error) {
+      console.error('Error fetching note:', error);
+      toast({
+        title: "Error",
+        description: "Failed to load the lab note.",
+        variant: "destructive",
+      });
+    } finally {
+      setInitialLoading(false);
+    }
+  };
+
+  const handleInputChange = (field: string, value: string | boolean) => {
     if (field.startsWith('content.')) {
       const contentField = field.split('.')[1];
       setFormData(prev => ({
         ...prev,
         content: {
           ...prev.content,
-          [contentField]: value
+          [contentField]: value as string
         }
       }));
     } else {
@@ -83,7 +123,7 @@ const AdminLabNoteEditor = () => {
     }
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     // Validation
     if (!formData.title.trim() || !formData.excerpt.trim()) {
       toast({
@@ -94,22 +134,72 @@ const AdminLabNoteEditor = () => {
       return;
     }
 
-    // In a real app, you'd save to your backend here
-    toast({
-      title: isEditing ? "Note updated" : "Note created",
-      description: `Lab note has been successfully ${isEditing ? 'updated' : 'created'}.`,
-    });
+    setLoading(true);
 
-    navigate('/admin/lab-notes');
+    try {
+      const tagsArray = formData.tags.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0);
+      
+      const noteData = {
+        title: formData.title,
+        excerpt: formData.excerpt,
+        category: formData.category,
+        tags: tagsArray,
+        read_time: formData.read_time,
+        date: formData.date,
+        published: formData.published,
+        content: formData.content
+      };
+
+      if (isEditing && id) {
+        const { error } = await supabase
+          .from('lab_notes')
+          .update(noteData as TablesUpdate<'lab_notes'>)
+          .eq('id', id);
+
+        if (error) throw error;
+      } else {
+        const { error } = await supabase
+          .from('lab_notes')
+          .insert([noteData as TablesInsert<'lab_notes'>]);
+
+        if (error) throw error;
+      }
+
+      toast({
+        title: isEditing ? "Note updated" : "Note created",
+        description: `Lab note has been successfully ${isEditing ? 'updated' : 'created'}.`,
+      });
+
+      navigate('/admin/lab-notes');
+    } catch (error) {
+      console.error('Error saving note:', error);
+      toast({
+        title: "Error",
+        description: `Failed to ${isEditing ? 'update' : 'create'} the lab note.`,
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handlePreview = () => {
-    // In a real app, you'd navigate to a preview page
     toast({
       title: "Preview feature",
       description: "Preview functionality will be implemented in the next iteration.",
     });
   };
+
+  if (initialLoading) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-slate-600">Loading lab note...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -128,9 +218,13 @@ const AdminLabNoteEditor = () => {
                 <Eye className="w-4 h-4" />
                 <span>Preview</span>
               </Button>
-              <Button onClick={handleSave} className="flex items-center space-x-2">
+              <Button 
+                onClick={handleSave} 
+                disabled={loading}
+                className="flex items-center space-x-2"
+              >
                 <Save className="w-4 h-4" />
-                <span>{isEditing ? 'Update' : 'Create'} Note</span>
+                <span>{loading ? 'Saving...' : (isEditing ? 'Update' : 'Create')} Note</span>
               </Button>
             </div>
           </div>
@@ -183,7 +277,7 @@ const AdminLabNoteEditor = () => {
                   />
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                   <div>
                     <Label htmlFor="category">Category</Label>
                     <select
@@ -202,21 +296,42 @@ const AdminLabNoteEditor = () => {
                     <Label htmlFor="readTime">Read Time</Label>
                     <Input
                       id="readTime"
-                      value={formData.readTime}
-                      onChange={(e) => handleInputChange('readTime', e.target.value)}
+                      value={formData.read_time}
+                      onChange={(e) => handleInputChange('read_time', e.target.value)}
                       placeholder="e.g., 8 min read"
                     />
                   </div>
 
                   <div>
-                    <Label htmlFor="tags">Tags</Label>
+                    <Label htmlFor="date">Date</Label>
                     <Input
-                      id="tags"
-                      value={formData.tags}
-                      onChange={(e) => handleInputChange('tags', e.target.value)}
-                      placeholder="comma, separated, tags"
+                      id="date"
+                      type="date"
+                      value={formData.date}
+                      onChange={(e) => handleInputChange('date', e.target.value)}
                     />
                   </div>
+
+                  <div className="flex items-center space-x-2">
+                    <input
+                      id="published"
+                      type="checkbox"
+                      checked={formData.published}
+                      onChange={(e) => handleInputChange('published', e.target.checked)}
+                      className="rounded border-slate-300"
+                    />
+                    <Label htmlFor="published">Published</Label>
+                  </div>
+                </div>
+
+                <div>
+                  <Label htmlFor="tags">Tags</Label>
+                  <Input
+                    id="tags"
+                    value={formData.tags}
+                    onChange={(e) => handleInputChange('tags', e.target.value)}
+                    placeholder="comma, separated, tags"
+                  />
                 </div>
               </CardContent>
             </Card>

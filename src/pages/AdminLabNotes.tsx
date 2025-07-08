@@ -1,87 +1,54 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search, Calendar, Tag, FlaskConical, BookOpen, Clock, ArrowRight, Filter, Plus, Edit, Trash2, ArrowLeft } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+import type { Tables } from "@/integrations/supabase/types";
 
-interface LabNote {
-  id: number;
-  title: string;
-  excerpt: string;
-  category: string;
-  date: string;
-  readTime: string;
-  tags: string[];
-  content?: {
-    analysis?: string;
-    methodology?: string;
-    code?: string;
-    insights?: string;
-  };
-}
+type LabNote = Tables<'lab_notes'>;
 
 const AdminLabNotes = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const [notes, setNotes] = useState<LabNote[]>([]);
+  const [loading, setLoading] = useState(true);
 
   const categories = [
-    { id: 'all', name: 'All Notes', count: 5 },
-    { id: 'methodology', name: 'Methodology', count: 2 },
-    { id: 'case-studies', name: 'Case Studies', count: 2 },
-    { id: 'frameworks', name: 'Frameworks', count: 1 }
+    { id: 'all', name: 'All Notes' },
+    { id: 'methodology', name: 'Methodology' },
+    { id: 'case-studies', name: 'Case Studies' },
+    { id: 'frameworks', name: 'Frameworks' }
   ];
 
-  const [notes, setNotes] = useState<LabNote[]>([
-    {
-      id: 1,
-      title: "The Double-Diamond Approach to Problem Solving",
-      excerpt: "How I adapted the design thinking methodology for complex business analysis. A systematic approach to divergent and convergent thinking in professional contexts.",
-      category: "methodology",
-      date: "2024-06-15",
-      readTime: "8 min read",
-      tags: ["problem-solving", "design-thinking", "analysis"]
-    },
-    {
-      id: 2,
-      title: "Case Study: Optimizing Multi-Channel Customer Journey",
-      excerpt: "Breaking down a 6-month project that increased customer retention by 34%. Deep dive into data collection, hypothesis formation, and iterative testing.",
-      category: "case-studies",
-      date: "2024-06-08",
-      readTime: "12 min read",
-      tags: ["customer-experience", "data-analysis", "optimization"]
-    },
-    {
-      id: 3,
-      title: "Building a Personal Knowledge Management System",
-      excerpt: "My evolution from scattered notes to a structured system for capturing, processing, and connecting professional insights. Tools, workflows, and mental models.",
-      category: "frameworks",
-      date: "2024-05-28",
-      readTime: "6 min read",
-      tags: ["knowledge-management", "productivity", "systems"]
-    },
-    {
-      id: 4,
-      title: "The Hypothesis-Driven Analysis Framework",
-      excerpt: "Moving beyond descriptive analytics to predictive insights. How I structure investigations to maximize learning and minimize bias in professional contexts.",
-      category: "methodology",
-      date: "2024-05-20",
-      readTime: "10 min read",
-      tags: ["analytics", "hypothesis-testing", "decision-making"]
-    },
-    {
-      id: 5,
-      title: "Lessons from a Failed Project Initiative",
-      excerpt: "What went wrong, what went right, and the systematic post-mortem process that turned failure into valuable professional DNA. Transparency in professional growth.",
-      category: "case-studies",
-      date: "2024-05-12",
-      readTime: "9 min read",
-      tags: ["failure-analysis", "learning", "project-management"]
+  const fetchNotes = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('lab_notes')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setNotes(data || []);
+    } catch (error) {
+      console.error('Error fetching notes:', error);
+      toast({
+        title: "Error",
+        description: "Failed to fetch lab notes.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
     }
-  ]);
+  };
+
+  useEffect(() => {
+    fetchNotes();
+  }, []);
 
   const filteredNotes = notes.filter(note => {
     const matchesSearch = note.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
@@ -90,23 +57,55 @@ const AdminLabNotes = () => {
     return matchesSearch && matchesCategory;
   });
 
-  const handleEdit = (noteId: number) => {
+  const getCategoryCount = (categoryId: string) => {
+    if (categoryId === 'all') return notes.length;
+    return notes.filter(note => note.category === categoryId).length;
+  };
+
+  const handleEdit = (noteId: string) => {
     navigate(`/admin/lab-notes/edit/${noteId}`);
   };
 
-  const handleDelete = (noteId: number) => {
+  const handleDelete = async (noteId: string) => {
     if (window.confirm('Are you sure you want to delete this lab note?')) {
-      setNotes(notes.filter(note => note.id !== noteId));
-      toast({
-        title: "Note deleted",
-        description: "The lab note has been successfully deleted.",
-      });
+      try {
+        const { error } = await supabase
+          .from('lab_notes')
+          .delete()
+          .eq('id', noteId);
+
+        if (error) throw error;
+
+        setNotes(notes.filter(note => note.id !== noteId));
+        toast({
+          title: "Note deleted",
+          description: "The lab note has been successfully deleted.",
+        });
+      } catch (error) {
+        console.error('Error deleting note:', error);
+        toast({
+          title: "Error",
+          description: "Failed to delete the lab note.",
+          variant: "destructive",
+        });
+      }
     }
   };
 
   const handleCreateNew = () => {
     navigate('/admin/lab-notes/new');
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+        <div className="text-center">
+          <FlaskConical className="w-12 h-12 text-blue-600 mx-auto mb-4 animate-pulse" />
+          <p className="text-slate-600">Loading lab notes...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -162,7 +161,7 @@ const AdminLabNotes = () => {
             >
               {categories.map(category => (
                 <option key={category.id} value={category.id}>
-                  {category.name} ({category.count})
+                  {category.name} ({getCategoryCount(category.id)})
                 </option>
               ))}
             </select>
@@ -181,7 +180,7 @@ const AdminLabNotes = () => {
                   : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
               }`}
             >
-              {category.name} <span className="ml-1 text-xs opacity-75">({category.count})</span>
+              {category.name} <span className="ml-1 text-xs opacity-75">({getCategoryCount(category.id)})</span>
             </button>
           ))}
         </div>
@@ -232,7 +231,7 @@ const AdminLabNotes = () => {
                   </div>
                   <div className="flex items-center space-x-1">
                     <Clock className="w-4 h-4" />
-                    <span>{note.readTime}</span>
+                    <span>{note.read_time}</span>
                   </div>
                 </div>
                 
@@ -257,7 +256,7 @@ const AdminLabNotes = () => {
         </div>
 
         {/* Empty State */}
-        {filteredNotes.length === 0 && (
+        {filteredNotes.length === 0 && !loading && (
           <div className="text-center py-12">
             <BookOpen className="w-12 h-12 text-slate-300 mx-auto mb-4" />
             <h3 className="text-lg font-medium text-slate-900 mb-2">No notes found</h3>
