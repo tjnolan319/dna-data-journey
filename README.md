@@ -1,73 +1,183 @@
-# Welcome to your Lovable project
 
-## Project info
+# DNA Data Journey - Professional Portfolio
+
+A comprehensive professional portfolio showcasing data analytics expertise, built with React and modern web technologies.
+
+## Project Overview
 
 **URL**: https://lovable.dev/projects/d822a6f3-fba4-4b81-afd9-8d9eb56d6c84
 
-## How can I edit this code?
+This is Timothy Nolan's professional portfolio featuring interactive data visualizations, project showcases, and a comprehensive timeline of professional and academic achievements. The application demonstrates expertise in data analytics, business intelligence, and web development.
 
-There are several ways of editing your application.
+## Technologies Used
 
-**Use Lovable**
+- **React 18** - Modern React with hooks and functional components
+- **TypeScript** - Type-safe development
+- **Vite** - Fast build tool and dev server
+- **Tailwind CSS** - Utility-first CSS framework
+- **shadcn/ui** - Modern React component library
+- **Supabase** - Backend-as-a-Service for authentication and data storage
+- **React Router** - Client-side routing
+- **Recharts** - Data visualization library
+- **D3.js** - Advanced data manipulation and visualization
+- **Tanstack Query** - Data fetching and state management
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/d822a6f3-fba4-4b81-afd9-8d9eb56d6c84) and start prompting.
+## Project Structure
 
-Changes made via Lovable will be committed automatically to this repo.
+### Root Files
+- `package.json` - Project dependencies and scripts
+- `vite.config.ts` - Vite configuration
+- `tailwind.config.ts` - Tailwind CSS configuration
+- `tsconfig.json` - TypeScript configuration
 
-**Use your preferred IDE**
+### Source Code (`src/`)
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+#### Main Application Files
+- `main.tsx` - Application entry point
+- `App.tsx` - Main app component with routing configuration
+- `index.css` - Global styles and Tailwind imports
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+#### Pages (`src/pages/`)
+- `Index.tsx` - Homepage with all main sections
+- `GenreCategoryProject.tsx` - Detailed project showcase page
+- `SkillsetNetwork.tsx` - Interactive skills network visualization
+- `TimelinePage.tsx` - Professional timeline page
+- `AcademicTimelinePage.tsx` - Academic timeline page
+- `SbcWorkflowPage.tsx` - Workflow demonstration page
+- `SignupPage.tsx` - Newsletter signup for Lab Notes
+- `LoginPage.tsx` - Admin login page
+- `NotFound.tsx` - 404 error page with DNA-themed design
 
-Follow these steps:
+#### Components (`src/components/`)
 
+**Navigation & Layout**
+- `Navigation.tsx` - Main navigation bar with responsive design and authentication buttons
+- `ProjectTabs.tsx` - Tabbed interface for portfolio sections (Projects, Case Studies, Dashboards, Publications, Certifications, Lab Notes)
+
+**Hero & About Sections**
+- `DNAHero.tsx` - Animated DNA helix hero section with professional introduction
+- `TechStack.tsx` - Interactive technology stack showcase
+
+**Timeline Components**
+- `TimelinePreview.tsx` - Preview of professional timeline on homepage
+- `GanttChart.tsx` - Interactive Gantt chart for project timelines
+- `DNATimeline.tsx` - DNA-themed academic timeline visualization
+
+**Data Visualization**
+- `DataGallery.tsx` - Carousel of data visualization examples
+- `ContactForm.tsx` - Contact form with validation
+
+**UI Components (`src/components/ui/`)**
+- Comprehensive shadcn/ui component library including:
+  - Form controls (Button, Input, Select, etc.)
+  - Layout components (Card, Tabs, Dialog, etc.)
+  - Navigation (Carousel, Breadcrumb, etc.)
+  - Feedback (Toast, Alert, etc.)
+
+#### Utilities & Configuration
+- `src/lib/utils.ts` - Utility functions for class merging
+- `src/api/projectApi.js` - API functions for fetching project data from Supabase
+
+#### Supabase Integration
+- `src/integrations/supabase/client.ts` - Supabase client configuration
+
+#### Assets (`src/assets/`)
+- `BPMN_of_SBC.jpg` - Business process diagram
+- `Tim_Nolan_Profile_Pic_Cropped.jpg` - Professional profile photo
+- Various data visualization images for project showcases
+
+## Key Features
+
+### 🧬 DNA-Themed Design
+- Animated DNA helix in hero section
+- DNA-inspired timeline visualizations
+- Science-themed 404 page
+
+### 📊 Interactive Data Visualizations
+- Dynamic project timeline with Gantt charts
+- Skills network visualization
+- Data gallery carousel
+- Professional achievement timelines
+
+### 🎯 Portfolio Showcase
+- Tabbed interface for different content types
+- Project details with technology stacks
+- Case studies and publications
+- Interactive dashboards
+
+### 🔐 Authentication System
+- Newsletter signup for "Lab Notes"
+- Admin login functionality
+- Supabase-powered backend
+
+### 📱 Responsive Design
+- Mobile-first approach
+- Adaptive navigation
+- Optimized for all screen sizes
+
+## How to Run the Project
+
+### Prerequisites
+- Node.js & npm installed ([install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating))
+
+### Local Development
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
+# Clone the repository
 git clone <YOUR_GIT_URL>
 
-# Step 2: Navigate to the project directory.
+# Navigate to project directory
 cd <YOUR_PROJECT_NAME>
 
-# Step 3: Install the necessary dependencies.
-npm i
+# Install dependencies
+npm install
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# Start development server
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+### Building for Production
+```sh
+# Create production build
+npm run build
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+# Preview production build
+npm run preview
+```
 
-**Use GitHub Codespaces**
+## Environment Setup
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+The project requires Supabase configuration. Set up the following environment variables:
+- `VITE_SUPABASE_URL` - Your Supabase project URL
+- `VITE_SUPABASE_ANON_KEY` - Your Supabase anonymous key
 
-## What technologies are used for this project?
+## Database Schema
 
-This project is built with:
+The application uses the following Supabase tables:
+- `projects` - Portfolio projects with technologies and descriptions
+- `case_studies` - Business case studies and analyses
+- `dashboards` - Dashboard projects and visualizations
+- `publications` - Academic and professional publications
+- `certifications` - Professional certifications and credentials
+- `newsletter_subscribers` - Lab Notes newsletter subscribers
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+## Deployment
 
-## How can I deploy this project?
+The project is configured for automatic deployment through GitHub Actions. Simply push to the main branch to trigger deployment.
 
-Simply open [Lovable](https://lovable.dev/projects/d822a6f3-fba4-4b81-afd9-8d9eb56d6c84) and click on Share -> Publish.
+### Manual Deployment
+You can also deploy through the Lovable interface by clicking the "Publish" button.
 
-## Can I connect a custom domain to my Lovable project?
+### Custom Domain
+To connect a custom domain, navigate to Project > Settings > Domains in Lovable (requires paid plan).
 
-Yes, you can!
+## Development Notes
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+- The project uses TypeScript for type safety
+- Components are organized by functionality
+- API calls are centralized in `src/api/`
+- Responsive design follows mobile-first principles
+- Error handling includes user-friendly 404 pages
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+## Contact
+
+For questions about this portfolio or to discuss potential opportunities, use the contact form on the website or reach out through the provided social links.
