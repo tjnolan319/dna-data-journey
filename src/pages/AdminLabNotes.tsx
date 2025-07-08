@@ -63,8 +63,8 @@ const AdminLabNotes = () => {
   };
 
   const handleEdit = (noteId: string) => {
-    navigate(`/admin/lab-notes/edit/${noteId}`);
-  };
+  navigate(`/admin/lab-notes/edit/${noteId}`);
+};
 
   const handleDelete = async (noteId: string) => {
     if (window.confirm('Are you sure you want to delete this lab note?')) {
