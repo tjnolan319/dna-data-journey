@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, Save, Eye } from 'lucide-react';
@@ -33,7 +32,7 @@ const AdminLabNoteEditor = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const { toast } = useToast();
-  const isEditing = id !== 'new';
+  const isEditing = id !== 'new' && id !== undefined;
 
   const [formData, setFormData] = useState<LabNoteFormData>({
     title: '',
@@ -56,7 +55,7 @@ const AdminLabNoteEditor = () => {
   const [initialLoading, setInitialLoading] = useState(isEditing);
 
   useEffect(() => {
-    if (isEditing && id) {
+    if (isEditing && id && id !== 'new') {
       fetchNote(id);
     }
   }, [id, isEditing]);
