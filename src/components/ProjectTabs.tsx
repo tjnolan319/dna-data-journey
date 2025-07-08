@@ -535,5 +535,3 @@ export const ProjectTabs = () => {
     </section>
   );
 };
-
-export { ProjectTabs };
