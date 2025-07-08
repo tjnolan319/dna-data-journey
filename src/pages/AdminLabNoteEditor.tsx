@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import type { Tables, TablesInsert, TablesUpdate } from "@/integrations/supabase/types";
+import LabNotePreview from "@/components/LabNotePreview";
 
 type LabNote = Tables<'lab_notes'>;
 
@@ -32,7 +33,7 @@ const AdminLabNoteEditor = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const { toast } = useToast();
-  const isEditing = id !== 'new' && id !== undefined;
+  const isEditing = id && id !== 'new';
 
   const [formData, setFormData] = useState<LabNoteFormData>({
     title: '',
@@ -53,32 +54,40 @@ const AdminLabNoteEditor = () => {
   const [activeTab, setActiveTab] = useState('basic');
   const [loading, setLoading] = useState(false);
   const [initialLoading, setInitialLoading] = useState(isEditing);
+  const [previewOpen, setPreviewOpen] = useState(false);
 
   useEffect(() => {
-    if (isEditing && id && id !== 'new') {
+    if (isEditing && id) {
       fetchNote(id);
+    } else {
+      // Reset loading state for new notes
+      setInitialLoading(false);
     }
   }, [id, isEditing]);
 
   const fetchNote = async (noteId: string) => {
     try {
+      setInitialLoading(true);
       const { data, error } = await supabase
         .from('lab_notes')
         .select('*')
         .eq('id', noteId)
         .single();
 
-      if (error) throw error;
+      if (error) {
+        console.error('Supabase error:', error);
+        throw error;
+      }
 
       if (data) {
         setFormData({
-          title: data.title,
-          excerpt: data.excerpt,
-          category: data.category,
-          tags: data.tags.join(', '),
-          read_time: data.read_time,
-          date: data.date,
-          published: data.published || false,
+          title: data.title || '',
+          excerpt: data.excerpt || '',
+          category: data.category || 'methodology',
+          tags: Array.isArray(data.tags) ? data.tags.join(', ') : '',
+          read_time: data.read_time || '',
+          date: data.date || new Date().toISOString().split('T')[0],
+          published: Boolean(data.published),
           content: typeof data.content === 'object' && data.content ? {
             analysis: (data.content as any).analysis || '',
             methodology: (data.content as any).methodology || '',
@@ -96,9 +105,11 @@ const AdminLabNoteEditor = () => {
       console.error('Error fetching note:', error);
       toast({
         title: "Error",
-        description: "Failed to load the lab note.",
+        description: "Failed to load the lab note. Please try again.",
         variant: "destructive",
       });
+      // Navigate back to lab notes list on error
+      navigate('/admin/lab-notes');
     } finally {
       setInitialLoading(false);
     }
@@ -158,7 +169,8 @@ const AdminLabNoteEditor = () => {
           .from('lab_notes')
           .update(noteData as TablesUpdate<'lab_notes'>)
           .eq('id', id)
-          .select();
+          .select()
+          .single();
 
         console.log('Update response:', { data, error });
 
@@ -166,11 +178,19 @@ const AdminLabNoteEditor = () => {
           console.error('Update error:', error);
           throw error;
         }
+
+        if (data) {
+          toast({
+            title: "Note updated",
+            description: "Lab note has been successfully updated.",
+          });
+        }
       } else {
         const { data, error } = await supabase
           .from('lab_notes')
           .insert([noteData as TablesInsert<'lab_notes'>])
-          .select();
+          .select()
+          .single();
 
         console.log('Insert response:', { data, error });
 
@@ -178,12 +198,14 @@ const AdminLabNoteEditor = () => {
           console.error('Insert error:', error);
           throw error;
         }
-      }
 
-      toast({
-        title: isEditing ? "Note updated" : "Note created",
-        description: `Lab note has been successfully ${isEditing ? 'updated' : 'created'}.`,
-      });
+        if (data) {
+          toast({
+            title: "Note created",
+            description: "Lab note has been successfully created.",
+          });
+        }
+      }
 
       navigate('/admin/lab-notes');
     } catch (error) {
@@ -199,10 +221,7 @@ const AdminLabNoteEditor = () => {
   };
 
   const handlePreview = () => {
-    toast({
-      title: "Preview feature",
-      description: "Preview functionality will be implemented in the next iteration.",
-    });
+    setPreviewOpen(true);
   };
 
   if (initialLoading) {
@@ -431,6 +450,13 @@ const AdminLabNoteEditor = () => {
           </TabsContent>
         </Tabs>
       </div>
+
+      {/* Preview Modal */}
+      <LabNotePreview
+        isOpen={previewOpen}
+        onClose={() => setPreviewOpen(false)}
+        formData={formData}
+      />
     </div>
   );
 };
