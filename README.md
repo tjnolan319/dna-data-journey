@@ -1,4 +1,5 @@
 
+
 # DNA Data Journey - Professional Portfolio
 
 A comprehensive professional portfolio showcasing data analytics expertise, built with React and modern web technologies.
@@ -46,6 +47,9 @@ This is Timothy Nolan's professional portfolio featuring interactive data visual
 - `SbcWorkflowPage.tsx` - Workflow demonstration page
 - `SignupPage.tsx` - Newsletter signup for Lab Notes
 - `LoginPage.tsx` - Admin login page
+- `AdminDashboard.tsx` - Admin dashboard with navigation
+- `AdminLabNotes.tsx` - Lab notes management interface
+- `AdminLabNoteEditor.tsx` - Lab note creation and editing interface
 - `NotFound.tsx` - 404 error page with DNA-themed design
 
 #### Components (`src/components/`)
@@ -67,9 +71,12 @@ This is Timothy Nolan's professional portfolio featuring interactive data visual
 - `DataGallery.tsx` - Carousel of data visualization examples
 - `ContactForm.tsx` - Contact form with validation
 
+**Lab Notes System**
+- `LabNotePreview.tsx` - Rich preview modal with markdown rendering, colored box syntax, and dynamic related notes
+
 **UI Components (`src/components/ui/`)**
 - Comprehensive shadcn/ui component library including:
-  - Form controls (Button, Input, Select, etc.)
+  - Form controls (Button, Input, Select, Switch, etc.)
   - Layout components (Card, Tabs, Dialog, etc.)
   - Navigation (Carousel, Breadcrumb, etc.)
   - Feedback (Toast, Alert, etc.)
@@ -80,6 +87,7 @@ This is Timothy Nolan's professional portfolio featuring interactive data visual
 
 #### Supabase Integration
 - `src/integrations/supabase/client.ts` - Supabase client configuration
+- `src/integrations/supabase/types.ts` - Auto-generated TypeScript types
 
 #### Assets (`src/assets/`)
 - `BPMN_of_SBC.jpg` - Business process diagram
@@ -105,15 +113,53 @@ This is Timothy Nolan's professional portfolio featuring interactive data visual
 - Case studies and publications
 - Interactive dashboards
 
-### 🔐 Authentication System
-- Newsletter signup for "Lab Notes"
-- Admin login functionality
-- Supabase-powered backend
+### 🔐 Admin System & Lab Notes
+- Secure admin authentication with Supabase RLS policies
+- Full CRUD operations for lab notes management
+- Rich text editor with Markdown support and colored box syntax
+- Dynamic publication status with visual indicators (switch controls)
+- Real-time related notes based on recent publications
+- Author attribution (Tim Nolan) on all notes
+- Preview system with tabbed content navigation
 
 ### 📱 Responsive Design
 - Mobile-first approach
 - Adaptive navigation
 - Optimized for all screen sizes
+
+## Admin Features
+
+### Lab Notes Management
+- **Secure Access**: Admin-only access protected by Row Level Security
+- **Rich Editor**: Tabbed interface for different content sections (Analysis, Methodology, Code, Insights)
+- **Markdown Support**: Full Markdown rendering with syntax highlighting
+- **Colored Boxes**: Custom syntax for creating colored information boxes
+- **Publication Control**: Visual switch controls for draft/published status
+- **Dynamic Preview**: Real-time preview with formatted content
+- **Related Notes**: Automatically displays 2 most recent related notes
+- **Author Attribution**: All notes attributed to Tim Nolan
+
+### Content Management
+- Create, read, update, and delete lab notes
+- Toggle publication status with visual feedback
+- Search and filter capabilities
+- Category-based organization
+
+## Database Schema
+
+The application uses the following Supabase tables:
+- `projects` - Portfolio projects with technologies and descriptions
+- `case_studies` - Business case studies and analyses
+- `dashboards` - Dashboard projects and visualizations
+- `publications` - Academic and professional publications
+- `certifications` - Professional certifications and credentials
+- `newsletter_subscribers` - Lab Notes newsletter subscribers
+- `lab_notes` - Lab notes with rich content, categories, and publication status
+
+### Row Level Security (RLS)
+- Admin access restricted to `tjnolan319@gmail.com`
+- Public read access for published lab notes only
+- Secure CRUD operations with proper authentication
 
 ## How to Run the Project
 
@@ -146,19 +192,25 @@ npm run preview
 
 ## Environment Setup
 
-The project requires Supabase configuration. Set up the following environment variables:
-- `VITE_SUPABASE_URL` - Your Supabase project URL
-- `VITE_SUPABASE_ANON_KEY` - Your Supabase anonymous key
+The project is configured with Supabase integration:
+- **Project ID**: `mlrfleeflqqfacrknnzf`
+- **Environment**: Fully configured for production use
+- **Authentication**: Admin login system implemented
+- **Database**: Complete schema with RLS policies
 
-## Database Schema
+## Recent Updates
 
-The application uses the following Supabase tables:
-- `projects` - Portfolio projects with technologies and descriptions
-- `case_studies` - Business case studies and analyses
-- `dashboards` - Dashboard projects and visualizations
-- `publications` - Academic and professional publications
-- `certifications` - Professional certifications and credentials
-- `newsletter_subscribers` - Lab Notes newsletter subscribers
+### Lab Notes System Enhancement
+- **Improved UI/UX**: Enhanced draft/published indicators with switch controls and status icons
+- **Rich Content Support**: Added colored box syntax tips in editor for better user guidance
+- **Dynamic Related Content**: Replaced hardcoded placeholders with real-time related notes queries
+- **Author Attribution**: Added "Written by Tim Nolan" to all lab note cards and previews
+- **Better Preview Experience**: Removed redundant syntax help section from preview modal
+
+### Admin Interface Improvements
+- **Navigation Enhancement**: Added homepage navigation from admin dashboard
+- **Visual Status Indicators**: Improved published/draft status display with color-coded switches
+- **Content Management**: Full CRUD operations with proper error handling and user feedback
 
 ## Deployment
 
@@ -174,10 +226,18 @@ To connect a custom domain, navigate to Project > Settings > Domains in Lovable 
 
 - The project uses TypeScript for type safety
 - Components are organized by functionality
-- API calls are centralized in `src/api/`
+- API calls are centralized and use Supabase client
 - Responsive design follows mobile-first principles
-- Error handling includes user-friendly 404 pages
+- Error handling includes user-friendly feedback
+- Admin features require authentication
+- Lab notes support rich Markdown content with custom extensions
 
 ## Contact
 
 For questions about this portfolio or to discuss potential opportunities, use the contact form on the website or reach out through the provided social links.
+
+---
+
+*This portfolio demonstrates full-stack development capabilities with modern React, TypeScript, Supabase backend, and comprehensive admin content management systems.*
+
+```

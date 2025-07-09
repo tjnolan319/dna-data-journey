@@ -1,7 +1,12 @@
-import React, { useState } from 'react';
-import { X, Calendar, Clock, Tag, Eye, Share2, BookOpen, TrendingUp, BarChart3, Code, Lightbulb, Target, CheckCircle2 } from 'lucide-react';
+
+import React, { useState, useEffect } from 'react';
+import { X, Calendar, Clock, Tag, Eye, Share2, BookOpen, TrendingUp, BarChart3, Code, Lightbulb, Target, CheckCircle2, User } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { supabase } from "@/integrations/supabase/client";
+import type { Tables } from "@/integrations/supabase/types";
+
+type LabNote = Tables<'lab_notes'>;
 
 interface LabNotePreviewProps {
   isOpen: boolean;
@@ -25,6 +30,30 @@ interface LabNotePreviewProps {
 
 const LabNotePreview: React.FC<LabNotePreviewProps> = ({ isOpen, onClose, formData }) => {
   const [activeTab, setActiveTab] = useState('analysis');
+  const [relatedNotes, setRelatedNotes] = useState<LabNote[]>([]);
+
+  useEffect(() => {
+    if (isOpen) {
+      fetchRelatedNotes();
+    }
+  }, [isOpen, formData.title]);
+
+  const fetchRelatedNotes = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('lab_notes')
+        .select('*')
+        .neq('title', formData.title) // Exclude current note
+        .eq('published', true)
+        .order('created_at', { ascending: false })
+        .limit(2);
+
+      if (error) throw error;
+      setRelatedNotes(data || []);
+    } catch (error) {
+      console.error('Error fetching related notes:', error);
+    }
+  };
 
   if (!isOpen) return null;
 
@@ -165,9 +194,14 @@ const LabNotePreview: React.FC<LabNotePreviewProps> = ({ isOpen, onClose, formDa
                   {formData.title || "Untitled Lab Note"}
                 </h1>
                 
-                <p className="text-lg text-slate-600 leading-relaxed mb-6">
+                <p className="text-lg text-slate-600 leading-relaxed mb-4">
                   {formData.excerpt || "No excerpt provided"}
                 </p>
+
+                <div className="flex items-center space-x-2 mb-6">
+                  <User className="w-5 h-5 text-slate-500" />
+                  <span className="text-base text-slate-700 font-medium">Authored by Tim Nolan</span>
+                </div>
 
                 <div className="flex items-center space-x-6 text-sm text-slate-500">
                   <div className="flex items-center space-x-2">
@@ -186,27 +220,6 @@ const LabNotePreview: React.FC<LabNotePreviewProps> = ({ isOpen, onClose, formDa
                       <span>{formatTags(formData.tags).join(', ')}</span>
                     </div>
                   )}
-                </div>
-              </div>
-            </div>
-
-            {/* Syntax Helper */}
-            <div className="bg-white rounded-xl border border-slate-200 p-6 mb-6">
-              <h3 className="text-lg font-semibold text-slate-900 mb-4">Colored Box Syntax</h3>
-              <div className="space-y-2 text-sm">
-                <p className="text-slate-600">Use the following syntax to create colored boxes:</p>
-                <code className="bg-slate-100 px-2 py-1 rounded text-sm font-mono">~box(color) Your content here ~endbox</code>
-                <p className="text-slate-600">Available colors: blue, green, yellow, red, purple, orange, gray, indigo, pink, teal</p>
-              </div>
-              <div className="mt-4 space-y-2">
-                <div className="border-l-4 bg-blue-50 border-blue-200 text-blue-800 p-4 rounded-r-lg border">
-                  <strong>Example:</strong> This is a blue box created with ~box(blue) content ~endbox
-                </div>
-                <div className="border-l-4 bg-green-50 border-green-200 text-green-800 p-4 rounded-r-lg border">
-                  <strong>Success:</strong> This is a green box for success messages
-                </div>
-                <div className="border-l-4 bg-yellow-50 border-yellow-200 text-yellow-800 p-4 rounded-r-lg border">
-                  <strong>Warning:</strong> This is a yellow box for warnings
                 </div>
               </div>
             </div>
@@ -274,21 +287,25 @@ const LabNotePreview: React.FC<LabNotePreviewProps> = ({ isOpen, onClose, formDa
               </div>
             )}
 
-            {/* Related Notes Placeholder */}
-            {availableTabs.length > 0 && (
+            {/* Related Notes */}
+            {availableTabs.length > 0 && relatedNotes.length > 0 && (
               <div className="mt-8 bg-white rounded-xl border border-slate-200 p-6">
                 <h3 className="text-lg font-semibold text-slate-900 mb-4">Related Lab Notes</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="border border-slate-200 rounded-lg p-4 hover:bg-slate-50 transition-colors cursor-pointer">
-                    <h4 className="font-medium text-slate-900 mb-1">The Hypothesis-Driven Analysis Framework</h4>
-                    <p className="text-sm text-slate-600 mb-2">Systematic approach to business problem investigation</p>
-                    <span className="text-xs text-blue-600">Methodology • 10 min read</span>
-                  </div>
-                  <div className="border border-slate-200 rounded-lg p-4 hover:bg-slate-50 transition-colors cursor-pointer">
-                    <h4 className="font-medium text-slate-900 mb-1">Building Scalable Analytics Infrastructure</h4>
-                    <p className="text-sm text-slate-600 mb-2">Technical architecture for data-driven decision making</p>
-                    <span className="text-xs text-blue-600">Framework • 8 min read</span>
-                  </div>
+                  {relatedNotes.map((note) => (
+                    <div key={note.id} className="border border-slate-200 rounded-lg p-4 hover:bg-slate-50 transition-colors cursor-pointer">
+                      <h4 className="font-medium text-slate-900 mb-1">{note.title}</h4>
+                      <p className="text-sm text-slate-600 mb-2">{note.excerpt}</p>
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs text-blue-600 capitalize">
+                          {note.category.replace('-', ' ')} • {note.read_time}
+                        </span>
+                        <span className="text-xs text-slate-500">
+                          by Tim Nolan
+                        </span>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
             )}

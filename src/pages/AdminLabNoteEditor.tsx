@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, Save, Eye } from 'lucide-react';
@@ -6,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import type { Tables, TablesInsert, TablesUpdate } from "@/integrations/supabase/types";
@@ -346,15 +348,19 @@ const AdminLabNoteEditor = () => {
                     />
                   </div>
 
-                  <div className="flex items-center space-x-2">
-                    <input
-                      id="published"
-                      type="checkbox"
-                      checked={formData.published}
-                      onChange={(e) => handleInputChange('published', e.target.checked)}
-                      className="rounded border-slate-300"
-                    />
-                    <Label htmlFor="published">Published</Label>
+                  <div className="flex flex-col space-y-2">
+                    <Label htmlFor="published">Publication Status</Label>
+                    <div className="flex items-center space-x-3 p-3 border border-slate-200 rounded-md">
+                      <span className={`text-sm font-medium ${formData.published ? 'text-green-700' : 'text-red-600'}`}>
+                        {formData.published ? 'Published' : 'Draft'}
+                      </span>
+                      <Switch
+                        id="published"
+                        checked={formData.published}
+                        onCheckedChange={(checked) => handleInputChange('published', checked)}
+                        className="data-[state=checked]:bg-green-600 data-[state=unchecked]:bg-red-200"
+                      />
+                    </div>
                   </div>
                 </div>
 
@@ -385,9 +391,11 @@ const AdminLabNoteEditor = () => {
                   placeholder="Write your analysis content here. You can use Markdown formatting."
                   className="w-full min-h-[400px] px-3 py-2 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical font-mono text-sm"
                 />
-                <p className="text-xs text-slate-500 mt-2">
-                  Tip: You can use Markdown formatting for headings, lists, and emphasis.
-                </p>
+                <div className="text-xs text-slate-500 mt-2 space-y-1">
+                  <p>Tip: You can use Markdown formatting for headings, lists, and emphasis.</p>
+                  <p>Tip: Use colored boxes with <code className="bg-slate-100 px-1 rounded">~box(color) Your content here ~endbox</code></p>
+                  <p>Available colors: blue, green, yellow, red, purple, orange, gray, indigo, pink, teal</p>
+                </div>
               </CardContent>
             </Card>
           </TabsContent>
@@ -406,6 +414,10 @@ const AdminLabNoteEditor = () => {
                   placeholder="Document your methodology and approach here."
                   className="w-full min-h-[400px] px-3 py-2 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical font-mono text-sm"
                 />
+                <div className="text-xs text-slate-500 mt-2 space-y-1">
+                  <p>Tip: You can use Markdown formatting for headings, lists, and emphasis.</p>
+                  <p>Tip: Use colored boxes with <code className="bg-slate-100 px-1 rounded">~box(color) Your content here ~endbox</code></p>
+                </div>
               </CardContent>
             </Card>
           </TabsContent>
@@ -424,9 +436,10 @@ const AdminLabNoteEditor = () => {
                   placeholder="Add code examples, SQL queries, or technical implementation details."
                   className="w-full min-h-[400px] px-3 py-2 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical font-mono text-sm bg-slate-50"
                 />
-                <p className="text-xs text-slate-500 mt-2">
-                  Use code blocks with ```language for syntax highlighting.
-                </p>
+                <div className="text-xs text-slate-500 mt-2 space-y-1">
+                  <p>Use code blocks with ```language for syntax highlighting.</p>
+                  <p>Tip: Use colored boxes with <code className="bg-slate-100 px-1 rounded">~box(color) Your content here ~endbox</code></p>
+                </div>
               </CardContent>
             </Card>
           </TabsContent>
@@ -445,6 +458,10 @@ const AdminLabNoteEditor = () => {
                   placeholder="Share your strategic insights, recommendations, and key takeaways."
                   className="w-full min-h-[400px] px-3 py-2 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical font-mono text-sm"
                 />
+                <div className="text-xs text-slate-500 mt-2 space-y-1">
+                  <p>Tip: You can use Markdown formatting for headings, lists, and emphasis.</p>
+                  <p>Tip: Use colored boxes with <code className="bg-slate-100 px-1 rounded">~box(color) Your content here ~endbox</code></p>
+                </div>
               </CardContent>
             </Card>
           </TabsContent>

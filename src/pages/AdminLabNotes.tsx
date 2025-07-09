@@ -1,8 +1,10 @@
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, Calendar, Tag, FlaskConical, BookOpen, Clock, ArrowRight, Filter, Plus, Edit, Trash2, ArrowLeft, Eye, CheckCircle, XCircle } from 'lucide-react';
+import { Search, Calendar, Tag, FlaskConical, BookOpen, Clock, ArrowRight, Filter, Plus, Edit, Trash2, ArrowLeft, Eye, CheckCircle, XCircle, User } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import type { Tables } from "@/integrations/supabase/types";
@@ -250,30 +252,33 @@ const AdminLabNotes = () => {
             >
               <div className="flex items-start justify-between mb-4">
                 <div className="flex-1">
-                  <div className="flex items-center space-x-2 mb-2">
+                  <div className="flex items-center space-x-3 mb-2">
                     <h2 className="text-xl font-semibold text-slate-900">
                       {note.title}
                     </h2>
-                    <button
-                      onClick={() => togglePublished(note.id, note.published)}
-                      className="flex items-center space-x-1 text-sm font-medium transition-colors"
-                    >
+                    <div className="flex items-center space-x-3 p-2 border border-slate-200 rounded-lg">
+                      <span className={`text-sm font-medium ${note.published ? 'text-green-700' : 'text-red-600'}`}>
+                        {note.published ? 'Published' : 'Draft'}
+                      </span>
                       {note.published ? (
-                        <>
-                          <CheckCircle className="w-4 h-4 text-green-600" />
-                          <span className="text-green-600">Published</span>
-                        </>
+                        <CheckCircle className="w-4 h-4 text-green-600" />
                       ) : (
-                        <>
-                          <XCircle className="w-4 h-4 text-orange-600" />
-                          <span className="text-orange-600">Draft</span>
-                        </>
+                        <XCircle className="w-4 h-4 text-red-600" />
                       )}
-                    </button>
+                      <Switch
+                        checked={note.published}
+                        onCheckedChange={() => togglePublished(note.id, note.published)}
+                        className="data-[state=checked]:bg-green-600 data-[state=unchecked]:bg-red-200"
+                      />
+                    </div>
                   </div>
                   <p className="text-slate-600 leading-relaxed mb-4">
                     {note.excerpt}
                   </p>
+                  <div className="flex items-center space-x-2 mb-2">
+                    <User className="w-4 h-4 text-slate-500" />
+                    <span className="text-sm text-slate-600 font-medium">Written by Tim Nolan</span>
+                  </div>
                 </div>
                 <div className="flex items-center space-x-2 ml-4">
                   <Button
