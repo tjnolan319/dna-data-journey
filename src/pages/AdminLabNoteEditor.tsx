@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, Save, Eye } from 'lucide-react';
@@ -70,6 +71,26 @@ const AdminLabNoteEditor = () => {
     { id: 'insights', name: 'Insights', icon: 'lightbulb', order: 3 }
   ];
 
+  // Helper function to safely parse tab config from Json
+  const parseTabConfig = (tabConfigJson: any): TabConfig[] => {
+    if (!tabConfigJson) return defaultTabConfig;
+    
+    try {
+      if (Array.isArray(tabConfigJson)) {
+        return tabConfigJson.map((tab: any) => ({
+          id: tab.id || '',
+          name: tab.name || '',
+          icon: tab.icon || 'lightbulb',
+          order: tab.order || 0
+        }));
+      }
+      return defaultTabConfig;
+    } catch (error) {
+      console.error('Error parsing tab config:', error);
+      return defaultTabConfig;
+    }
+  };
+
   const [formData, setFormData] = useState<LabNoteFormData>({
     title: '',
     excerpt: '',
@@ -116,7 +137,7 @@ const AdminLabNoteEditor = () => {
       }
 
       if (data) {
-        const tabConfig = data.tab_config as TabConfig[] || defaultTabConfig;
+        const tabConfig = parseTabConfig(data.tab_config);
         
         setFormData({
           title: data.title || '',
@@ -201,6 +222,7 @@ const AdminLabNoteEditor = () => {
     try {
       const tagsArray = formData.tags.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0);
       
+      // Convert TabConfig[] to Json for database storage
       const noteData = {
         title: formData.title,
         excerpt: formData.excerpt,
@@ -210,7 +232,7 @@ const AdminLabNoteEditor = () => {
         date: formData.date,
         published: formData.published,
         content: formData.content,
-        tab_config: formData.tab_config
+        tab_config: formData.tab_config as any // Cast to any for Json compatibility
       };
 
       console.log('Saving note data:', noteData);
