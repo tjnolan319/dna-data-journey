@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search, Calendar, Tag, FlaskConical, BookOpen, Clock, ArrowRight, Filter, Plus, Edit, Trash2, ArrowLeft, Eye, CheckCircle, XCircle, User } from 'lucide-react';
@@ -12,6 +11,23 @@ import LabNotePreview from "@/components/LabNotePreview";
 
 type LabNote = Tables<'lab_notes'>;
 
+// Define the expected format for the preview component
+interface PreviewFormData {
+  title: string;
+  excerpt: string;
+  category: string;
+  tags: string;
+  read_time: string;
+  date: string;
+  published: boolean;
+  content: {
+    analysis: string;
+    methodology: string;
+    code: string;
+    insights: string;
+  };
+}
+
 const AdminLabNotes = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -20,7 +36,7 @@ const AdminLabNotes = () => {
   const [notes, setNotes] = useState<LabNote[]>([]);
   const [loading, setLoading] = useState(true);
   const [previewOpen, setPreviewOpen] = useState(false);
-  const [previewNote, setPreviewNote] = useState<LabNote | null>(null);
+  const [previewNote, setPreviewNote] = useState<PreviewFormData | null>(null);
 
   const categories = [
     { id: 'all', name: 'All Notes' },
@@ -102,7 +118,7 @@ const AdminLabNotes = () => {
 
   const handlePreview = (note: LabNote) => {
     // Convert the note to the expected format for the preview component
-    const formData = {
+    const formData: PreviewFormData = {
       title: note.title || '',
       excerpt: note.excerpt || '',
       category: note.category || 'methodology',
@@ -277,7 +293,7 @@ const AdminLabNotes = () => {
                   </p>
                   <div className="flex items-center space-x-2 mb-2">
                     <User className="w-4 h-4 text-slate-500" />
-                    <span className="text-sm text-slate-600 font-medium">Written by Tim Nolan</span>
+                    <span className="text-sm text-slate-600 font-medium">Authored by Tim Nolan</span>
                   </div>
                 </div>
                 <div className="flex items-center space-x-2 ml-4">
