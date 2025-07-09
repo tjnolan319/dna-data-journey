@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, Calendar, Tag, FlaskConical, BookOpen, Clock, ArrowRight, Filter, Plus, Edit, Trash2, ArrowLeft, Eye, CheckCircle, XCircle, User } from 'lucide-react';
+import { Search, Calendar, Tag, FlaskConical, BookOpen, Clock, ArrowRight, Filter, Plus, Edit, Trash2, ArrowLeft, Eye, CheckCircle, XCircle, User, Copy } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
@@ -42,7 +42,11 @@ const AdminLabNotes = () => {
     { id: 'all', name: 'All Notes' },
     { id: 'methodology', name: 'Methodology' },
     { id: 'case-studies', name: 'Case Studies' },
-    { id: 'frameworks', name: 'Frameworks' }
+    { id: 'frameworks', name: 'Frameworks' },
+    { id: 'current-events', name: 'Current Events' },
+    { id: 'industry-insights', name: 'Industry Insights' },
+    { id: 'technical-deep-dive', name: 'Technical Deep Dive' },
+    { id: 'best-practices', name: 'Best Practices' }
   ];
 
   const fetchNotes = async () => {
@@ -84,6 +88,46 @@ const AdminLabNotes = () => {
 
   const handleEdit = (noteId: string) => {
     navigate(`/admin/lab-notes/${noteId}`);
+  };
+
+  const handleDuplicate = async (note: LabNote) => {
+    try {
+      const duplicateData = {
+        title: `${note.title} (Copy)`,
+        excerpt: note.excerpt,
+        category: note.category,
+        tags: note.tags,
+        read_time: note.read_time,
+        date: new Date().toISOString().split('T')[0],
+        published: false, // Always create duplicates as drafts
+        content: note.content,
+        tab_config: note.tab_config,
+        admin_comments: note.admin_comments ? `${note.admin_comments}\n\n--- Duplicated from original note ---` : 'Duplicated from original note'
+      };
+
+      const { data, error } = await supabase
+        .from('lab_notes')
+        .insert([duplicateData])
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      if (data) {
+        setNotes(prev => [data, ...prev]);
+        toast({
+          title: "Note duplicated",
+          description: "The lab note has been successfully duplicated as a draft.",
+        });
+      }
+    } catch (error) {
+      console.error('Error duplicating note:', error);
+      toast({
+        title: "Error",
+        description: "Failed to duplicate the lab note.",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleDelete = async (noteId: string) => {
@@ -295,6 +339,12 @@ const AdminLabNotes = () => {
                     <User className="w-4 h-4 text-slate-500" />
                     <span className="text-sm text-slate-600 font-medium">Authored by Tim Nolan</span>
                   </div>
+                  {note.admin_comments && (
+                    <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mb-4">
+                      <div className="text-xs text-yellow-700 font-medium mb-1">Admin Notes:</div>
+                      <div className="text-sm text-yellow-800">{note.admin_comments}</div>
+                    </div>
+                  )}
                 </div>
                 <div className="flex items-center space-x-2 ml-4">
                   <Button
@@ -305,6 +355,15 @@ const AdminLabNotes = () => {
                   >
                     <Eye className="w-4 h-4" />
                     <span>Preview</span>
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleDuplicate(note)}
+                    className="flex items-center space-x-1 text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+                  >
+                    <Copy className="w-4 h-4" />
+                    <span>Duplicate</span>
                   </Button>
                   <Button
                     variant="outline"

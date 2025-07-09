@@ -112,6 +112,7 @@ export type Database = {
       }
       lab_notes: {
         Row: {
+          admin_comments: string | null
           category: string
           content: Json
           created_at: string | null
@@ -126,6 +127,7 @@ export type Database = {
           updated_at: string | null
         }
         Insert: {
+          admin_comments?: string | null
           category: string
           content: Json
           created_at?: string | null
@@ -140,6 +142,7 @@ export type Database = {
           updated_at?: string | null
         }
         Update: {
+          admin_comments?: string | null
           category?: string
           content?: Json
           created_at?: string | null
