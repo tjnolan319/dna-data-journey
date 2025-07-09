@@ -120,6 +120,7 @@ export type Database = {
           id: string
           published: boolean | null
           read_time: string
+          tab_config: Json | null
           tags: string[]
           title: string
           updated_at: string | null
@@ -133,6 +134,7 @@ export type Database = {
           id?: string
           published?: boolean | null
           read_time: string
+          tab_config?: Json | null
           tags: string[]
           title: string
           updated_at?: string | null
@@ -146,6 +148,7 @@ export type Database = {
           id?: string
           published?: boolean | null
           read_time?: string
+          tab_config?: Json | null
           tags?: string[]
           title?: string
           updated_at?: string | null

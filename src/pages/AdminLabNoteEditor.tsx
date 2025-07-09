@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, Save, Eye } from 'lucide-react';
@@ -12,8 +11,34 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import type { Tables, TablesInsert, TablesUpdate } from "@/integrations/supabase/types";
 import LabNotePreview from "@/components/LabNotePreview";
+import TabConfigEditor from "@/components/TabConfigEditor";
+import { 
+  Microscope, 
+  Settings, 
+  Code, 
+  Lightbulb, 
+  FlaskConical, 
+  Beaker, 
+  Atom, 
+  Brain, 
+  Cpu, 
+  Database, 
+  Target, 
+  Zap,
+  ChartBar,
+  FileText,
+  Search,
+  Wrench
+} from 'lucide-react';
 
 type LabNote = Tables<'lab_notes'>;
+
+interface TabConfig {
+  id: string;
+  name: string;
+  icon: string;
+  order: number;
+}
 
 interface LabNoteFormData {
   title: string;
@@ -29,6 +54,7 @@ interface LabNoteFormData {
     code: string;
     insights: string;
   };
+  tab_config: TabConfig[];
 }
 
 const AdminLabNoteEditor = () => {
@@ -36,6 +62,13 @@ const AdminLabNoteEditor = () => {
   const { id } = useParams();
   const { toast } = useToast();
   const isEditing = id && id !== 'new';
+
+  const defaultTabConfig: TabConfig[] = [
+    { id: 'analysis', name: 'Analysis', icon: 'microscope', order: 0 },
+    { id: 'methodology', name: 'Methodology', icon: 'settings', order: 1 },
+    { id: 'code', name: 'Code', icon: 'code', order: 2 },
+    { id: 'insights', name: 'Insights', icon: 'lightbulb', order: 3 }
+  ];
 
   const [formData, setFormData] = useState<LabNoteFormData>({
     title: '',
@@ -50,7 +83,8 @@ const AdminLabNoteEditor = () => {
       methodology: '',
       code: '',
       insights: ''
-    }
+    },
+    tab_config: defaultTabConfig
   });
 
   const [activeTab, setActiveTab] = useState('basic');
@@ -82,6 +116,8 @@ const AdminLabNoteEditor = () => {
       }
 
       if (data) {
+        const tabConfig = data.tab_config as TabConfig[] || defaultTabConfig;
+        
         setFormData({
           title: data.title || '',
           excerpt: data.excerpt || '',
@@ -100,7 +136,8 @@ const AdminLabNoteEditor = () => {
             methodology: '',
             code: '',
             insights: ''
-          }
+          },
+          tab_config: tabConfig
         });
       }
     } catch (error) {
@@ -117,7 +154,15 @@ const AdminLabNoteEditor = () => {
     }
   };
 
-  const handleInputChange = (field: string, value: string | boolean) => {
+  useEffect(() => {
+    if (isEditing && id) {
+      fetchNote(id);
+    } else {
+      setInitialLoading(false);
+    }
+  }, [id, isEditing]);
+
+  const handleInputChange = (field: string, value: string | boolean | TabConfig[]) => {
     if (field.startsWith('content.')) {
       const contentField = field.split('.')[1];
       setFormData(prev => ({
@@ -126,6 +171,11 @@ const AdminLabNoteEditor = () => {
           ...prev.content,
           [contentField]: value as string
         }
+      }));
+    } else if (field === 'tab_config') {
+      setFormData(prev => ({
+        ...prev,
+        tab_config: value as TabConfig[]
       }));
     } else {
       setFormData(prev => ({
@@ -159,7 +209,8 @@ const AdminLabNoteEditor = () => {
         read_time: formData.read_time,
         date: formData.date,
         published: formData.published,
-        content: formData.content
+        content: formData.content,
+        tab_config: formData.tab_config
       };
 
       console.log('Saving note data:', noteData);
@@ -226,6 +277,28 @@ const AdminLabNoteEditor = () => {
     setPreviewOpen(true);
   };
 
+  const getIconComponent = (iconName: string) => {
+    const iconMap: { [key: string]: any } = {
+      'microscope': Microscope,
+      'settings': Settings,
+      'code': Code,
+      'lightbulb': Lightbulb,
+      'flask-conical': FlaskConical,
+      'beaker': Beaker,
+      'atom': Atom,
+      'brain': Brain,
+      'cpu': Cpu,
+      'database': Database,
+      'target': Target,
+      'zap': Zap,
+      'chart-bar': ChartBar,
+      'file-text': FileText,
+      'search': Search,
+      'wrench': Wrench
+    };
+    return iconMap[iconName] || Lightbulb;
+  };
+
   if (initialLoading) {
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center">
@@ -236,6 +309,9 @@ const AdminLabNoteEditor = () => {
       </div>
     );
   }
+
+  // Sort tabs by order for display
+  const sortedTabs = [...formData.tab_config].sort((a, b) => a.order - b.order);
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -278,12 +354,18 @@ const AdminLabNoteEditor = () => {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5">
+          <TabsList className="grid w-full grid-cols-6">
             <TabsTrigger value="basic">Basic Info</TabsTrigger>
-            <TabsTrigger value="analysis">Analysis</TabsTrigger>
-            <TabsTrigger value="methodology">Methodology</TabsTrigger>
-            <TabsTrigger value="code">Code</TabsTrigger>
-            <TabsTrigger value="insights">Insights</TabsTrigger>
+            <TabsTrigger value="tabs">Tab Config</TabsTrigger>
+            {sortedTabs.map((tab) => {
+              const IconComponent = getIconComponent(tab.icon);
+              return (
+                <TabsTrigger key={tab.id} value={tab.id} className="flex items-center space-x-1">
+                  <IconComponent className="w-4 h-4" />
+                  <span>{tab.name}</span>
+                </TabsTrigger>
+              );
+            })}
           </TabsList>
 
           <TabsContent value="basic" className="space-y-6">
@@ -377,94 +459,39 @@ const AdminLabNoteEditor = () => {
             </Card>
           </TabsContent>
 
-          <TabsContent value="analysis" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Analysis Content</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <Label htmlFor="analysis">Analysis Section</Label>
-                <textarea
-                  id="analysis"
-                  value={formData.content.analysis}
-                  onChange={(e) => handleInputChange('content.analysis', e.target.value)}
-                  placeholder="Write your analysis content here. You can use Markdown formatting."
-                  className="w-full min-h-[400px] px-3 py-2 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical font-mono text-sm"
-                />
-                <div className="text-xs text-slate-500 mt-2 space-y-1">
-                  <p>Tip: You can use Markdown formatting for headings, lists, and emphasis.</p>
-                  <p>Tip: Use colored boxes with <code className="bg-slate-100 px-1 rounded">~box(color) Your content here ~endbox</code></p>
-                  <p>Available colors: blue, green, yellow, red, purple, orange, gray, indigo, pink, teal</p>
-                </div>
-              </CardContent>
-            </Card>
+          <TabsContent value="tabs" className="space-y-6">
+            <TabConfigEditor 
+              tabs={formData.tab_config}
+              onTabsChange={(tabs) => handleInputChange('tab_config', tabs)}
+            />
           </TabsContent>
 
-          <TabsContent value="methodology" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Methodology Content</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <Label htmlFor="methodology">Methodology Section</Label>
-                <textarea
-                  id="methodology"
-                  value={formData.content.methodology}
-                  onChange={(e) => handleInputChange('content.methodology', e.target.value)}
-                  placeholder="Document your methodology and approach here."
-                  className="w-full min-h-[400px] px-3 py-2 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical font-mono text-sm"
-                />
-                <div className="text-xs text-slate-500 mt-2 space-y-1">
-                  <p>Tip: You can use Markdown formatting for headings, lists, and emphasis.</p>
-                  <p>Tip: Use colored boxes with <code className="bg-slate-100 px-1 rounded">~box(color) Your content here ~endbox</code></p>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="code" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Code & Implementation</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <Label htmlFor="code">Code Section</Label>
-                <textarea
-                  id="code"
-                  value={formData.content.code}
-                  onChange={(e) => handleInputChange('content.code', e.target.value)}
-                  placeholder="Add code examples, SQL queries, or technical implementation details."
-                  className="w-full min-h-[400px] px-3 py-2 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical font-mono text-sm bg-slate-50"
-                />
-                <div className="text-xs text-slate-500 mt-2 space-y-1">
-                  <p>Use code blocks with ```language for syntax highlighting.</p>
-                  <p>Tip: Use colored boxes with <code className="bg-slate-100 px-1 rounded">~box(color) Your content here ~endbox</code></p>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="insights" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Strategic Insights</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <Label htmlFor="insights">Insights Section</Label>
-                <textarea
-                  id="insights"
-                  value={formData.content.insights}
-                  onChange={(e) => handleInputChange('content.insights', e.target.value)}
-                  placeholder="Share your strategic insights, recommendations, and key takeaways."
-                  className="w-full min-h-[400px] px-3 py-2 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical font-mono text-sm"
-                />
-                <div className="text-xs text-slate-500 mt-2 space-y-1">
-                  <p>Tip: You can use Markdown formatting for headings, lists, and emphasis.</p>
-                  <p>Tip: Use colored boxes with <code className="bg-slate-100 px-1 rounded">~box(color) Your content here ~endbox</code></p>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
+          {sortedTabs.map((tab) => (
+            <TabsContent key={tab.id} value={tab.id} className="space-y-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>{tab.name} Content</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <Label htmlFor={tab.id}>{tab.name} Section</Label>
+                  <textarea
+                    id={tab.id}
+                    value={formData.content[tab.id as keyof typeof formData.content] || ''}
+                    onChange={(e) => handleInputChange(`content.${tab.id}`, e.target.value)}
+                    placeholder={`Write your ${tab.name.toLowerCase()} content here. You can use Markdown formatting.`}
+                    className={`w-full min-h-[400px] px-3 py-2 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical font-mono text-sm ${
+                      tab.id === 'code' ? 'bg-slate-50' : ''
+                    }`}
+                  />
+                  <div className="text-xs text-slate-500 mt-2 space-y-1">
+                    <p>Tip: You can use Markdown formatting for headings, lists, and emphasis.</p>
+                    <p>Tip: Use colored boxes with <code className="bg-slate-100 px-1 rounded">~box(color) Your content here ~endbox</code></p>
+                    <p>Available colors: blue, green, yellow, red, purple, orange, gray, indigo, pink, teal</p>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+          ))}
         </Tabs>
       </div>
 
@@ -472,7 +499,16 @@ const AdminLabNoteEditor = () => {
       <LabNotePreview
         isOpen={previewOpen}
         onClose={() => setPreviewOpen(false)}
-        formData={formData}
+        formData={{
+          title: formData.title,
+          excerpt: formData.excerpt,
+          category: formData.category,
+          tags: formData.tags,
+          read_time: formData.read_time,
+          date: formData.date,
+          published: formData.published,
+          content: formData.content
+        }}
       />
     </div>
   );
