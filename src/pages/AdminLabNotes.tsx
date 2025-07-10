@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search, Calendar, Tag, FlaskConical, BookOpen, Clock, ArrowRight, Filter, Plus, Edit, Trash2, ArrowLeft, Eye, CheckCircle, XCircle, User, Copy } from 'lucide-react';
@@ -347,21 +346,6 @@ const AdminLabNotes = () => {
                     <h2 className="text-xl font-semibold text-slate-900">
                       {note.title}
                     </h2>
-                    <div className="flex items-center space-x-3 p-2 border border-slate-200 rounded-lg">
-                      <span className={`text-sm font-medium ${note.published ? 'text-green-700' : 'text-red-600'}`}>
-                        {note.published ? 'Published' : 'Draft'}
-                      </span>
-                      {note.published ? (
-                        <CheckCircle className="w-4 h-4 text-green-600" />
-                      ) : (
-                        <XCircle className="w-4 h-4 text-red-600" />
-                      )}
-                      <Switch
-                        checked={note.published}
-                        onCheckedChange={() => togglePublished(note.id, note.published)}
-                        className="data-[state=checked]:bg-green-600 data-[state=unchecked]:bg-red-200"
-                      />
-                    </div>
                   </div>
                   <p className="text-slate-600 leading-relaxed mb-4">
                     {note.excerpt}
@@ -377,43 +361,63 @@ const AdminLabNotes = () => {
                     </div>
                   )}
                 </div>
-                <div className="flex items-center space-x-2 ml-4">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => handlePreview(note)}
-                    className="flex items-center space-x-1"
-                  >
-                    <Eye className="w-4 h-4" />
-                    <span>Preview</span>
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => handleDuplicate(note)}
-                    className="flex items-center space-x-1 text-blue-600 hover:text-blue-700 hover:bg-blue-50"
-                  >
-                    <Copy className="w-4 h-4" />
-                    <span>Duplicate</span>
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => handleEdit(note.id)}
-                    className="flex items-center space-x-1"
-                  >
-                    <Edit className="w-4 h-4" />
-                    <span>Edit</span>
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => handleDelete(note.id)}
-                    className="flex items-center space-x-1 text-red-600 hover:text-red-700 hover:bg-red-50"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                    <span>Delete</span>
-                  </Button>
+                <div className="flex flex-col items-end space-y-3 ml-4">
+                  {/* Action buttons */}
+                  <div className="flex items-center space-x-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handlePreview(note)}
+                      className="flex items-center space-x-1"
+                    >
+                      <Eye className="w-4 h-4" />
+                      <span>Preview</span>
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleDuplicate(note)}
+                      className="flex items-center space-x-1 text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+                    >
+                      <Copy className="w-4 h-4" />
+                      <span>Duplicate</span>
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleEdit(note.id)}
+                      className="flex items-center space-x-1"
+                    >
+                      <Edit className="w-4 h-4" />
+                      <span>Edit</span>
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleDelete(note.id)}
+                      className="flex items-center space-x-1 text-red-600 hover:text-red-700 hover:bg-red-50"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                      <span>Delete</span>
+                    </Button>
+                  </div>
+                  
+                  {/* Draft/Published toggle below buttons */}
+                  <div className="flex items-center space-x-3 p-2 border border-slate-200 rounded-lg">
+                    <span className={`text-sm font-medium ${note.published ? 'text-green-700' : 'text-red-600'}`}>
+                      {note.published ? 'Published' : 'Draft'}
+                    </span>
+                    {note.published ? (
+                      <CheckCircle className="w-4 h-4 text-green-600" />
+                    ) : (
+                      <XCircle className="w-4 h-4 text-red-600" />
+                    )}
+                    <Switch
+                      checked={note.published}
+                      onCheckedChange={() => togglePublished(note.id, note.published)}
+                      className="data-[state=checked]:bg-green-600 data-[state=unchecked]:bg-red-200"
+                    />
+                  </div>
                 </div>
               </div>
               
