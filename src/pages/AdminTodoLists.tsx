@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Plus, Edit, Trash2, Pin, PinOff, Check, X, ListTodo, Calendar } from 'lucide-react';
@@ -24,6 +23,8 @@ const AdminTodoLists = () => {
   const [editTitle, setEditTitle] = useState('');
   const [editDescription, setEditDescription] = useState('');
   const [newItemTexts, setNewItemTexts] = useState<{ [key: string]: string }>({});
+  const [editingItem, setEditingItem] = useState<string | null>(null);
+  const [editItemText, setEditItemText] = useState('');
 
   useEffect(() => {
     fetchTodoLists();
@@ -251,6 +252,39 @@ const AdminTodoLists = () => {
     }
   };
 
+  const updateTodoItem = async (itemId: string, listId: string) => {
+    if (!editItemText.trim()) return;
+
+    try {
+      const { data, error } = await supabase
+        .from('todo_items')
+        .update({ text: editItemText.trim() })
+        .eq('id', itemId)
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      setTodoItems(prev => ({
+        ...prev,
+        [listId]: prev[listId].map(i => i.id === itemId ? data : i)
+      }));
+      setEditingItem(null);
+      setEditItemText('');
+      toast({
+        title: "Item updated",
+        description: "Todo item has been updated successfully.",
+      });
+    } catch (error) {
+      console.error('Error updating todo item:', error);
+      toast({
+        title: "Error",
+        description: "Failed to update todo item.",
+        variant: "destructive",
+      });
+    }
+  };
+
   const deleteTodoItem = async (item: TodoItem) => {
     try {
       const { error } = await supabase
@@ -284,6 +318,16 @@ const AdminTodoLists = () => {
     setEditingList(null);
     setEditTitle('');
     setEditDescription('');
+  };
+
+  const startEditingItem = (item: TodoItem) => {
+    setEditingItem(item.id);
+    setEditItemText(item.text);
+  };
+
+  const cancelEditingItem = () => {
+    setEditingItem(null);
+    setEditItemText('');
   };
 
   if (loading) {
@@ -437,17 +481,63 @@ const AdminTodoLists = () => {
                       >
                         {item.completed && <Check className="w-3 h-3" />}
                       </button>
-                      <span className={`flex-1 text-sm ${item.completed ? 'line-through text-slate-500' : ''}`}>
-                        {item.text}
-                      </span>
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        onClick={() => deleteTodoItem(item)}
-                        className="opacity-0 group-hover:opacity-100 transition-opacity text-red-600 hover:text-red-700 p-1 h-auto"
-                      >
-                        <X className="w-3 h-3" />
-                      </Button>
+                      
+                      {editingItem === item.id ? (
+                        <div className="flex-1 flex items-center space-x-2">
+                          <Input
+                            value={editItemText}
+                            onChange={(e) => setEditItemText(e.target.value)}
+                            onKeyPress={(e) => {
+                              if (e.key === 'Enter') {
+                                updateTodoItem(item.id, item.list_id);
+                              } else if (e.key === 'Escape') {
+                                cancelEditingItem();
+                              }
+                            }}
+                            className="text-sm"
+                            autoFocus
+                          />
+                          <Button
+                            size="sm"
+                            onClick={() => updateTodoItem(item.id, item.list_id)}
+                            className="h-6 w-6 p-0"
+                          >
+                            <Check className="w-3 h-3" />
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={cancelEditingItem}
+                            className="h-6 w-6 p-0"
+                          >
+                            <X className="w-3 h-3" />
+                          </Button>
+                        </div>
+                      ) : (
+                        <>
+                          <span className={`flex-1 text-sm ${item.completed ? 'line-through text-slate-500' : ''}`}>
+                            {item.text}
+                          </span>
+                          <div className="opacity-0 group-hover:opacity-100 transition-opacity flex space-x-1">
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => startEditingItem(item)}
+                              className="text-blue-600 hover:text-blue-700 p-1 h-auto"
+                            >
+                              <Edit className="w-3 h-3" />
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => deleteTodoItem(item)}
+                              className="text-red-600 hover:text-red-700 p-1 h-auto"
+                            >
+                              <X className="w-3 h-3" />
+                            </Button>
+                          </div>
+                        </>
+                      )}
                     </div>
                   ))}
                 </div>
