@@ -375,27 +375,19 @@ const AdminLabNoteEditor = () => {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          {/* Fixed Layout: Two rows to prevent wrapping */}
-          <div className="space-y-2">
-            {/* Row 1: Basic Info and Tab Config */}
-            <div className="flex space-x-2">
-              <TabsTrigger value="basic" className="flex-1">Basic Info</TabsTrigger>
-              <TabsTrigger value="tabs" className="flex-1">Tab Config</TabsTrigger>
-            </div>
-            
-            {/* Row 2: Content Tabs */}
-            <div className="flex space-x-2 overflow-x-auto">
-              {sortedTabs.map((tab) => {
-                const IconComponent = getIconComponent(tab.icon);
-                return (
-                  <TabsTrigger key={tab.id} value={tab.id} className="flex items-center space-x-1 whitespace-nowrap">
-                    <IconComponent className="w-4 h-4" />
-                    <span>{tab.name}</span>
-                  </TabsTrigger>
-                );
-              })}
-            </div>
-          </div>
+          <TabsList className="grid w-full grid-cols-2 lg:grid-cols-7 gap-1">
+            <TabsTrigger value="basic" className="text-xs sm:text-sm">Basic Info</TabsTrigger>
+            <TabsTrigger value="tabs" className="text-xs sm:text-sm">Tab Config</TabsTrigger>
+            {sortedTabs.map((tab) => {
+              const IconComponent = getIconComponent(tab.icon);
+              return (
+                <TabsTrigger key={tab.id} value={tab.id} className="flex items-center space-x-1 text-xs sm:text-sm">
+                  <IconComponent className="w-3 h-3 sm:w-4 sm:h-4" />
+                  <span className="hidden sm:inline">{tab.name}</span>
+                </TabsTrigger>
+              );
+            })}
+          </TabsList>
 
           <TabsContent value="basic" className="space-y-6">
             <LabNoteBasicInfo
