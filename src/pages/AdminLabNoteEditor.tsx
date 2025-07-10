@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, Save, Eye } from 'lucide-react';
@@ -7,7 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import type { Tables, TablesInsert, TablesUpdate } from "@/integrations/supabase/types";
-import LabNotePreview from "@/components/LabNotePreview";
+import { LabNotePreview } from "@/components/LabNotePreview";
 import LabNoteBasicInfo from "@/components/LabNoteBasicInfo";
 import LabNoteTabManager from "@/components/LabNoteTabManager";
 import LabNoteContentEditor from "@/components/LabNoteContentEditor";
@@ -48,6 +47,18 @@ interface LabNoteFormData {
   date: string;
   published: boolean;
   admin_comments: string;
+  content: Record<string, string>;
+  tab_config: TabConfig[];
+}
+
+interface PreviewFormData {
+  title: string;
+  excerpt: string;
+  category: string;
+  tags: string;
+  read_time: string;
+  date: string;
+  published: boolean;
   content: Record<string, string>;
   tab_config: TabConfig[];
 }
@@ -282,6 +293,17 @@ const AdminLabNoteEditor = () => {
   };
 
   const handlePreview = () => {
+    const previewData: PreviewFormData = {
+      title: formData.title,
+      excerpt: formData.excerpt,
+      category: formData.category,
+      tags: formData.tags,
+      read_time: formData.read_time,
+      date: formData.date,
+      published: formData.published,
+      content: formData.content,
+      tab_config: formData.tab_config
+    };
     setPreviewOpen(true);
   };
 
@@ -362,19 +384,27 @@ const AdminLabNoteEditor = () => {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-6">
-            <TabsTrigger value="basic">Basic Info</TabsTrigger>
-            <TabsTrigger value="tabs">Tab Config</TabsTrigger>
-            {sortedTabs.map((tab) => {
-              const IconComponent = getIconComponent(tab.icon);
-              return (
-                <TabsTrigger key={tab.id} value={tab.id} className="flex items-center space-x-1">
-                  <IconComponent className="w-4 h-4" />
-                  <span>{tab.name}</span>
-                </TabsTrigger>
-              );
-            })}
-          </TabsList>
+          {/* Fixed Layout: Two rows to prevent wrapping */}
+          <div className="space-y-2">
+            {/* Row 1: Basic Info and Tab Config */}
+            <div className="flex space-x-2">
+              <TabsTrigger value="basic" className="flex-1">Basic Info</TabsTrigger>
+              <TabsTrigger value="tabs" className="flex-1">Tab Config</TabsTrigger>
+            </div>
+            
+            {/* Row 2: Content Tabs */}
+            <div className="flex space-x-2 overflow-x-auto">
+              {sortedTabs.map((tab) => {
+                const IconComponent = getIconComponent(tab.icon);
+                return (
+                  <TabsTrigger key={tab.id} value={tab.id} className="flex items-center space-x-1 whitespace-nowrap">
+                    <IconComponent className="w-4 h-4" />
+                    <span>{tab.name}</span>
+                  </TabsTrigger>
+                );
+              })}
+            </div>
+          </div>
 
           <TabsContent value="basic" className="space-y-6">
             <LabNoteBasicInfo
@@ -412,25 +442,23 @@ const AdminLabNoteEditor = () => {
       </div>
 
       {/* Preview Modal */}
-      <LabNotePreview
-        isOpen={previewOpen}
-        onClose={() => setPreviewOpen(false)}
-        formData={{
-          title: formData.title,
-          excerpt: formData.excerpt,
-          category: formData.category,
-          tags: formData.tags,
-          read_time: formData.read_time,
-          date: formData.date,
-          published: formData.published,
-          content: {
-            analysis: formData.content.analysis || '',
-            methodology: formData.content.methodology || '',
-            code: formData.content.code || '',
-            insights: formData.content.insights || ''
-          }
-        }}
-      />
+      {previewOpen && (
+        <LabNotePreview
+          isOpen={previewOpen}
+          onClose={() => setPreviewOpen(false)}
+          formData={{
+            title: formData.title,
+            excerpt: formData.excerpt,
+            category: formData.category,
+            tags: formData.tags,
+            read_time: formData.read_time,
+            date: formData.date,
+            published: formData.published,
+            content: formData.content,
+            tab_config: formData.tab_config
+          }}
+        />
+      )}
     </div>
   );
 };

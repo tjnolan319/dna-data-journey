@@ -1,12 +1,20 @@
 
 import React, { useState, useEffect } from 'react';
-import { X, Calendar, Clock, Tag, Eye, Share2, BookOpen, TrendingUp, BarChart3, Code, Lightbulb, Target, CheckCircle2, User } from 'lucide-react';
+import { X, Calendar, Clock, Tag, Eye, Share2, BookOpen, TrendingUp, BarChart3, Code, Lightbulb, Target, CheckCircle2, User, 
+  Microscope, Settings, FlaskConical, Beaker, Atom, Brain, Cpu, Database, Zap, ChartBar, FileText, Search, Wrench } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import type { Tables } from "@/integrations/supabase/types";
 
 type LabNote = Tables<'lab_notes'>;
+
+interface TabConfig {
+  id: string;
+  name: string;
+  icon: string;
+  order: number;
+}
 
 interface LabNotePreviewProps {
   isOpen: boolean;
@@ -19,24 +27,28 @@ interface LabNotePreviewProps {
     read_time: string;
     date: string;
     published: boolean;
-    content: {
-      analysis: string;
-      methodology: string;
-      code: string;
-      insights: string;
-    };
+    content: Record<string, string>;
+    tab_config: TabConfig[];
   };
 }
 
-const LabNotePreview: React.FC<LabNotePreviewProps> = ({ isOpen, onClose, formData }) => {
-  const [activeTab, setActiveTab] = useState('analysis');
+export const LabNotePreview: React.FC<LabNotePreviewProps> = ({ isOpen, onClose, formData }) => {
+  const [activeTab, setActiveTab] = useState('');
   const [relatedNotes, setRelatedNotes] = useState<LabNote[]>([]);
 
   useEffect(() => {
-    if (isOpen) {
+    if (isOpen && formData.tab_config && formData.tab_config.length > 0) {
+      // Set the first tab as active when opening preview
+      const sortedTabs = [...formData.tab_config].sort((a, b) => a.order - b.order);
+      const firstTabWithContent = sortedTabs.find(tab => hasContent(formData.content[tab.id] || ''));
+      if (firstTabWithContent) {
+        setActiveTab(firstTabWithContent.id);
+      } else if (sortedTabs.length > 0) {
+        setActiveTab(sortedTabs[0].id);
+      }
       fetchRelatedNotes();
     }
-  }, [isOpen, formData.title]);
+  }, [isOpen, formData.title, formData.tab_config]);
 
   const fetchRelatedNotes = async () => {
     try {
@@ -142,14 +154,38 @@ const LabNotePreview: React.FC<LabNotePreviewProps> = ({ isOpen, onClose, formDa
     }
   };
 
-  const tabs = [
-    { id: 'analysis', label: 'Analysis', icon: TrendingUp, content: formData.content.analysis },
-    { id: 'methodology', label: 'Methodology', icon: Target, content: formData.content.methodology },
-    { id: 'code', label: 'Implementation', icon: Code, content: formData.content.code },
-    { id: 'insights', label: 'Strategic Insights', icon: Lightbulb, content: formData.content.insights }
-  ];
+  const getIconComponent = (iconName: string) => {
+    const iconMap: { [key: string]: any } = {
+      'microscope': Microscope,
+      'settings': Settings,
+      'code': Code,
+      'lightbulb': Lightbulb,
+      'flask-conical': FlaskConical,
+      'beaker': Beaker,
+      'atom': Atom,
+      'brain': Brain,
+      'cpu': Cpu,
+      'database': Database,
+      'target': Target,
+      'zap': Zap,
+      'chart-bar': ChartBar,
+      'file-text': FileText,
+      'search': Search,
+      'wrench': Wrench
+    };
+    return iconMap[iconName] || Lightbulb;
+  };
 
-  const availableTabs = tabs.filter(tab => hasContent(tab.content));
+  // Create tabs from the current tab configuration
+  const availableTabs = formData.tab_config
+    .sort((a, b) => a.order - b.order)
+    .map(tab => ({
+      id: tab.id,
+      label: tab.name,
+      icon: getIconComponent(tab.icon),
+      content: formData.content[tab.id] || ''
+    }))
+    .filter(tab => hasContent(tab.content));
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
@@ -281,7 +317,7 @@ const LabNotePreview: React.FC<LabNotePreviewProps> = ({ isOpen, onClose, formDa
                   <Eye className="w-16 h-16 mx-auto mb-4 text-slate-300" />
                   <h3 className="text-xl font-medium mb-2">No content to preview</h3>
                   <p className="text-slate-600 max-w-md mx-auto">
-                    Add some content to the analysis, methodology, code, or insights sections to see the preview with tabbed navigation.
+                    Add some content to your configured tabs to see the preview with tabbed navigation.
                   </p>
                 </div>
               </div>
@@ -315,5 +351,3 @@ const LabNotePreview: React.FC<LabNotePreviewProps> = ({ isOpen, onClose, formDa
     </div>
   );
 };
-
-export default LabNotePreview;

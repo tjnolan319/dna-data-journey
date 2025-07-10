@@ -7,9 +7,16 @@ import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import type { Tables } from "@/integrations/supabase/types";
-import LabNotePreview from "@/components/LabNotePreview";
+import { LabNotePreview } from "@/components/LabNotePreview";
 
 type LabNote = Tables<'lab_notes'>;
+
+interface TabConfig {
+  id: string;
+  name: string;
+  icon: string;
+  order: number;
+}
 
 // Define the expected format for the preview component
 interface PreviewFormData {
@@ -20,13 +27,20 @@ interface PreviewFormData {
   read_time: string;
   date: string;
   published: boolean;
-  content: {
-    analysis: string;
-    methodology: string;
-    code: string;
-    insights: string;
-  };
+  content: Record<string, string>;
+  tab_config: TabConfig[];
 }
+
+// Type guard for TabConfig array
+const isTabConfigArray = (value: any): value is TabConfig[] => {
+  return Array.isArray(value) && value.every(item => 
+    typeof item === 'object' && 
+    typeof item.id === 'string' && 
+    typeof item.name === 'string' && 
+    typeof item.icon === 'string' && 
+    typeof item.order === 'number'
+  );
+};
 
 const AdminLabNotes = () => {
   const navigate = useNavigate();
@@ -162,6 +176,16 @@ const AdminLabNotes = () => {
 
   const handlePreview = (note: LabNote) => {
     // Convert the note to the expected format for the preview component
+    const tabConfig = isTabConfigArray(note.tab_config) ? note.tab_config : [
+      { id: 'analysis', name: 'Analysis', icon: 'microscope', order: 0 },
+      { id: 'methodology', name: 'Methodology', icon: 'settings', order: 1 },
+      { id: 'code', name: 'Code', icon: 'code', order: 2 },
+      { id: 'insights', name: 'Insights', icon: 'lightbulb', order: 3 },
+      { id: 'considerations', name: 'Considerations', icon: 'brain', order: 4 }
+    ];
+
+    const content = typeof note.content === 'object' && note.content ? note.content as Record<string, string> : {};
+
     const formData: PreviewFormData = {
       title: note.title || '',
       excerpt: note.excerpt || '',
@@ -170,17 +194,8 @@ const AdminLabNotes = () => {
       read_time: note.read_time || '',
       date: note.date || new Date().toISOString().split('T')[0],
       published: Boolean(note.published),
-      content: typeof note.content === 'object' && note.content ? {
-        analysis: (note.content as any).analysis || '',
-        methodology: (note.content as any).methodology || '',
-        code: (note.content as any).code || '',
-        insights: (note.content as any).insights || ''
-      } : {
-        analysis: '',
-        methodology: '',
-        code: '',
-        insights: ''
-      }
+      content,
+      tab_config: tabConfig
     };
     
     setPreviewNote(formData);

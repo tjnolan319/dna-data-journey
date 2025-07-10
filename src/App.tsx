@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -14,6 +15,8 @@ import LoginPage from "./pages/LoginPage";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminLabNotes from "./pages/AdminLabNotes";
 import AdminLabNoteEditor from "./pages/AdminLabNoteEditor";
+import AdminTodoLists from "./pages/AdminTodoLists";
+import AdminWorkJournal from "./pages/AdminWorkJournal";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -35,9 +38,10 @@ const App = () => (
           <Route path="/login" element={<LoginPage />} />
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/admin/lab-notes" element={<AdminLabNotes />} />
-          {/* Separate routes for new and edit */}
           <Route path="/admin/lab-notes/new" element={<AdminLabNoteEditor />} />
           <Route path="/admin/lab-notes/:id" element={<AdminLabNoteEditor />} />
+          <Route path="/admin/todo-lists" element={<AdminTodoLists />} />
+          <Route path="/admin/work-journal" element={<AdminWorkJournal />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

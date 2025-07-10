@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FlaskConical, FileText, Users, Settings, LogOut, Home } from 'lucide-react';
+import { FlaskConical, FileText, Users, Settings, LogOut, Home, ListTodo, BookOpen } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { supabase } from '@/integrations/supabase/client';
@@ -56,7 +56,7 @@ const AdminDashboard = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
           <h2 className="text-2xl font-bold text-slate-900 mb-2">Welcome back, Admin</h2>
-          <p className="text-slate-600">Manage your portfolio content and Lab Notes from here.</p>
+          <p className="text-slate-600">Manage your portfolio content, Lab Notes, and productivity tools from here.</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -73,6 +73,40 @@ const AdminDashboard = () => {
             <CardContent>
               <p className="text-sm text-slate-600">
                 Create, edit, and organize your professional lab notes and methodological insights.
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => navigate('/admin/todo-lists')}>
+            <CardHeader>
+              <CardTitle className="flex items-center space-x-2">
+                <ListTodo className="w-5 h-5 text-green-600" />
+                <span>To-Do Lists</span>
+              </CardTitle>
+              <CardDescription>
+                Organize tasks and manage your projects
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-slate-600">
+                Create multiple to-do lists, pin important ones, and track your progress.
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => navigate('/admin/work-journal')}>
+            <CardHeader>
+              <CardTitle className="flex items-center space-x-2">
+                <BookOpen className="w-5 h-5 text-purple-600" />
+                <span>Work Journal</span>
+              </CardTitle>
+              <CardDescription>
+                Document your daily work and achievements
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-slate-600">
+                Keep track of your daily progress, insights, and accomplishments.
               </p>
             </CardContent>
           </Card>
