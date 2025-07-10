@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
-import { X, Calendar, Clock, Tag, Eye, Share2, BookOpen, TrendingUp, BarChart3, Code, Lightbulb, Target, CheckCircle2, User, 
-  Microscope, Settings, FlaskConical, Beaker, Atom, Brain, Cpu, Database, Zap, ChartBar, FileText, Search, Wrench } from 'lucide-react';
+import { X, Calendar, Clock, Tag, Eye, Share2, BookOpen, User, 
+  Microscope, Settings, FlaskConical, Beaker, Atom, Brain, Cpu, Database, Zap, ChartBar, FileText, Search, Wrench, Code, Lightbulb, Target } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
@@ -37,6 +37,7 @@ export const LabNotePreview: React.FC<LabNotePreviewProps> = ({ isOpen, onClose,
   const [relatedNotes, setRelatedNotes] = useState<LabNote[]>([]);
 
   useEffect(() => {
+    console.log('LabNotePreview opened with formData:', formData);
     if (isOpen && formData.tab_config && formData.tab_config.length > 0) {
       // Set the first tab as active when opening preview
       const sortedTabs = [...formData.tab_config].sort((a, b) => a.order - b.order);
@@ -186,6 +187,8 @@ export const LabNotePreview: React.FC<LabNotePreviewProps> = ({ isOpen, onClose,
       content: formData.content[tab.id] || ''
     }))
     .filter(tab => hasContent(tab.content));
+
+  console.log('Available tabs for preview:', availableTabs);
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">

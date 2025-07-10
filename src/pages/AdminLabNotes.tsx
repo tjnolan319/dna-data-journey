@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search, Calendar, Tag, FlaskConical, BookOpen, Clock, ArrowRight, Filter, Plus, Edit, Trash2, ArrowLeft, Eye, CheckCircle, XCircle, User, Copy } from 'lucide-react';
@@ -16,19 +17,6 @@ interface TabConfig {
   name: string;
   icon: string;
   order: number;
-}
-
-// Define the expected format for the preview component
-interface PreviewFormData {
-  title: string;
-  excerpt: string;
-  category: string;
-  tags: string;
-  read_time: string;
-  date: string;
-  published: boolean;
-  content: Record<string, string>;
-  tab_config: TabConfig[];
 }
 
 // Type guard for TabConfig array
@@ -50,7 +38,9 @@ const AdminLabNotes = () => {
   const [notes, setNotes] = useState<LabNote[]>([]);
   const [loading, setLoading] = useState(true);
   const [previewOpen, setPreviewOpen] = useState(false);
-  const [previewNote, setPreviewNote] = useState<PreviewFormData | null>(null);
+  const [previewNote, setPreviewNote] = useState<any>(null);
+
+  console.log('AdminLabNotes rendering with notes:', notes.length);
 
   const categories = [
     { id: 'all', name: 'All Notes' },
@@ -64,6 +54,7 @@ const AdminLabNotes = () => {
   ];
 
   const fetchNotes = async () => {
+    console.log('Fetching notes...');
     try {
       const { data, error } = await supabase
         .from('lab_notes')
@@ -71,6 +62,7 @@ const AdminLabNotes = () => {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
+      console.log('Fetched notes:', data);
       setNotes(data || []);
     } catch (error) {
       console.error('Error fetching notes:', error);
@@ -101,10 +93,12 @@ const AdminLabNotes = () => {
   };
 
   const handleEdit = (noteId: string) => {
+    console.log('Editing note:', noteId);
     navigate(`/admin/lab-notes/${noteId}`);
   };
 
   const handleDuplicate = async (note: LabNote) => {
+    console.log('Duplicating note:', note.id);
     try {
       const duplicateData = {
         title: `${note.title} (Copy)`,
@@ -145,6 +139,7 @@ const AdminLabNotes = () => {
   };
 
   const handleDelete = async (noteId: string) => {
+    console.log('Deleting note:', noteId);
     if (window.confirm('Are you sure you want to delete this lab note?')) {
       try {
         const { error } = await supabase
@@ -171,10 +166,12 @@ const AdminLabNotes = () => {
   };
 
   const handleCreateNew = () => {
+    console.log('Creating new note');
     navigate('/admin/lab-notes/new');
   };
 
   const handlePreview = (note: LabNote) => {
+    console.log('Previewing note:', note.id, note);
     // Convert the note to the expected format for the preview component
     const tabConfig = isTabConfigArray(note.tab_config) ? note.tab_config : [
       { id: 'analysis', name: 'Analysis', icon: 'microscope', order: 0 },
@@ -184,9 +181,23 @@ const AdminLabNotes = () => {
       { id: 'considerations', name: 'Considerations', icon: 'brain', order: 4 }
     ];
 
-    const content = typeof note.content === 'object' && note.content ? note.content as Record<string, string> : {};
+    // Safely handle content
+    let content: Record<string, string> = {};
+    if (typeof note.content === 'object' && note.content) {
+      try {
+        // If it's already an object with string values
+        if (note.content && typeof note.content === 'object') {
+          Object.entries(note.content).forEach(([key, value]) => {
+            content[key] = typeof value === 'string' ? value : String(value || '');
+          });
+        }
+      } catch (error) {
+        console.error('Error parsing content:', error);
+        content = {};
+      }
+    }
 
-    const formData: PreviewFormData = {
+    const formData = {
       title: note.title || '',
       excerpt: note.excerpt || '',
       category: note.category || 'methodology',
@@ -198,11 +209,13 @@ const AdminLabNotes = () => {
       tab_config: tabConfig
     };
     
+    console.log('Preview formData:', formData);
     setPreviewNote(formData);
     setPreviewOpen(true);
   };
 
   const togglePublished = async (noteId: string, currentStatus: boolean) => {
+    console.log('Toggling published status for note:', noteId, 'from:', currentStatus);
     try {
       const { error } = await supabase
         .from('lab_notes')
@@ -230,6 +243,7 @@ const AdminLabNotes = () => {
   };
 
   if (loading) {
+    console.log('Showing loading screen');
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center">
         <div className="text-center">
@@ -239,6 +253,8 @@ const AdminLabNotes = () => {
       </div>
     );
   }
+
+  console.log('Rendering main content with', filteredNotes.length, 'filtered notes');
 
   return (
     <div className="min-h-screen bg-slate-50">

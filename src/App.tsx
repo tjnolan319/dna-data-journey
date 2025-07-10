@@ -21,33 +21,37 @@ import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter basename="/dna-data-journey">
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/genre-category-project" element={<GenreCategoryProject />} />
-          <Route path="/skillset-network" element={<SkillsetNetwork />} />
-          <Route path="/timeline" element={<TimelinePage />} />
-          <Route path="/academic-timeline" element={<AcademicTimelinePage />} />
-          <Route path="/sbc-workflow" element={<SbcWorkflowPage />} />
-          <Route path="/signup" element={<SignupPage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/admin" element={<AdminDashboard />} />
-          <Route path="/admin/lab-notes" element={<AdminLabNotes />} />
-          <Route path="/admin/lab-notes/new" element={<AdminLabNoteEditor />} />
-          <Route path="/admin/lab-notes/:id" element={<AdminLabNoteEditor />} />
-          <Route path="/admin/todo-lists" element={<AdminTodoLists />} />
-          <Route path="/admin/work-journal" element={<AdminWorkJournal />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+const App = () => {
+  console.log('App rendering, current location:', window.location.pathname);
+  
+  return (
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter basename="/dna-data-journey">
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/genre-category-project" element={<GenreCategoryProject />} />
+            <Route path="/skillset-network" element={<SkillsetNetwork />} />
+            <Route path="/timeline" element={<TimelinePage />} />
+            <Route path="/academic-timeline" element={<AcademicTimelinePage />} />
+            <Route path="/sbc-workflow" element={<SbcWorkflowPage />} />
+            <Route path="/signup" element={<SignupPage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/admin/lab-notes" element={<AdminLabNotes />} />
+            <Route path="/admin/lab-notes/new" element={<AdminLabNoteEditor />} />
+            <Route path="/admin/lab-notes/:id" element={<AdminLabNoteEditor />} />
+            <Route path="/admin/todo-lists" element={<AdminTodoLists />} />
+            <Route path="/admin/work-journal" element={<AdminWorkJournal />} />
+            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </TooltipProvider>
+    </QueryClientProvider>
+  );
+};
 
 export default App;

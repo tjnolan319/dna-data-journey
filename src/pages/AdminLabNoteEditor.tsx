@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, Save, Eye } from 'lucide-react';
@@ -47,18 +48,6 @@ interface LabNoteFormData {
   date: string;
   published: boolean;
   admin_comments: string;
-  content: Record<string, string>;
-  tab_config: TabConfig[];
-}
-
-interface PreviewFormData {
-  title: string;
-  excerpt: string;
-  category: string;
-  tags: string;
-  read_time: string;
-  date: string;
-  published: boolean;
   content: Record<string, string>;
   tab_config: TabConfig[];
 }
@@ -116,6 +105,7 @@ const AdminLabNoteEditor = () => {
   const [previewOpen, setPreviewOpen] = useState(false);
 
   useEffect(() => {
+    console.log('AdminLabNoteEditor mounted, isEditing:', isEditing, 'id:', id);
     if (isEditing && id) {
       fetchNote(id);
     } else {
@@ -125,6 +115,7 @@ const AdminLabNoteEditor = () => {
 
   const fetchNote = async (noteId: string) => {
     try {
+      console.log('Fetching note with ID:', noteId);
       setInitialLoading(true);
       const { data, error } = await supabase
         .from('lab_notes')
@@ -136,6 +127,8 @@ const AdminLabNoteEditor = () => {
         console.error('Supabase error:', error);
         throw error;
       }
+
+      console.log('Fetched note data:', data);
 
       if (data) {
         const tabConfig = parseTabConfig(data.tab_config);
@@ -182,6 +175,7 @@ const AdminLabNoteEditor = () => {
   };
 
   const handleInputChange = (field: string, value: string | boolean | TabConfig[]) => {
+    console.log('Input change:', field, value);
     if (field === 'tab_config') {
       const newTabs = value as TabConfig[];
       setFormData(prev => {
@@ -208,6 +202,7 @@ const AdminLabNoteEditor = () => {
   };
 
   const handleContentChange = (tabId: string, content: string) => {
+    console.log('Content change for tab:', tabId);
     setFormData(prev => ({
       ...prev,
       content: {
@@ -218,6 +213,7 @@ const AdminLabNoteEditor = () => {
   };
 
   const handleSave = async () => {
+    console.log('Saving note...');
     // Validation
     if (!formData.title.trim() || !formData.excerpt.trim()) {
       toast({
@@ -245,6 +241,8 @@ const AdminLabNoteEditor = () => {
         content: formData.content,
         tab_config: formData.tab_config as any
       };
+
+      console.log('Saving noteData:', noteData);
 
       if (isEditing && id) {
         const { data, error } = await supabase
@@ -293,17 +291,7 @@ const AdminLabNoteEditor = () => {
   };
 
   const handlePreview = () => {
-    const previewData: PreviewFormData = {
-      title: formData.title,
-      excerpt: formData.excerpt,
-      category: formData.category,
-      tags: formData.tags,
-      read_time: formData.read_time,
-      date: formData.date,
-      published: formData.published,
-      content: formData.content,
-      tab_config: formData.tab_config
-    };
+    console.log('Opening preview with formData:', formData);
     setPreviewOpen(true);
   };
 
@@ -330,6 +318,7 @@ const AdminLabNoteEditor = () => {
   };
 
   if (initialLoading) {
+    console.log('Showing loading screen');
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center">
         <div className="text-center">
@@ -339,6 +328,8 @@ const AdminLabNoteEditor = () => {
       </div>
     );
   }
+
+  console.log('Rendering main component with formData:', formData);
 
   // Sort tabs by order for display
   const sortedTabs = [...formData.tab_config].sort((a, b) => a.order - b.order);
@@ -446,17 +437,7 @@ const AdminLabNoteEditor = () => {
         <LabNotePreview
           isOpen={previewOpen}
           onClose={() => setPreviewOpen(false)}
-          formData={{
-            title: formData.title,
-            excerpt: formData.excerpt,
-            category: formData.category,
-            tags: formData.tags,
-            read_time: formData.read_time,
-            date: formData.date,
-            published: formData.published,
-            content: formData.content,
-            tab_config: formData.tab_config
-          }}
+          formData={formData}
         />
       )}
     </div>
