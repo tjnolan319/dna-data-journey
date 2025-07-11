@@ -11,7 +11,7 @@ function checkSupabaseConfig() {
 // Helper function to make API requests
 async function makeSupabaseRequest(endpoint) {
   checkSupabaseConfig();
-  
+
   const response = await fetch(`${SUPABASE_URL}/rest/v1/${endpoint}`, {
     headers: {
       apikey: SUPABASE_ANON_KEY,
@@ -20,11 +20,11 @@ async function makeSupabaseRequest(endpoint) {
       Accept: 'application/json',
     },
   });
-  
+
   if (!response.ok) {
     throw new Error(`Error fetching data from ${endpoint}: ${response.statusText}`);
   }
-  
+
   return await response.json();
 }
 
@@ -51,4 +51,9 @@ export async function fetchPublications() {
 // Certifications API
 export async function fetchCertifications() {
   return await makeSupabaseRequest('certifications?select=*&or=(status.neq.DRAFT,status.is.null)');
+}
+
+// Lab Notes API
+export async function fetchLabNotes() {
+  return await makeSupabaseRequest('lab_notes?select=*&published=eq.true');
 }
