@@ -4,6 +4,10 @@ import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
 import type { Tables } from "@/integrations/supabase/types";
 import { LabNotePreview } from "@/components/LabNotePreview";
+import { Button } from "@/components/ui/button";
+import { ArrowLeft } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+
 
 type LabNote = Tables<'lab_notes'>;
 
@@ -32,6 +36,8 @@ const PublicLabNotes = () => {
   const [loading, setLoading] = useState(true);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewNote, setPreviewNote] = useState<any>(null);
+  const navigate = useNavigate();
+
 
   const categories = [
     { id: 'all', name: 'All Notes' },
@@ -133,7 +139,16 @@ const PublicLabNotes = () => {
     <div className="min-h-screen bg-slate-50">
       {/* Header */}
       <div className="bg-white border-b border-slate-200">
-        <div className="max-w-6xl mx-auto px-6 py-8">
+        <div className="max-w-6xl mx-auto px-6 py-4">
+          <Button
+            onClick={() => navigate('/')}  // adjust path if needed
+            variant="ghost"
+            className="mb-6 flex items-center space-x-2 text-blue-600 hover:text-blue-800"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            <span>Back to Portfolio</span>
+          </Button>
+      
           <div className="flex items-center space-x-4 mb-6">
             <div className="bg-blue-100 p-3 rounded-xl">
               <FlaskConical className="w-8 h-8 text-blue-600" />
@@ -143,7 +158,7 @@ const PublicLabNotes = () => {
               <p className="text-slate-600 text-lg">Analytical insights and methodological explorations</p>
             </div>
           </div>
-          
+      
           <div className="text-slate-600">
             <p className="mb-2">
               Welcome to my laboratory of ideas, where analytical rigor meets creative exploration. 
@@ -153,6 +168,7 @@ const PublicLabNotes = () => {
           </div>
         </div>
       </div>
+
 
       <div className="max-w-6xl mx-auto px-6 py-8">
         {/* Search and Filter Controls */}
