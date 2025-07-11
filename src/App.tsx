@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -17,6 +16,7 @@ import AdminLabNotes from "./pages/AdminLabNotes";
 import AdminLabNoteEditor from "./pages/AdminLabNoteEditor";
 import AdminTodoLists from "./pages/AdminTodoLists";
 import AdminWorkJournal from "./pages/AdminWorkJournal";
+import PublicLabNotes from "./pages/PublicLabNotes";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -45,6 +45,7 @@ const App = () => {
             <Route path="/admin/lab-notes/:id" element={<AdminLabNoteEditor />} />
             <Route path="/admin/todo-lists" element={<AdminTodoLists />} />
             <Route path="/admin/work-journal" element={<AdminWorkJournal />} />
+            <Route path="/lab-notes" element={<PublicLabNotes />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
