@@ -215,6 +215,15 @@ export const ProjectTabs = () => {
     }
   };
 
+  // Lab Notes navigation handler
+  const handleViewLabNotes = () => {
+    navigate('/lab-notes');
+    // Scroll to top after navigation
+    setTimeout(() => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, 100);
+  };
+
   // Retry functions
   const retryProjects = () => {
     const loadProjects = async () => {
@@ -498,7 +507,11 @@ export const ProjectTabs = () => {
           <TabsContent value="lab-notes" className="space-y-6">
             <div className="max-w-2xl mx-auto">
               {labNotes.map((note, index) => (
-                <div key={index} className="bg-gradient-to-br from-slate-50 to-blue-50 border border-slate-200 rounded-lg p-6 hover:shadow-lg transition-all duration-300 group cursor-pointer">
+                <div 
+                  key={index} 
+                  className="bg-gradient-to-br from-slate-50 to-blue-50 border border-slate-200 rounded-lg p-6 hover:shadow-lg transition-all duration-300 group cursor-pointer"
+                  onClick={handleViewLabNotes}
+                >
                   <div className="flex items-start justify-between">
                     <div className="flex items-center space-x-3 mb-3">
                       <div className="bg-blue-100 p-2 rounded-lg">
@@ -509,7 +522,12 @@ export const ProjectTabs = () => {
                         <p className="text-sm text-slate-500">{note.subtitle}</p>
                       </div>
                     </div>
-                    <ArrowRight className="w-5 h-5 text-slate-400 group-hover:text-blue-600 group-hover:translate-x-1 transition-all duration-200" />
+                    <button 
+                      onClick={handleViewLabNotes}
+                      className="flex items-center justify-center p-2 rounded-full hover:bg-blue-100 transition-colors"
+                    >
+                      <ArrowRight className="w-5 h-5 text-slate-400 group-hover:text-blue-600 group-hover:translate-x-1 transition-all duration-200" />
+                    </button>
                   </div>
                   
                   <p className="text-slate-600 text-sm leading-relaxed mb-4">
