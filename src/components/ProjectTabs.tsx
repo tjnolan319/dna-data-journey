@@ -9,7 +9,8 @@ import {
   fetchCaseStudies, 
   fetchDashboards, 
   fetchPublications, 
-  fetchCertifications 
+  fetchCertifications,
+  fetchLabNotes
 } from "../api/projectApi"; // Import your API functions
 
 // Keep the static data for lab notes only
@@ -18,7 +19,7 @@ const labNotes = [
     title: "Lab Notes",
     subtitle: "The Analytical Notebook (coming soon!)",
     description: "Deep dives into my professional methodology, case studies, and analytical frameworks. Where curiosity meets systematic investigation.",
-    entries: 12,
+    entries: labNotesCount,
     status: "Recently updated"
   }
 ];
@@ -70,6 +71,10 @@ export const ProjectTabs = () => {
   const [dashboards, setDashboards] = useState([]);
   const [publications, setPublications] = useState([]);
   const [certifications, setCertifications] = useState([]);
+  const [labNotesCount, setLabNotesCount] = useState(0);
+  const [isLoadingLabNotes, setIsLoadingLabNotes] = useState(true);
+  const [labNotesError, setLabNotesError] = useState(null);
+
   
   // Loading states
   const [isLoadingProjects, setIsLoadingProjects] = useState(true);
@@ -194,6 +199,25 @@ export const ProjectTabs = () => {
       window.removeEventListener('switchTab', handleTabSwitch);
     };
   }, []);
+
+    useEffect(() => {
+    const loadLabNotes = async () => {
+      try {
+        setIsLoadingLabNotes(true);
+        const labNotes = await fetchLabNotes();
+        setLabNotesCount(labNotes.length);
+        setLabNotesError(null);
+      } catch (err) {
+        setLabNotesError(err.message);
+        console.error('Error fetching lab notes:', err);
+      } finally {
+        setIsLoadingLabNotes(false);
+      }
+    };
+
+    loadLabNotes();
+  }, []);
+
 
   const handleProjectClick = (project) => {
     if (project.slug) {
