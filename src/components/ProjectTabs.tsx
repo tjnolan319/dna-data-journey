@@ -13,17 +13,6 @@ import {
   fetchLabNotes
 } from "../api/projectApi"; // Import your API functions
 
-// Keep the static data for lab notes only
-const labNotes = [
-  {
-    title: "Lab Notes",
-    subtitle: "The Analytical Notebook (coming soon!)",
-    description: "Deep dives into my professional methodology, case studies, and analytical frameworks. Where curiosity meets systematic investigation.",
-    entries: labNotesCount,
-    status: "Recently updated"
-  }
-];
-
 const StatusBanner = ({ status }: { status: string }) => {
   const getStatusStyles = (status: string) => {
     switch (status) {
@@ -238,6 +227,17 @@ export const ProjectTabs = () => {
       }, 100);
     }
   };
+
+  // Keep the static data for lab notes only
+  const labNotes = [
+    {
+      title: "Lab Notes",
+      subtitle: "The Analytical Notebook (coming soon!)",
+      description: "Deep dives into my professional methodology, case studies, and analytical frameworks. Where curiosity meets systematic investigation.",
+      entries: labNotesCount,
+      status: "Recently updated"
+    }
+  ];
 
   // Lab Notes navigation handler
   const handleViewLabNotes = () => {
