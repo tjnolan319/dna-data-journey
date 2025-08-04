@@ -413,24 +413,6 @@ const AdminResumeManager = () => {
           />
         </div>
 
-        {/* Integration Status */}
-        <div className="bg-blue-50 rounded-lg p-6 border border-blue-200">
-          <h3 className="font-semibold text-blue-900 mb-3">Integration Status</h3>
-          <div className="space-y-3 text-sm text-blue-800">
-            <div className="bg-white p-3 rounded border">
-              <p className="font-medium mb-1">✅ Storage Backend:</p>
-              <p className="text-xs text-blue-700">Supabase Storage configured with proper security policies</p>
-            </div>
-            <div className="bg-white p-3 rounded border">
-              <p className="font-medium mb-1">✅ Database Schema:</p>
-              <p className="text-xs text-blue-700">Resume metadata tracking with download analytics</p>
-            </div>
-            <div className="bg-white p-3 rounded border">
-              <p className="font-medium mb-1">🔄 Public Download API:</p>
-              <p className="text-xs text-blue-700">Next: Add resume download button to homepage</p>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   );

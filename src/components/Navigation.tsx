@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { Menu, X, Download, Github, LogIn, UserPlus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -32,8 +33,50 @@ export const Navigation = () => {
     setIsOpen(false);
   };
 
-  const handleResumeDownload = () => {
-    window.open('https://www.dropbox.com/scl/fo/j4xflq4pwgmowea76groj/AOGg_HW80oeWYT8kXuVcVLM?rlkey=9h0l8bken1wtdcrqul5dqy827&st=jc0bh1l9&dl=0', '_blank');
+  const handleResumeDownload = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('resumes')
+        .select('*')
+        .eq('is_active', true)
+        .order('upload_date', { ascending: false })
+        .limit(1);
+
+      if (error) throw error;
+      
+      if (data && data.length > 0) {
+        const resume = data[0];
+        const { data: fileData, error: downloadError } = await supabase.storage
+          .from('resumes')
+          .download(resume.file_path);
+
+        if (downloadError) throw downloadError;
+
+        // Create download link
+        const url = URL.createObjectURL(fileData);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = resume.filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+
+        // Update download count
+        await supabase
+          .from('resumes')
+          .update({ 
+            download_count: resume.download_count + 1,
+            last_download: new Date().toISOString()
+          })
+          .eq('id', resume.id);
+      } else {
+        alert('Resume is currently being updated. Please try again later.');
+      }
+    } catch (error) {
+      console.error('Resume download error:', error);
+      alert('Could not download resume. Please try again.');
+    }
   };
 
   const handleGitHubClick = () => {

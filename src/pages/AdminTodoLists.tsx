@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Plus, Edit, Trash2, Pin, PinOff, Check, X, ListTodo, Calendar } from 'lucide-react';
+import { ArrowLeft, Plus, Edit, Trash2, Pin, PinOff, Check, X, ListTodo, GripVertical } from 'lucide-react';
+import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -330,6 +331,45 @@ const AdminTodoLists = () => {
     setEditItemText('');
   };
 
+  const onDragEnd = (result: DropResult) => {
+    const { destination, source, type } = result;
+
+    if (!destination) return;
+
+    if (type === 'list') {
+      // Reordering lists - but maintain pinned at top
+      const newLists = Array.from(todoLists);
+      const [reorderedList] = newLists.splice(source.index, 1);
+      
+      // Check if we're trying to move a pinned item below unpinned items
+      const pinnedCount = todoLists.filter(list => list.pinned).length;
+      
+      if (reorderedList.pinned && destination.index >= pinnedCount) {
+        // Don't allow pinned items to be moved below unpinned items
+        return;
+      }
+      
+      if (!reorderedList.pinned && destination.index < pinnedCount) {
+        // Don't allow unpinned items to be moved above pinned items
+        return;
+      }
+
+      newLists.splice(destination.index, 0, reorderedList);
+      setTodoLists(newLists);
+    } else {
+      // Reordering items within a list
+      const listId = source.droppableId;
+      const items = Array.from(todoItems[listId] || []);
+      const [reorderedItem] = items.splice(source.index, 1);
+      items.splice(destination.index, 0, reorderedItem);
+
+      setTodoItems(prev => ({
+        ...prev,
+        [listId]: items
+      }));
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center">
@@ -362,7 +402,7 @@ const AdminTodoLists = () => {
             </div>
             <div>
               <h1 className="text-3xl font-bold text-slate-900">To-Do Lists</h1>
-              <p className="text-slate-600">Manage your tasks and projects</p>
+              <p className="text-slate-600">Manage your tasks and projects • Drag to reorder</p>
             </div>
           </div>
         </div>
@@ -398,174 +438,222 @@ const AdminTodoLists = () => {
           </CardContent>
         </Card>
 
-        {/* Todo Lists */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {todoLists.map((list) => (
-            <Card key={list.id} className={`${list.pinned ? 'ring-2 ring-blue-500' : ''}`}>
-              <CardHeader>
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    {editingList === list.id ? (
-                      <div className="space-y-2">
-                        <Input
-                          value={editTitle}
-                          onChange={(e) => setEditTitle(e.target.value)}
-                          className="font-semibold"
-                        />
-                        <Input
-                          value={editDescription}
-                          onChange={(e) => setEditDescription(e.target.value)}
-                          placeholder="Description"
-                        />
-                        <div className="flex space-x-2">
-                          <Button size="sm" onClick={() => updateTodoList(list.id)}>
-                            <Check className="w-4 h-4" />
-                          </Button>
-                          <Button size="sm" variant="outline" onClick={cancelEditing}>
-                            <X className="w-4 h-4" />
-                          </Button>
-                        </div>
-                      </div>
-                    ) : (
-                      <>
-                        <CardTitle className="flex items-center space-x-2">
-                          <span>{list.title}</span>
-                          {list.pinned && <Pin className="w-4 h-4 text-blue-600" />}
-                        </CardTitle>
-                        {list.description && (
-                          <p className="text-sm text-slate-600 mt-1">{list.description}</p>
-                        )}
-                      </>
-                    )}
-                  </div>
-                  {editingList !== list.id && (
-                    <div className="flex space-x-1">
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        onClick={() => togglePinList(list.id, list.pinned)}
-                      >
-                        {list.pinned ? <PinOff className="w-4 h-4" /> : <Pin className="w-4 h-4" />}
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        onClick={() => startEditing(list)}
-                      >
-                        <Edit className="w-4 h-4" />
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        onClick={() => deleteTodoList(list.id)}
-                        className="text-red-600 hover:text-red-700"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </Button>
-                    </div>
-                  )}
-                </div>
-              </CardHeader>
-              <CardContent>
-                {/* Todo Items */}
-                <div className="space-y-2 mb-4">
-                  {(todoItems[list.id] || []).map((item) => (
-                    <div key={item.id} className="flex items-center space-x-2 group">
-                      <button
-                        onClick={() => toggleTodoItem(item)}
-                        className={`flex-shrink-0 w-4 h-4 rounded border-2 flex items-center justify-center ${
-                          item.completed
-                            ? 'bg-green-500 border-green-500 text-white'
-                            : 'border-slate-300 hover:border-slate-400'
+        {/* Todo Lists with Drag and Drop */}
+        <DragDropContext onDragEnd={onDragEnd}>
+          <Droppable droppableId="lists" type="list" direction="horizontal">
+            {(provided) => (
+              <div
+                ref={provided.innerRef}
+                {...provided.droppableProps}
+                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+              >
+                {todoLists.map((list, index) => (
+                  <Draggable key={list.id} draggableId={list.id} index={index}>
+                    {(provided, snapshot) => (
+                      <Card 
+                        ref={provided.innerRef}
+                        {...provided.draggableProps}
+                        className={`${list.pinned ? 'ring-2 ring-blue-500' : ''} ${
+                          snapshot.isDragging ? 'shadow-lg rotate-2' : ''
                         }`}
                       >
-                        {item.completed && <Check className="w-3 h-3" />}
-                      </button>
-                      
-                      {editingItem === item.id ? (
-                        <div className="flex-1 flex items-center space-x-2">
-                          <Input
-                            value={editItemText}
-                            onChange={(e) => setEditItemText(e.target.value)}
-                            onKeyPress={(e) => {
-                              if (e.key === 'Enter') {
-                                updateTodoItem(item.id, item.list_id);
-                              } else if (e.key === 'Escape') {
-                                cancelEditingItem();
-                              }
-                            }}
-                            className="text-sm"
-                            autoFocus
-                          />
-                          <Button
-                            size="sm"
-                            onClick={() => updateTodoItem(item.id, item.list_id)}
-                            className="h-6 w-6 p-0"
-                          >
-                            <Check className="w-3 h-3" />
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={cancelEditingItem}
-                            className="h-6 w-6 p-0"
-                          >
-                            <X className="w-3 h-3" />
-                          </Button>
-                        </div>
-                      ) : (
-                        <>
-                          <span className={`flex-1 text-sm ${item.completed ? 'line-through text-slate-500' : ''}`}>
-                            {item.text}
-                          </span>
-                          <div className="opacity-0 group-hover:opacity-100 transition-opacity flex space-x-1">
+                        <CardHeader>
+                          <div className="flex items-start justify-between">
+                            <div className="flex-1">
+                              {editingList === list.id ? (
+                                <div className="space-y-2">
+                                  <Input
+                                    value={editTitle}
+                                    onChange={(e) => setEditTitle(e.target.value)}
+                                    className="font-semibold"
+                                  />
+                                  <Input
+                                    value={editDescription}
+                                    onChange={(e) => setEditDescription(e.target.value)}
+                                    placeholder="Description"
+                                  />
+                                  <div className="flex space-x-2">
+                                    <Button size="sm" onClick={() => updateTodoList(list.id)}>
+                                      <Check className="w-4 h-4" />
+                                    </Button>
+                                    <Button size="sm" variant="outline" onClick={cancelEditing}>
+                                      <X className="w-4 h-4" />
+                                    </Button>
+                                  </div>
+                                </div>
+                              ) : (
+                                <>
+                                  <CardTitle className="flex items-center space-x-2">
+                                    <span>{list.title}</span>
+                                    {list.pinned && <Pin className="w-4 h-4 text-blue-600" />}
+                                  </CardTitle>
+                                  {list.description && (
+                                    <p className="text-sm text-slate-600 mt-1">{list.description}</p>
+                                  )}
+                                </>
+                              )}
+                            </div>
+                            <div className="flex items-center space-x-1">
+                              <div {...provided.dragHandleProps} className="p-1 cursor-grab hover:bg-slate-100 rounded">
+                                <GripVertical className="w-4 h-4 text-slate-400" />
+                              </div>
+                              {editingList !== list.id && (
+                                <>
+                                  <Button
+                                    size="sm"
+                                    variant="ghost"
+                                    onClick={() => togglePinList(list.id, list.pinned)}
+                                  >
+                                    {list.pinned ? <PinOff className="w-4 h-4" /> : <Pin className="w-4 h-4" />}
+                                  </Button>
+                                  <Button
+                                    size="sm"
+                                    variant="ghost"
+                                    onClick={() => startEditing(list)}
+                                  >
+                                    <Edit className="w-4 h-4" />
+                                  </Button>
+                                  <Button
+                                    size="sm"
+                                    variant="ghost"
+                                    onClick={() => deleteTodoList(list.id)}
+                                    className="text-red-600 hover:text-red-700"
+                                  >
+                                    <Trash2 className="w-4 h-4" />
+                                  </Button>
+                                </>
+                              )}
+                            </div>
+                          </div>
+                        </CardHeader>
+                        <CardContent>
+                          {/* Todo Items with Drag and Drop */}
+                          <Droppable droppableId={list.id} type="item">
+                            {(provided) => (
+                              <div
+                                ref={provided.innerRef}
+                                {...provided.droppableProps}
+                                className="space-y-2 mb-4"
+                              >
+                                {(todoItems[list.id] || []).map((item, itemIndex) => (
+                                  <Draggable key={item.id} draggableId={item.id} index={itemIndex}>
+                                    {(provided, snapshot) => (
+                                      <div
+                                        ref={provided.innerRef}
+                                        {...provided.draggableProps}
+                                        className={`flex items-center space-x-2 group p-2 rounded ${
+                                          snapshot.isDragging ? 'bg-slate-100 shadow-md' : ''
+                                        }`}
+                                      >
+                                        <div {...provided.dragHandleProps} className="cursor-grab">
+                                          <GripVertical className="w-3 h-3 text-slate-400" />
+                                        </div>
+                                        <button
+                                          onClick={() => toggleTodoItem(item)}
+                                          className={`flex-shrink-0 w-4 h-4 rounded border-2 flex items-center justify-center ${
+                                            item.completed
+                                              ? 'bg-green-500 border-green-500 text-white'
+                                              : 'border-slate-300 hover:border-slate-400'
+                                          }`}
+                                        >
+                                          {item.completed && <Check className="w-3 h-3" />}
+                                        </button>
+                                        
+                                        {editingItem === item.id ? (
+                                          <div className="flex-1 flex items-center space-x-2">
+                                            <Input
+                                              value={editItemText}
+                                              onChange={(e) => setEditItemText(e.target.value)}
+                                              onKeyPress={(e) => {
+                                                if (e.key === 'Enter') {
+                                                  updateTodoItem(item.id, item.list_id);
+                                                } else if (e.key === 'Escape') {
+                                                  cancelEditingItem();
+                                                }
+                                              }}
+                                              className="text-sm"
+                                              autoFocus
+                                            />
+                                            <Button
+                                              size="sm"
+                                              onClick={() => updateTodoItem(item.id, item.list_id)}
+                                              className="h-6 w-6 p-0"
+                                            >
+                                              <Check className="w-3 h-3" />
+                                            </Button>
+                                            <Button
+                                              size="sm"
+                                              variant="outline"
+                                              onClick={cancelEditingItem}
+                                              className="h-6 w-6 p-0"
+                                            >
+                                              <X className="w-3 h-3" />
+                                            </Button>
+                                          </div>
+                                        ) : (
+                                          <>
+                                            <span className={`flex-1 text-sm ${item.completed ? 'line-through text-slate-500' : ''}`}>
+                                              {item.text}
+                                            </span>
+                                            <div className="opacity-0 group-hover:opacity-100 transition-opacity flex space-x-1">
+                                              <Button
+                                                size="sm"
+                                                variant="ghost"
+                                                onClick={() => startEditingItem(item)}
+                                                className="text-blue-600 hover:text-blue-700 p-1 h-auto"
+                                              >
+                                                <Edit className="w-3 h-3" />
+                                              </Button>
+                                              <Button
+                                                size="sm"
+                                                variant="ghost"
+                                                onClick={() => deleteTodoItem(item)}
+                                                className="text-red-600 hover:text-red-700 p-1 h-auto"
+                                              >
+                                                <X className="w-3 h-3" />
+                                              </Button>
+                                            </div>
+                                          </>
+                                        )}
+                                      </div>
+                                    )}
+                                  </Draggable>
+                                ))}
+                                {provided.placeholder}
+                              </div>
+                            )}
+                          </Droppable>
+
+                          {/* Add New Item */}
+                          <div className="flex space-x-2">
+                            <Input
+                              placeholder="Add new item"
+                              value={newItemTexts[list.id] || ''}
+                              onChange={(e) => setNewItemTexts(prev => ({ 
+                                ...prev, 
+                                [list.id]: e.target.value 
+                              }))}
+                              onKeyPress={(e) => e.key === 'Enter' && addTodoItem(list.id)}
+                              className="flex-1"
+                            />
                             <Button
                               size="sm"
-                              variant="ghost"
-                              onClick={() => startEditingItem(item)}
-                              className="text-blue-600 hover:text-blue-700 p-1 h-auto"
+                              onClick={() => addTodoItem(list.id)}
+                              disabled={!newItemTexts[list.id]?.trim()}
                             >
-                              <Edit className="w-3 h-3" />
-                            </Button>
-                            <Button
-                              size="sm"
-                              variant="ghost"
-                              onClick={() => deleteTodoItem(item)}
-                              className="text-red-600 hover:text-red-700 p-1 h-auto"
-                            >
-                              <X className="w-3 h-3" />
+                              <Plus className="w-4 h-4" />
                             </Button>
                           </div>
-                        </>
-                      )}
-                    </div>
-                  ))}
-                </div>
-
-                {/* Add New Item */}
-                <div className="flex space-x-2">
-                  <Input
-                    placeholder="Add new item"
-                    value={newItemTexts[list.id] || ''}
-                    onChange={(e) => setNewItemTexts(prev => ({ 
-                      ...prev, 
-                      [list.id]: e.target.value 
-                    }))}
-                    onKeyPress={(e) => e.key === 'Enter' && addTodoItem(list.id)}
-                    className="flex-1"
-                  />
-                  <Button
-                    size="sm"
-                    onClick={() => addTodoItem(list.id)}
-                    disabled={!newItemTexts[list.id]?.trim()}
-                  >
-                    <Plus className="w-4 h-4" />
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+                        </CardContent>
+                      </Card>
+                    )}
+                  </Draggable>
+                ))}
+                {provided.placeholder}
+              </div>
+            )}
+          </Droppable>
+        </DragDropContext>
 
         {todoLists.length === 0 && (
           <div className="text-center py-12">
