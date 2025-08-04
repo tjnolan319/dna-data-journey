@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FlaskConical, FileText, Users, Settings, LogOut, Home, ListTodo, BookOpen } from 'lucide-react';
+import { FlaskConical, FileText, Users, Settings, LogOut, Home, ListTodo, BookOpen, Upload } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { supabase } from '@/integrations/supabase/client';
@@ -107,6 +107,23 @@ const AdminDashboard = () => {
             <CardContent>
               <p className="text-sm text-slate-600">
                 Keep track of your daily progress, insights, and accomplishments.
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => navigate('/admin/resume')}>
+            <CardHeader>
+              <CardTitle className="flex items-center space-x-2">
+                <Upload className="w-5 h-5 text-orange-600" />
+                <span>Resume Manager</span>
+              </CardTitle>
+              <CardDescription>
+                Upload and manage resume files
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-slate-600">
+                Upload your resume and make it available for public download.
               </p>
             </CardContent>
           </Card>
