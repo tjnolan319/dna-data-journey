@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FlaskConical, FileText, Users, Settings, LogOut, Home, ListTodo, BookOpen, Upload } from 'lucide-react';
+import { FlaskConical, FileText, Users, Settings, LogOut, Home, ListTodo, BookOpen, Upload, Layout } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { supabase } from '@/integrations/supabase/client';
@@ -124,6 +124,23 @@ const AdminDashboard = () => {
             <CardContent>
               <p className="text-sm text-slate-600">
                 Upload your resume and make it available for public download.
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => navigate('/admin/section-manager')}>
+            <CardHeader>
+              <CardTitle className="flex items-center space-x-2">
+                <Layout className="w-5 h-5 text-indigo-600" />
+                <span>Section Manager</span>
+              </CardTitle>
+              <CardDescription>
+                Control homepage section visibility
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-slate-600">
+                Show or hide sections on the homepage for maintenance or updates.
               </p>
             </CardContent>
           </Card>
