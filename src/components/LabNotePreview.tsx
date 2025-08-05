@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import type { Tables } from "@/integrations/supabase/types";
+import { generateLabNotePDF } from "@/utils/pdfGenerator";
+import { useToast } from "@/hooks/use-toast";
 
 type LabNote = Tables<'lab_notes'>;
 
@@ -35,6 +37,8 @@ interface LabNotePreviewProps {
 export const LabNotePreview: React.FC<LabNotePreviewProps> = ({ isOpen, onClose, formData }) => {
   const [activeTab, setActiveTab] = useState('');
   const [relatedNotes, setRelatedNotes] = useState<LabNote[]>([]);
+  const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
+  const { toast } = useToast();
 
   useEffect(() => {
     console.log('LabNotePreview opened with formData:', formData);
@@ -65,6 +69,32 @@ export const LabNotePreview: React.FC<LabNotePreviewProps> = ({ isOpen, onClose,
       setRelatedNotes(data || []);
     } catch (error) {
       console.error('Error fetching related notes:', error);
+    }
+  };
+
+  const handleGeneratePDF = async () => {
+    setIsGeneratingPDF(true);
+    
+    try {
+      const success = generateLabNotePDF(formData);
+      
+      if (success) {
+        toast({
+          title: "PDF Generated",
+          description: "Your lab note has been downloaded as a PDF.",
+        });
+      } else {
+        throw new Error("PDF generation failed");
+      }
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+      toast({
+        title: "Error",
+        description: "Failed to generate PDF. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsGeneratingPDF(false);
     }
   };
 
@@ -201,8 +231,17 @@ export const LabNotePreview: React.FC<LabNotePreviewProps> = ({ isOpen, onClose,
               <h2 className="text-xl font-semibold text-slate-900">Lab Note Preview</h2>
             </div>
             <div className="flex items-center space-x-3">
-              <button className="p-2 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-100 transition-all">
-                <Share2 className="w-5 h-5" />
+              <button 
+                onClick={handleGeneratePDF}
+                disabled={isGeneratingPDF}
+                className="p-2 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-100 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                title="Download as PDF"
+              >
+                {isGeneratingPDF ? (
+                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-slate-600"></div>
+                ) : (
+                  <Share2 className="w-5 h-5" />
+                )}
               </button>
               <button className="p-2 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-100 transition-all">
                 <BookOpen className="w-5 h-5" />
