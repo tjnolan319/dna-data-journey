@@ -38,6 +38,8 @@ export const LabNotePreview: React.FC<LabNotePreviewProps> = ({ isOpen, onClose,
   const [activeTab, setActiveTab] = useState('');
   const [relatedNotes, setRelatedNotes] = useState<LabNote[]>([]);
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
+  const [showPDFDialog, setShowPDFDialog] = useState(false);
+  const [showPDFPreview, setShowPDFPreview] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -232,16 +234,11 @@ export const LabNotePreview: React.FC<LabNotePreviewProps> = ({ isOpen, onClose,
             </div>
             <div className="flex items-center space-x-3">
               <button 
-                onClick={handleGeneratePDF}
-                disabled={isGeneratingPDF}
-                className="p-2 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-100 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                title="Download as PDF"
+                onClick={() => setShowPDFDialog(true)}
+                className="p-2 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-100 transition-all"
+                title="Export as PDF"
               >
-                {isGeneratingPDF ? (
-                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-slate-600"></div>
-                ) : (
-                  <Share2 className="w-5 h-5" />
-                )}
+                <Share2 className="w-5 h-5" />
               </button>
               <button className="p-2 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-100 transition-all">
                 <BookOpen className="w-5 h-5" />
@@ -390,6 +387,152 @@ export const LabNotePreview: React.FC<LabNotePreviewProps> = ({ isOpen, onClose,
           </div>
         </div>
       </div>
+
+      {/* PDF Dialog */}
+      {showPDFDialog && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[60] p-4">
+          <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col">
+            <div className="bg-white border-b border-slate-200 p-6">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-2">
+                  <FileText className="w-5 h-5 text-blue-600" />
+                  <h2 className="text-xl font-semibold text-slate-900">PDF Export</h2>
+                </div>
+                <Button variant="ghost" size="sm" onClick={() => setShowPDFDialog(false)}>
+                  <X className="w-4 h-4" />
+                </Button>
+              </div>
+            </div>
+
+            <div className="flex-1 overflow-y-auto p-6">
+              <div className="mb-6">
+                <div className="flex items-center space-x-4 mb-4">
+                  <Button
+                    onClick={() => setShowPDFPreview(!showPDFPreview)}
+                    variant="outline"
+                  >
+                    <Eye className="w-4 h-4 mr-2" />
+                    {showPDFPreview ? 'Hide Preview' : 'Show Preview'}
+                  </Button>
+                  <Button
+                    onClick={handleGeneratePDF}
+                    disabled={isGeneratingPDF}
+                    className="bg-blue-600 hover:bg-blue-700"
+                  >
+                    {isGeneratingPDF ? (
+                      <>
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                        Generating...
+                      </>
+                    ) : (
+                      <>
+                        <Share2 className="w-4 h-4 mr-2" />
+                        Generate PDF
+                      </>
+                    )}
+                  </Button>
+                </div>
+
+                {showPDFPreview && (
+                  <div className="border border-slate-200 rounded-lg overflow-hidden">
+                    <div className="bg-slate-100 px-4 py-2 border-b">
+                      <div className="flex items-center space-x-2">
+                        <FileText className="w-4 h-4 text-slate-600" />
+                        <span className="font-medium text-slate-900">PDF Preview</span>
+                      </div>
+                    </div>
+                    
+                    <div className="bg-white p-8 max-h-96 overflow-y-auto" style={{ fontFamily: 'Georgia, serif' }}>
+                      {/* PDF Header */}
+                      <div className="text-center mb-8 pb-6 border-b-2 border-slate-200">
+                        <h1 className="text-2xl font-bold text-slate-900 mb-2">LAB NOTE</h1>
+                        <div className="text-slate-600 text-sm">Research & Analysis Document</div>
+                      </div>
+
+                      {/* Title Section */}
+                      <div className="mb-8">
+                        <h2 className="text-xl font-bold text-slate-900 mb-4">{formData.title}</h2>
+                        
+                        <div className="bg-slate-50 p-4 rounded-lg mb-4">
+                          <div className="grid grid-cols-2 gap-4 text-sm">
+                            <div className="flex items-center space-x-2">
+                              <User className="w-4 h-4 text-slate-500" />
+                              <span>Author: Tim Nolan</span>
+                            </div>
+                            <div className="flex items-center space-x-2">
+                              <Calendar className="w-4 h-4 text-slate-500" />
+                              <span>Date: {formatDate(formData.date)}</span>
+                            </div>
+                            <div className="flex items-center space-x-2">
+                              <Clock className="w-4 h-4 text-slate-500" />
+                              <span>Read Time: {formData.read_time}</span>
+                            </div>
+                            <div className="flex items-center space-x-2">
+                              <Tag className="w-4 h-4 text-slate-500" />
+                              <span>Category: {formData.category.replace('-', ' ')}</span>
+                            </div>
+                          </div>
+                          {formData.tags && (
+                            <div className="mt-2 text-sm">
+                              <span className="font-medium">Tags: </span>
+                              {formatTags(formData.tags).join(', ')}
+                            </div>
+                          )}
+                        </div>
+
+                        <div className="mb-6">
+                          <h3 className="font-semibold text-slate-900 mb-2">Executive Summary</h3>
+                          <p className="text-slate-700 leading-relaxed">{formData.excerpt}</p>
+                        </div>
+                      </div>
+
+                      {/* Content Sections */}
+                      {formData.tab_config
+                        .sort((a, b) => a.order - b.order)
+                        .map((tab, index) => {
+                          const content = formData.content[tab.id];
+                          if (!content || !content.trim()) return null;
+
+                          return (
+                            <div key={tab.id} className="mb-8 pb-6 border-b border-slate-200">
+                              <h3 className="text-lg font-bold text-slate-900 mb-4 flex items-center">
+                                <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded text-sm font-medium mr-3">
+                                  {index + 1}
+                                </span>
+                                {tab.name}
+                              </h3>
+                              
+                              <div className="prose prose-sm max-w-none">
+                                {tab.id === 'code' ? (
+                                  <div className="bg-slate-900 text-slate-100 p-4 rounded-lg font-mono text-xs overflow-x-auto">
+                                    <pre>{content}</pre>
+                                  </div>
+                                ) : (
+                                  <div 
+                                    className="text-slate-700 leading-relaxed"
+                                    dangerouslySetInnerHTML={{ 
+                                      __html: formatMarkdown(content).replace(/^<div[^>]*>|<\/div>$/g, '')
+                                    }}
+                                  />
+                                )}
+                              </div>
+                            </div>
+                          );
+                        })}
+
+                      {/* Footer */}
+                      <div className="mt-8 pt-6 border-t-2 border-slate-200 text-center text-sm text-slate-500">
+                        <p>Generated on {new Date().toLocaleString()}</p>
+                        <p className="mt-1">Lab Note System | Research & Development</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
