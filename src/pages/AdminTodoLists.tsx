@@ -463,7 +463,7 @@ const AdminTodoLists = () => {
                         {...provided.draggableProps}
                         className={`${list.pinned ? 'ring-2 ring-blue-500' : ''} ${
                           snapshot.isDragging ? 'shadow-lg rotate-2' : ''
-                        } h-96 flex flex-col`}
+                        }  h-[768px] flex flex-col`}
                       >
                         <CardHeader className="flex-shrink-0">
                           <div className="flex items-start justify-between">
