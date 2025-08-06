@@ -4,6 +4,7 @@ import { ArrowLeft, Plus, Edit, Trash2, Pin, PinOff, Check, X, ListTodo, GripVer
 import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -370,6 +371,13 @@ const AdminTodoLists = () => {
     }
   };
 
+  const handleTextareaKeyPress = (e: React.KeyboardEvent<HTMLTextAreaElement>, listId: string) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      addTodoItem(listId);
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center">
@@ -455,9 +463,9 @@ const AdminTodoLists = () => {
                         {...provided.draggableProps}
                         className={`${list.pinned ? 'ring-2 ring-blue-500' : ''} ${
                           snapshot.isDragging ? 'shadow-lg rotate-2' : ''
-                        }`}
+                        } h-96 flex flex-col`}
                       >
-                        <CardHeader>
+                        <CardHeader className="flex-shrink-0">
                           <div className="flex items-start justify-between">
                             <div className="flex-1">
                               {editingList === list.id ? (
@@ -526,122 +534,127 @@ const AdminTodoLists = () => {
                             </div>
                           </div>
                         </CardHeader>
-                        <CardContent>
-                          {/* Todo Items with Drag and Drop */}
-                          <Droppable droppableId={list.id} type="item">
-                            {(provided) => (
-                              <div
-                                ref={provided.innerRef}
-                                {...provided.droppableProps}
-                                className="space-y-2 mb-4"
-                              >
-                                {(todoItems[list.id] || []).map((item, itemIndex) => (
-                                  <Draggable key={item.id} draggableId={item.id} index={itemIndex}>
-                                    {(provided, snapshot) => (
-                                      <div
-                                        ref={provided.innerRef}
-                                        {...provided.draggableProps}
-                                        className={`flex items-center space-x-2 group p-2 rounded ${
-                                          snapshot.isDragging ? 'bg-slate-100 shadow-md' : ''
-                                        }`}
-                                      >
-                                        <div {...provided.dragHandleProps} className="cursor-grab">
-                                          <GripVertical className="w-3 h-3 text-slate-400" />
-                                        </div>
-                                        <button
-                                          onClick={() => toggleTodoItem(item)}
-                                          className={`flex-shrink-0 w-4 h-4 rounded border-2 flex items-center justify-center ${
-                                            item.completed
-                                              ? 'bg-green-500 border-green-500 text-white'
-                                              : 'border-slate-300 hover:border-slate-400'
+                        <CardContent className="flex-1 flex flex-col overflow-hidden">
+                          {/* Todo Items with Drag and Drop - Scrollable Area */}
+                          <div className="flex-1 overflow-y-auto mb-4 pr-2">
+                            <Droppable droppableId={list.id} type="item">
+                              {(provided) => (
+                                <div
+                                  ref={provided.innerRef}
+                                  {...provided.droppableProps}
+                                  className="space-y-2"
+                                >
+                                  {(todoItems[list.id] || []).map((item, itemIndex) => (
+                                    <Draggable key={item.id} draggableId={item.id} index={itemIndex}>
+                                      {(provided, snapshot) => (
+                                        <div
+                                          ref={provided.innerRef}
+                                          {...provided.draggableProps}
+                                          className={`flex items-center space-x-2 group p-2 rounded ${
+                                            snapshot.isDragging ? 'bg-slate-100 shadow-md' : ''
                                           }`}
                                         >
-                                          {item.completed && <Check className="w-3 h-3" />}
-                                        </button>
-                                        
-                                        {editingItem === item.id ? (
-                                          <div className="flex-1 flex items-center space-x-2">
-                                            <Input
-                                              value={editItemText}
-                                              onChange={(e) => setEditItemText(e.target.value)}
-                                              onKeyPress={(e) => {
-                                                if (e.key === 'Enter') {
-                                                  updateTodoItem(item.id, item.list_id);
-                                                } else if (e.key === 'Escape') {
-                                                  cancelEditingItem();
-                                                }
-                                              }}
-                                              className="text-sm"
-                                              autoFocus
-                                            />
-                                            <Button
-                                              size="sm"
-                                              onClick={() => updateTodoItem(item.id, item.list_id)}
-                                              className="h-6 w-6 p-0"
-                                            >
-                                              <Check className="w-3 h-3" />
-                                            </Button>
-                                            <Button
-                                              size="sm"
-                                              variant="outline"
-                                              onClick={cancelEditingItem}
-                                              className="h-6 w-6 p-0"
-                                            >
-                                              <X className="w-3 h-3" />
-                                            </Button>
+                                          <div {...provided.dragHandleProps} className="cursor-grab">
+                                            <GripVertical className="w-3 h-3 text-slate-400" />
                                           </div>
-                                        ) : (
-                                          <>
-                                            <span className={`flex-1 text-sm ${item.completed ? 'line-through text-slate-500' : ''}`}>
-                                              {item.text}
-                                            </span>
-                                            <div className="opacity-0 group-hover:opacity-100 transition-opacity flex space-x-1">
+                                          <button
+                                            onClick={() => toggleTodoItem(item)}
+                                            className={`flex-shrink-0 w-4 h-4 rounded border-2 flex items-center justify-center ${
+                                              item.completed
+                                                ? 'bg-green-500 border-green-500 text-white'
+                                                : 'border-slate-300 hover:border-slate-400'
+                                            }`}
+                                          >
+                                            {item.completed && <Check className="w-3 h-3" />}
+                                          </button>
+                                          
+                                          {editingItem === item.id ? (
+                                            <div className="flex-1 flex items-center space-x-2">
+                                              <Input
+                                                value={editItemText}
+                                                onChange={(e) => setEditItemText(e.target.value)}
+                                                onKeyPress={(e) => {
+                                                  if (e.key === 'Enter') {
+                                                    updateTodoItem(item.id, item.list_id);
+                                                  } else if (e.key === 'Escape') {
+                                                    cancelEditingItem();
+                                                  }
+                                                }}
+                                                className="text-sm"
+                                                autoFocus
+                                              />
                                               <Button
                                                 size="sm"
-                                                variant="ghost"
-                                                onClick={() => startEditingItem(item)}
-                                                className="text-blue-600 hover:text-blue-700 p-1 h-auto"
+                                                onClick={() => updateTodoItem(item.id, item.list_id)}
+                                                className="h-6 w-6 p-0"
                                               >
-                                                <Edit className="w-3 h-3" />
+                                                <Check className="w-3 h-3" />
                                               </Button>
                                               <Button
                                                 size="sm"
-                                                variant="ghost"
-                                                onClick={() => deleteTodoItem(item)}
-                                                className="text-red-600 hover:text-red-700 p-1 h-auto"
+                                                variant="outline"
+                                                onClick={cancelEditingItem}
+                                                className="h-6 w-6 p-0"
                                               >
                                                 <X className="w-3 h-3" />
                                               </Button>
                                             </div>
-                                          </>
-                                        )}
-                                      </div>
-                                    )}
-                                  </Draggable>
-                                ))}
-                                {provided.placeholder}
-                              </div>
-                            )}
-                          </Droppable>
+                                          ) : (
+                                            <>
+                                              <span className={`flex-1 text-sm break-words ${item.completed ? 'line-through text-slate-500' : ''}`}>
+                                                {item.text}
+                                              </span>
+                                              <div className="opacity-0 group-hover:opacity-100 transition-opacity flex space-x-1">
+                                                <Button
+                                                  size="sm"
+                                                  variant="ghost"
+                                                  onClick={() => startEditingItem(item)}
+                                                  className="text-blue-600 hover:text-blue-700 p-1 h-auto"
+                                                >
+                                                  <Edit className="w-3 h-3" />
+                                                </Button>
+                                                <Button
+                                                  size="sm"
+                                                  variant="ghost"
+                                                  onClick={() => deleteTodoItem(item)}
+                                                  className="text-red-600 hover:text-red-700 p-1 h-auto"
+                                                >
+                                                  <X className="w-3 h-3" />
+                                                </Button>
+                                              </div>
+                                            </>
+                                          )}
+                                        </div>
+                                      )}
+                                    </Draggable>
+                                  ))}
+                                  {provided.placeholder}
+                                </div>
+                              )}
+                            </Droppable>
+                          </div>
 
-                          {/* Add New Item */}
-                          <div className="flex space-x-2">
-                            <Input
-                              placeholder="Add new item"
+                          {/* Add New Item - Fixed at bottom */}
+                          <div className="flex-shrink-0 space-y-2">
+                            <Textarea
+                              placeholder="Add new item (Enter to add, Shift+Enter for new line)"
                               value={newItemTexts[list.id] || ''}
                               onChange={(e) => setNewItemTexts(prev => ({ 
                                 ...prev, 
                                 [list.id]: e.target.value 
                               }))}
-                              onKeyPress={(e) => e.key === 'Enter' && addTodoItem(list.id)}
-                              className="flex-1"
+                              onKeyPress={(e) => handleTextareaKeyPress(e, list.id)}
+                              className="resize-none"
+                              rows={2}
                             />
                             <Button
                               size="sm"
                               onClick={() => addTodoItem(list.id)}
                               disabled={!newItemTexts[list.id]?.trim()}
+                              className="w-full"
                             >
-                              <Plus className="w-4 h-4" />
+                              <Plus className="w-4 h-4 mr-2" />
+                              Add Item
                             </Button>
                           </div>
                         </CardContent>
