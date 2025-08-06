@@ -86,61 +86,111 @@ export const generateLabNotePDF = (noteData: LabNoteData) => {
   };
 
   try {
-    // Header
+    // Header - centered title
     pdf.setFillColor(59, 130, 246); // Blue background
     pdf.rect(0, 0, pageWidth, 40, 'F');
     
     pdf.setTextColor(255, 255, 255);
     pdf.setFontSize(20);
     pdf.setFont('helvetica', 'bold');
-    pdf.text('LAB NOTE', margin, 25);
+    const headerText = 'LAB NOTE';
+    const headerTextWidth = pdf.getTextWidth(headerText);
+    pdf.text(headerText, (pageWidth - headerTextWidth) / 2, 25);
     
     pdf.setFontSize(12);
     pdf.setFont('helvetica', 'normal');
-    pdf.text('Research & Analysis Document', margin, 35);
+    const subHeaderText = 'Research & Analysis Document';
+    const subHeaderTextWidth = pdf.getTextWidth(subHeaderText);
+    pdf.text(subHeaderText, (pageWidth - subHeaderTextWidth) / 2, 35);
     
     yPosition = 60;
     pdf.setTextColor(0, 0, 0);
 
     // Title
-    addText(noteData.title || 'Untitled Lab Note', 18, 'bold');
-    addSpacing(10);
+    pdf.setFontSize(18);
+    pdf.setFont('helvetica', 'bold');
+    const titleLines = pdf.splitTextToSize(noteData.title || 'Untitled Lab Note', contentWidth);
+    titleLines.forEach((line: string) => {
+      pdf.text(line, margin, yPosition);
+      yPosition += 7;
+    });
+    yPosition += 10;
 
     // Metadata box
     pdf.setFillColor(248, 250, 252); // Light gray background
-    const metadataHeight = 50;
+    const metadataHeight = 60;
     pdf.rect(margin, yPosition, contentWidth, metadataHeight, 'F');
+    pdf.setDrawColor(200, 200, 200);
+    pdf.rect(margin, yPosition, contentWidth, metadataHeight);
     
-    yPosition += 10;
+    yPosition += 12;
     pdf.setFontSize(10);
     pdf.setFont('helvetica', 'normal');
     
-    // Author and date on same line
-    pdf.text(`Author: Tim Nolan`, margin + 5, yPosition);
-    pdf.text(`Date: ${formatDate(noteData.date)}`, margin + 100, yPosition);
+    // Metadata in a 2x3 grid
+    const leftCol = margin + 5;
+    const rightCol = margin + 100;
+    
+    pdf.setFont('helvetica', 'bold');
+    pdf.text('Author:', leftCol, yPosition);
+    pdf.setFont('helvetica', 'normal');
+    pdf.text('Tim Nolan', leftCol + 30, yPosition);
+    
+    pdf.setFont('helvetica', 'bold');
+    pdf.text('Date:', rightCol, yPosition);
+    pdf.setFont('helvetica', 'normal');
+    pdf.text(formatDate(noteData.date), rightCol + 25, yPosition);
     yPosition += 12;
     
-    // Read time and category
     if (noteData.read_time) {
-      pdf.text(`Read Time: ${noteData.read_time}`, margin + 5, yPosition);
+      pdf.setFont('helvetica', 'bold');
+      pdf.text('Read Time:', leftCol, yPosition);
+      pdf.setFont('helvetica', 'normal');
+      pdf.text(noteData.read_time, leftCol + 35, yPosition);
     }
-    pdf.text(`Category: ${noteData.category.replace('_', ' ')}`, margin + 100, yPosition);
+    
+    pdf.setFont('helvetica', 'bold');
+    pdf.text('Category:', rightCol, yPosition);
+    pdf.setFont('helvetica', 'normal');
+    pdf.text(noteData.category.replace('_', ' '), rightCol + 35, yPosition);
     yPosition += 12;
     
     // Tags
     if (noteData.tags) {
       const tags = noteData.tags.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0);
-      pdf.text(`Tags: ${tags.join(', ')}`, margin + 5, yPosition);
+      pdf.setFont('helvetica', 'bold');
+      pdf.text('Tags:', leftCol, yPosition);
+      pdf.setFont('helvetica', 'normal');
+      const tagText = tags.join(', ');
+      const tagLines = pdf.splitTextToSize(tagText, contentWidth - 50);
+      let tagY = yPosition;
+      tagLines.forEach((line: string, index: number) => {
+        pdf.text(line, leftCol + (index === 0 ? 25 : 0), tagY);
+        if (index < tagLines.length - 1) tagY += 10;
+      });
     }
     
     yPosition += 25;
 
     // Executive Summary
     if (noteData.excerpt) {
-      addText('Executive Summary', 14, 'bold');
-      addSpacing(5);
-      addText(noteData.excerpt, 11);
-      addSpacing(15);
+      pdf.setFontSize(14);
+      pdf.setFont('helvetica', 'bold');
+      pdf.text('Executive Summary', margin, yPosition);
+      yPosition += 8;
+      
+      pdf.setFontSize(11);
+      pdf.setFont('helvetica', 'normal');
+      const excerptLines = pdf.splitTextToSize(noteData.excerpt, contentWidth);
+      excerptLines.forEach((line: string) => {
+        if (yPosition > pageHeight - margin - 20) {
+          pdf.addPage();
+          yPosition = margin;
+        }
+        pdf.text(line, margin, yPosition);
+        yPosition += 5;
+      });
+      yPosition += 15;
     }
 
     // Content sections
@@ -150,26 +200,73 @@ export const generateLabNotePDF = (noteData: LabNoteData) => {
       const content = noteData.content[tab.id];
       if (!content || !content.trim()) return;
 
-      // Section header
+      // Check if we need a new page for the section header
+      if (yPosition > pageHeight - margin - 30) {
+        pdf.addPage();
+        yPosition = margin;
+      }
+
+      // Section header with number badge
       pdf.setFillColor(59, 130, 246);
-      pdf.rect(margin, yPosition, 20, 8, 'F');
+      pdf.rect(margin, yPosition, 20, 12, 'F');
       
       pdf.setTextColor(255, 255, 255);
       pdf.setFontSize(10);
       pdf.setFont('helvetica', 'bold');
-      pdf.text(`${index + 1}`, margin + 8, yPosition + 6);
+      const badgeText = `${index + 1}`;
+      const badgeWidth = pdf.getTextWidth(badgeText);
+      pdf.text(badgeText, margin + (20 - badgeWidth) / 2, yPosition + 8);
       
       pdf.setTextColor(0, 0, 0);
       pdf.setFontSize(14);
-      pdf.text(tab.name, margin + 25, yPosition + 6);
+      pdf.setFont('helvetica', 'bold');
+      pdf.text(tab.name, margin + 25, yPosition + 8);
       
-      yPosition += 15;
+      yPosition += 20;
 
       // Content
       const cleanedContent = cleanText(content);
       if (cleanedContent) {
-        addText(cleanedContent, 10);
-        addSpacing(15);
+        pdf.setFontSize(10);
+        pdf.setFont('helvetica', 'normal');
+        
+        // Handle code sections differently
+        if (tab.id === 'code') {
+          pdf.setFont('courier', 'normal');
+          pdf.setFillColor(40, 40, 40);
+          
+          const codeLines = cleanedContent.split('\n');
+          const codeHeight = (codeLines.length * 4) + 10;
+          
+          if (yPosition + codeHeight > pageHeight - margin) {
+            pdf.addPage();
+            yPosition = margin;
+          }
+          
+          pdf.rect(margin, yPosition, contentWidth, codeHeight, 'F');
+          pdf.setTextColor(220, 220, 220);
+          
+          yPosition += 6;
+          codeLines.forEach((line: string) => {
+            pdf.text(line, margin + 5, yPosition);
+            yPosition += 4;
+          });
+          
+          pdf.setTextColor(0, 0, 0);
+          pdf.setFont('helvetica', 'normal');
+          yPosition += 10;
+        } else {
+          const contentLines = pdf.splitTextToSize(cleanedContent, contentWidth);
+          contentLines.forEach((line: string) => {
+            if (yPosition > pageHeight - margin - 10) {
+              pdf.addPage();
+              yPosition = margin;
+            }
+            pdf.text(line, margin, yPosition);
+            yPosition += 4.5;
+          });
+          yPosition += 15;
+        }
       }
     });
 

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Eye, EyeOff, Settings, Save, AlertCircle } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { ArrowLeft, Eye, EyeOff, Settings, Save, AlertCircle } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
@@ -14,6 +15,7 @@ interface Section {
 }
 
 const AdminSectionManager = () => {
+  const navigate = useNavigate();
   const [sections, setSections] = useState<Section[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -109,6 +111,14 @@ const AdminSectionManager = () => {
     <div className="min-h-screen bg-slate-50">
       <div className="max-w-4xl mx-auto px-6 py-8">
         <div className="mb-8">
+          <button
+            onClick={() => navigate('/admin')}
+            className="flex items-center space-x-2 text-slate-600 hover:text-slate-900 transition-colors mb-6"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            <span>Back to Dashboard</span>
+          </button>
+          
           <div className="flex items-center space-x-3 mb-4">
             <Settings className="w-8 h-8 text-blue-600" />
             <h1 className="text-3xl font-bold text-slate-900">Section Manager</h1>
