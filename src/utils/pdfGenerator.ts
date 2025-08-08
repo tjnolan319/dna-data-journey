@@ -189,13 +189,17 @@ export const generateLabNotePDF = async (noteData: LabNoteData) => {
       height: tempDiv.scrollHeight,
       scale: 2, // Higher quality
       useCORS: true,
-      backgroundColor: '#ffffff'
+      backgroundColor: '#ffffff',
+      scrollX: 0,
+      scrollY: 0,
+      windowWidth: 794,
+      allowTaint: true
     });
 
     // Remove the temporary element
     document.body.removeChild(tempDiv);
 
-    // Create PDF
+    // Create PDF with better page handling
     const pdf = new jsPDF({
       orientation: 'portrait',
       unit: 'mm',
@@ -205,19 +209,33 @@ export const generateLabNotePDF = async (noteData: LabNoteData) => {
     const imgWidth = 210; // A4 width in mm
     const imgHeight = (canvas.height * imgWidth) / canvas.width;
     const pageHeight = 297; // A4 height in mm
-    let heightLeft = imgHeight;
-    let position = 0;
-
-    // Add first page
-    pdf.addImage(canvas.toDataURL('image/jpeg', 0.95), 'JPEG', 0, position, imgWidth, imgHeight);
-    heightLeft -= pageHeight;
-
-    // Add additional pages if content is longer than one page
-    while (heightLeft >= 0) {
-      position = heightLeft - imgHeight;
-      pdf.addPage();
-      pdf.addImage(canvas.toDataURL('image/jpeg', 0.95), 'JPEG', 0, position, imgWidth, imgHeight);
-      heightLeft -= pageHeight;
+    const margin = 0; // No margin for exact preview match
+    
+    // Calculate how many pages we need
+    const totalPages = Math.ceil(imgHeight / pageHeight);
+    
+    for (let page = 0; page < totalPages; page++) {
+      if (page > 0) {
+        pdf.addPage();
+      }
+      
+      const sourceY = page * pageHeight * (canvas.width / imgWidth);
+      const sourceHeight = Math.min(pageHeight * (canvas.width / imgWidth), canvas.height - sourceY);
+      
+      // Create a canvas for this page section
+      const pageCanvas = document.createElement('canvas');
+      const pageCtx = pageCanvas.getContext('2d');
+      pageCanvas.width = canvas.width;
+      pageCanvas.height = sourceHeight;
+      
+      if (pageCtx) {
+        pageCtx.fillStyle = '#ffffff';
+        pageCtx.fillRect(0, 0, pageCanvas.width, pageCanvas.height);
+        pageCtx.drawImage(canvas, 0, -sourceY);
+      }
+      
+      const pageImgHeight = (sourceHeight * imgWidth) / canvas.width;
+      pdf.addImage(pageCanvas.toDataURL('image/jpeg', 0.95), 'JPEG', margin, margin, imgWidth, pageImgHeight);
     }
 
     // Download the PDF
