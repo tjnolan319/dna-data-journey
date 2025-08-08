@@ -145,19 +145,19 @@ const AdminDashboard = () => {
             </CardContent>
           </Card>
 
-          <Card className="hover:shadow-lg transition-shadow cursor-pointer opacity-50">
+          <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => navigate('/admin/portfolio-content')}>
             <CardHeader>
               <CardTitle className="flex items-center space-x-2">
-                <FileText className="w-5 h-5 text-slate-400" />
+                <Layout className="w-5 h-5 text-blue-600" />
                 <span>Portfolio Content</span>
               </CardTitle>
               <CardDescription>
-                Manage projects, case studies, and publications
+                Manage portfolio pages with drag-and-drop components
               </CardDescription>
             </CardHeader>
             <CardContent>
               <p className="text-sm text-slate-600">
-                Coming soon - Manage your portfolio projects and content.
+                Create and edit portfolio pages like SBC Workflow and Skillset Network with modular components.
               </p>
             </CardContent>
           </Card>

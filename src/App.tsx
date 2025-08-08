@@ -18,6 +18,7 @@ import AdminTodoLists from "./pages/AdminTodoLists";
 import AdminWorkJournal from "./pages/AdminWorkJournal";
 import AdminResumeManager from "./pages/AdminResumeManager";
 import AdminSectionManager from "./pages/AdminSectionManager";
+import AdminPortfolioContent from "./pages/AdminPortfolioContent";
 import PublicLabNotes from "./pages/PublicLabNotes";
 import NotFound from "./pages/NotFound";
 
@@ -48,7 +49,8 @@ const App = () => {
             <Route path="/admin/todo-lists" element={<AdminTodoLists />} />
             <Route path="/admin/work-journal" element={<AdminWorkJournal />} />
             <Route path="/admin/resume" element={<AdminResumeManager />} />
-            <Route path="/admin/section-manager" element={<AdminSectionManager />} />
+          <Route path="/admin/section-manager" element={<AdminSectionManager />} />
+          <Route path="/admin/portfolio-content" element={<AdminPortfolioContent />} />
             <Route path="/lab-notes" element={<PublicLabNotes />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
