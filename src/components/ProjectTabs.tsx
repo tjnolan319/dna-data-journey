@@ -53,6 +53,7 @@ const ErrorMessage = ({ message, onRetry }: { message: string; onRetry: () => vo
 export const ProjectTabs = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("projects");
+  const [highlightedItemId, setHighlightedItemId] = useState(null);
   
   // State for all data sections
   const [projects, setProjects] = useState([]);
@@ -179,6 +180,16 @@ export const ProjectTabs = () => {
     const handleTabSwitch = (event) => {
       if (event.detail && event.detail.tabValue) {
         setActiveTab(event.detail.tabValue);
+        
+        // Handle item highlighting if specified
+        if (event.detail.highlightItemId) {
+          setHighlightedItemId(event.detail.highlightItemId);
+          
+          // Remove highlight after 2.5 seconds
+          setTimeout(() => {
+            setHighlightedItemId(null);
+          }, 2500);
+        }
       }
     };
 
@@ -359,7 +370,14 @@ export const ProjectTabs = () => {
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
                 {projects.map((project, index) => (
-                  <Card key={project.id || index} className="relative hover:shadow-lg transition-shadow">
+                  <Card 
+                    key={project.id || index} 
+                    className={`relative hover:shadow-lg transition-shadow ${
+                      highlightedItemId && (highlightedItemId === project.id || highlightedItemId === project.title) 
+                        ? 'portfolio-highlight' 
+                        : ''
+                    }`}
+                  >
                     {project.status && <StatusBanner status={project.status} />}
                     <CardHeader className={`${project.status ? 'pt-16' : 'pt-6'}`}>
                       <CardTitle className="text-lg">{project.title}</CardTitle>
@@ -407,7 +425,14 @@ export const ProjectTabs = () => {
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
                 {caseStudies.map((study, index) => (
-                  <Card key={study.id || index} className="relative hover:shadow-lg transition-shadow">
+                  <Card 
+                    key={study.id || index} 
+                    className={`relative hover:shadow-lg transition-shadow ${
+                      highlightedItemId && (highlightedItemId === study.id || highlightedItemId === study.title) 
+                        ? 'portfolio-highlight' 
+                        : ''
+                    }`}
+                  >
                     {study.status && <StatusBanner status={study.status} />}
                     <CardHeader className={`${study.status ? 'pt-16' : 'pt-6'}`}>
                       <CardTitle className="text-lg">{study.title}</CardTitle>
@@ -431,7 +456,14 @@ export const ProjectTabs = () => {
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
                 {dashboards.map((dashboard, index) => (
-                  <Card key={dashboard.id || index} className="relative hover:shadow-lg transition-shadow">
+                  <Card 
+                    key={dashboard.id || index} 
+                    className={`relative hover:shadow-lg transition-shadow ${
+                      highlightedItemId && (highlightedItemId === dashboard.id || highlightedItemId === dashboard.title) 
+                        ? 'portfolio-highlight' 
+                        : ''
+                    }`}
+                  >
                     {dashboard.status && <StatusBanner status={dashboard.status} />}
                     <CardHeader className={`${dashboard.status ? 'pt-16' : 'pt-6'}`}>
                       <CardTitle className="text-lg">{dashboard.title}</CardTitle>
@@ -479,7 +511,14 @@ export const ProjectTabs = () => {
             ) : (
               <div className="grid gap-6 max-w-4xl mx-auto">
                 {publications.map((pub, index) => (
-                  <Card key={pub.id || index} className="relative hover:shadow-lg transition-shadow">
+                  <Card 
+                    key={pub.id || index} 
+                    className={`relative hover:shadow-lg transition-shadow ${
+                      highlightedItemId && (highlightedItemId === pub.id || highlightedItemId === pub.title) 
+                        ? 'portfolio-highlight' 
+                        : ''
+                    }`}
+                  >
                     {pub.status && <StatusBanner status={pub.status} />}
                     <CardHeader className={`${pub.status ? 'pt-16' : 'pt-6'}`}>
                       <CardTitle className="text-lg">{pub.title}</CardTitle>
@@ -513,7 +552,14 @@ export const ProjectTabs = () => {
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
                 {certifications.map((cert, index) => (
-                  <Card key={cert.id || index} className="relative hover:shadow-lg transition-shadow">
+                  <Card 
+                    key={cert.id || index} 
+                    className={`relative hover:shadow-lg transition-shadow ${
+                      highlightedItemId && (highlightedItemId === cert.id || highlightedItemId === cert.title) 
+                        ? 'portfolio-highlight' 
+                        : ''
+                    }`}
+                  >
                     {cert.status && <StatusBanner status={cert.status} />}
                     <CardHeader className={`${cert.status ? 'pt-16' : 'pt-6'}`}>
                       <CardTitle className="text-lg">{cert.title}</CardTitle>

@@ -235,7 +235,12 @@ export const DNAHero = () => {
   const handleNewItemClick = item => {
     scrollToSection('projects');
     setTimeout(() => {
-      window.dispatchEvent(new CustomEvent('switchTab', { detail: { tabValue: item.tabValue } }));
+      window.dispatchEvent(new CustomEvent('switchTab', { 
+        detail: { 
+          tabValue: item.tabValue,
+          highlightItemId: item.id || item.title // Include item identifier for highlighting
+        } 
+      }));
       setTimeout(() => {
         const attempts = [
           () => document.querySelector(`[data-state="inactive"][value="${item.tabValue}"]`),
