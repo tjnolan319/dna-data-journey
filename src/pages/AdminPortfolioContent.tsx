@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Plus, Edit, Trash2, Eye, Move, GripVertical, Layout, FileText, Image, Code } from 'lucide-react';
+import { ArrowLeft, Plus, Edit, Trash2, Eye, Move, GripVertical, Layout, FileText, Image, Code, Save, Upload } from 'lucide-react';
+import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
@@ -31,6 +32,7 @@ const AdminPortfolioContent = () => {
   const [loading, setLoading] = useState(true);
   const [selectedPage, setSelectedPage] = useState<PortfolioPage | null>(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [editableBlocks, setEditableBlocks] = useState<ContentBlock[]>([]);
 
   // Mock data for now - we'll implement Supabase integration later
   const mockPages: PortfolioPage[] = [
@@ -152,6 +154,7 @@ const AdminPortfolioContent = () => {
 
   const handleEditPage = (page: PortfolioPage) => {
     setSelectedPage(page);
+    setEditableBlocks([...page.content_blocks]);
     setIsEditing(true);
   };
 
@@ -168,6 +171,104 @@ const AdminPortfolioContent = () => {
   const handlePreviewPage = (page: PortfolioPage) => {
     // Navigate to the actual page
     navigate(`/${page.slug}`);
+  };
+
+  const handleDragEnd = (result: DropResult) => {
+    if (!result.destination) return;
+
+    const items = Array.from(editableBlocks);
+    const [reorderedItem] = items.splice(result.source.index, 1);
+    items.splice(result.destination.index, 0, reorderedItem);
+
+    // Update order property
+    const updatedItems = items.map((item, index) => ({
+      ...item,
+      order: index
+    }));
+
+    setEditableBlocks(updatedItems);
+  };
+
+  const handleAddBlock = (type: 'text' | 'image' | 'code' | 'card') => {
+    const newBlock: ContentBlock = {
+      id: `block-${Date.now()}`,
+      type,
+      content: getDefaultContent(type),
+      order: editableBlocks.length
+    };
+    setEditableBlocks([...editableBlocks, newBlock]);
+    toast({
+      title: "Block added",
+      description: `New ${type} block has been added to the page.`,
+    });
+  };
+
+  const getDefaultContent = (type: string) => {
+    switch (type) {
+      case 'text':
+        return { title: 'New Text Block', subtitle: 'Add your content here' };
+      case 'image':
+        return { src: '/placeholder.svg', alt: 'New Image', caption: 'Image caption' };
+      case 'code':
+        return { language: 'javascript', code: '// Add your code here\nconsole.log("Hello World!");' };
+      case 'card':
+        return { title: 'New Card', sections: [{ title: 'Section', content: 'Add content here' }] };
+      default:
+        return {};
+    }
+  };
+
+  const handleDeleteBlock = (blockId: string) => {
+    if (window.confirm('Are you sure you want to delete this block?')) {
+      setEditableBlocks(editableBlocks.filter(block => block.id !== blockId));
+      toast({
+        title: "Block deleted",
+        description: "The content block has been removed.",
+      });
+    }
+  };
+
+  const handleSavePage = () => {
+    if (selectedPage) {
+      const updatedPage = {
+        ...selectedPage,
+        content_blocks: editableBlocks,
+        updated_at: new Date().toISOString()
+      };
+      
+      setPages(pages.map(page => 
+        page.id === selectedPage.id ? updatedPage : page
+      ));
+      
+      setSelectedPage(updatedPage);
+      
+      toast({
+        title: "Page saved",
+        description: "Your changes have been saved successfully.",
+      });
+    }
+  };
+
+  const handlePublishPage = () => {
+    if (selectedPage) {
+      const updatedPage = {
+        ...selectedPage,
+        content_blocks: editableBlocks,
+        is_published: true,
+        updated_at: new Date().toISOString()
+      };
+      
+      setPages(pages.map(page => 
+        page.id === selectedPage.id ? updatedPage : page
+      ));
+      
+      setSelectedPage(updatedPage);
+      
+      toast({
+        title: "Page published",
+        description: "Your page is now live and visible to visitors.",
+      });
+    }
   };
 
   if (loading) {
@@ -196,8 +297,14 @@ const AdminPortfolioContent = () => {
                 <span>Back to Pages</span>
               </button>
               <div className="flex space-x-3">
-                <Button variant="outline">Save Draft</Button>
-                <Button>Publish Changes</Button>
+                <Button variant="outline" onClick={handleSavePage} className="flex items-center space-x-2">
+                  <Save className="w-4 h-4" />
+                  <span>Save Draft</span>
+                </Button>
+                <Button onClick={handlePublishPage} className="flex items-center space-x-2">
+                  <Upload className="w-4 h-4" />
+                  <span>Publish Changes</span>
+                </Button>
               </div>
             </div>
             
@@ -232,12 +339,7 @@ const AdminPortfolioContent = () => {
                       key={type}
                       variant="outline"
                       className="w-full justify-start"
-                      onClick={() => {
-                        toast({
-                          title: "Feature Coming Soon",
-                          description: `Adding ${label} components will be implemented next.`,
-                        });
-                      }}
+                      onClick={() => handleAddBlock(type as 'text' | 'image' | 'code' | 'card')}
                     >
                       <Icon className="w-4 h-4 mr-2" />
                       {label}
@@ -254,83 +356,111 @@ const AdminPortfolioContent = () => {
                   <CardTitle className="flex items-center justify-between">
                     <span>Page Content</span>
                     <span className="text-sm font-normal text-slate-500">
-                      {selectedPage.content_blocks.length} blocks
+                      {editableBlocks.length} blocks
                     </span>
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-4">
-                    {selectedPage.content_blocks
-                      .sort((a, b) => a.order - b.order)
-                      .map((block) => {
-                        const Icon = getBlockIcon(block.type);
-                        return (
-                          <div
-                            key={block.id}
-                            className="border border-slate-200 rounded-lg p-4 bg-white hover:shadow-md transition-shadow"
-                          >
-                            <div className="flex items-center justify-between mb-3">
-                              <div className="flex items-center space-x-3">
-                                <GripVertical className="w-4 h-4 text-slate-400 cursor-move" />
-                                <Icon className="w-4 h-4 text-slate-600" />
-                                <span className={`px-2 py-1 rounded-full text-xs font-medium ${getBlockTypeColor(block.type)}`}>
-                                  {block.type}
-                                </span>
-                              </div>
-                              <div className="flex space-x-2">
-                                <Button variant="outline" size="sm">
-                                  <Edit className="w-3 h-3" />
-                                </Button>
-                                <Button variant="outline" size="sm" className="text-red-600 hover:text-red-700">
-                                  <Trash2 className="w-3 h-3" />
-                                </Button>
-                              </div>
-                            </div>
+                  <DragDropContext onDragEnd={handleDragEnd}>
+                    <Droppable droppableId="content-blocks">
+                      {(provided) => (
+                        <div
+                          {...provided.droppableProps}
+                          ref={provided.innerRef}
+                          className="space-y-4"
+                        >
+                          {editableBlocks
+                            .sort((a, b) => a.order - b.order)
+                            .map((block, index) => {
+                              const Icon = getBlockIcon(block.type);
+                              return (
+                                <Draggable key={block.id} draggableId={block.id} index={index}>
+                                  {(provided, snapshot) => (
+                                    <div
+                                      ref={provided.innerRef}
+                                      {...provided.draggableProps}
+                                      className={`border border-slate-200 rounded-lg p-4 bg-white transition-shadow ${
+                                        snapshot.isDragging ? 'shadow-lg' : 'hover:shadow-md'
+                                      }`}
+                                    >
+                                      <div className="flex items-center justify-between mb-3">
+                                        <div className="flex items-center space-x-3">
+                                          <div
+                                            {...provided.dragHandleProps}
+                                            className="cursor-move p-1 hover:bg-slate-100 rounded"
+                                          >
+                                            <GripVertical className="w-4 h-4 text-slate-400" />
+                                          </div>
+                                          <Icon className="w-4 h-4 text-slate-600" />
+                                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${getBlockTypeColor(block.type)}`}>
+                                            {block.type}
+                                          </span>
+                                        </div>
+                                        <div className="flex space-x-2">
+                                          <Button variant="outline" size="sm">
+                                            <Edit className="w-3 h-3" />
+                                          </Button>
+                                          <Button 
+                                            variant="outline" 
+                                            size="sm" 
+                                            className="text-red-600 hover:text-red-700"
+                                            onClick={() => handleDeleteBlock(block.id)}
+                                          >
+                                            <Trash2 className="w-3 h-3" />
+                                          </Button>
+                                        </div>
+                                      </div>
 
-                            {/* Block Preview */}
-                            <div className="bg-slate-50 rounded-md p-3 text-sm">
-                              {block.type === 'text' && (
-                                <div>
-                                  <div className="font-semibold">{block.content.title}</div>
-                                  {block.content.subtitle && (
-                                    <div className="text-slate-600 mt-1">{block.content.subtitle}</div>
+                                      {/* Block Preview */}
+                                      <div className="bg-slate-50 rounded-md p-3 text-sm">
+                                        {block.type === 'text' && (
+                                          <div>
+                                            <div className="font-semibold">{block.content.title}</div>
+                                            {block.content.subtitle && (
+                                              <div className="text-slate-600 mt-1">{block.content.subtitle}</div>
+                                            )}
+                                          </div>
+                                        )}
+                                        {block.type === 'image' && (
+                                          <div>
+                                            <div className="font-semibold">Image: {block.content.alt}</div>
+                                            <div className="text-slate-600 mt-1">Source: {block.content.src}</div>
+                                          </div>
+                                        )}
+                                        {block.type === 'code' && (
+                                          <div>
+                                            <div className="font-semibold">Code Block ({block.content.language})</div>
+                                            <div className="text-slate-600 mt-1 font-mono text-xs">
+                                              {block.content.code.substring(0, 50)}...
+                                            </div>
+                                          </div>
+                                        )}
+                                        {block.type === 'card' && (
+                                          <div>
+                                            <div className="font-semibold">{block.content.title}</div>
+                                            <div className="text-slate-600 mt-1">
+                                              {block.content.sections?.length || 0} sections
+                                            </div>
+                                          </div>
+                                        )}
+                                      </div>
+                                    </div>
                                   )}
-                                </div>
-                              )}
-                              {block.type === 'image' && (
-                                <div>
-                                  <div className="font-semibold">Image: {block.content.alt}</div>
-                                  <div className="text-slate-600 mt-1">Source: {block.content.src}</div>
-                                </div>
-                              )}
-                              {block.type === 'code' && (
-                                <div>
-                                  <div className="font-semibold">Code Block ({block.content.language})</div>
-                                  <div className="text-slate-600 mt-1 font-mono text-xs">
-                                    {block.content.code.substring(0, 50)}...
-                                  </div>
-                                </div>
-                              )}
-                              {block.type === 'card' && (
-                                <div>
-                                  <div className="font-semibold">{block.content.title}</div>
-                                  <div className="text-slate-600 mt-1">
-                                    {block.content.sections?.length || 0} sections
-                                  </div>
-                                </div>
-                              )}
-                            </div>
-                          </div>
-                        );
-                      })}
+                                </Draggable>
+                              );
+                            })}
+                          {provided.placeholder}
 
-                    {selectedPage.content_blocks.length === 0 && (
-                      <div className="text-center py-12 text-slate-500">
-                        <Layout className="w-12 h-12 mx-auto mb-4 text-slate-300" />
-                        <p>No content blocks yet. Add some components to get started.</p>
-                      </div>
-                    )}
-                  </div>
+                          {editableBlocks.length === 0 && (
+                            <div className="text-center py-12 text-slate-500">
+                              <Layout className="w-12 h-12 mx-auto mb-4 text-slate-300" />
+                              <p>No content blocks yet. Add some components to get started.</p>
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </Droppable>
+                  </DragDropContext>
                 </CardContent>
               </Card>
             </div>
