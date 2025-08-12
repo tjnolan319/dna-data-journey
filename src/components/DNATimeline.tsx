@@ -346,7 +346,7 @@ export const DNATimeline = () => {
     degree: "Bachelor of Science in Marketing & Bachelor of Arts in Psychology",
     period: "2021 - 2023",
     stats: {
-      gpa: 3.72,
+      gpa: 3.87,
       totalCredits: 120,
       completedCredits: 120,
       honors: ["Graduated on an accelerated 3-year track", "Dual bachelor's degrees"],
@@ -396,7 +396,7 @@ export const DNATimeline = () => {
     degree: "Master of Science in Data Analytics & Master of Business Administration",
     period: "2023 - 2025",
     stats: {
-      gpa: 3.85,
+      gpa: 3.89,
       totalCredits: 36,
       completedCredits: 28,
       honors: ["Graduated on an accelerated 2-year program", "Dual master's degrees"],
