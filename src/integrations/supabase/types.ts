@@ -14,6 +14,44 @@ export type Database = {
   }
   public: {
     Tables: {
+      awards: {
+        Row: {
+          created_at: string
+          date: string
+          description: string | null
+          id: string
+          school_id: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          date: string
+          description?: string | null
+          id?: string
+          school_id: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          date?: string
+          description?: string | null
+          id?: string
+          school_id?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "awards_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: false
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       case_studies: {
         Row: {
           description: string | null
@@ -76,6 +114,50 @@ export type Database = {
           year?: number
         }
         Relationships: []
+      }
+      courses: {
+        Row: {
+          code: string
+          created_at: string
+          credits: number | null
+          description: string | null
+          id: string
+          name: string
+          semester_id: string
+          tools: string[] | null
+          updated_at: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          credits?: number | null
+          description?: string | null
+          id?: string
+          name: string
+          semester_id: string
+          tools?: string[] | null
+          updated_at?: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          credits?: number | null
+          description?: string | null
+          id?: string
+          name?: string
+          semester_id?: string
+          tools?: string[] | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "courses_semester_id_fkey"
+            columns: ["semester_id"]
+            isOneToOne: false
+            referencedRelation: "semesters"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       dashboards: {
         Row: {
@@ -349,6 +431,86 @@ export type Database = {
           upload_date?: string
         }
         Relationships: []
+      }
+      schools: {
+        Row: {
+          completed_credits: number
+          created_at: string
+          degree: string
+          display_order: number
+          gpa: number
+          honors: string[] | null
+          id: string
+          name: string
+          period: string
+          total_credits: number
+          updated_at: string
+        }
+        Insert: {
+          completed_credits: number
+          created_at?: string
+          degree: string
+          display_order?: number
+          gpa: number
+          honors?: string[] | null
+          id?: string
+          name: string
+          period: string
+          total_credits: number
+          updated_at?: string
+        }
+        Update: {
+          completed_credits?: number
+          created_at?: string
+          degree?: string
+          display_order?: number
+          gpa?: number
+          honors?: string[] | null
+          id?: string
+          name?: string
+          period?: string
+          total_credits?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      semesters: {
+        Row: {
+          created_at: string
+          display_order: number
+          id: string
+          school_id: string
+          semester: string
+          updated_at: string
+          year: number
+        }
+        Insert: {
+          created_at?: string
+          display_order?: number
+          id?: string
+          school_id: string
+          semester: string
+          updated_at?: string
+          year: number
+        }
+        Update: {
+          created_at?: string
+          display_order?: number
+          id?: string
+          school_id?: string
+          semester?: string
+          updated_at?: string
+          year?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "semesters_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: false
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       todo_items: {
         Row: {

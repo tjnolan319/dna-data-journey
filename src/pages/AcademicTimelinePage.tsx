@@ -1,4 +1,5 @@
 
+import React, { useEffect } from "react";
 import { Navigation } from "@/components/Navigation";
 import { DNATimeline } from "@/components/DNATimeline";
 import { Button } from "@/components/ui/button";
@@ -7,6 +8,11 @@ import { ArrowLeft } from "lucide-react";
 
 const AcademicTimelinePage = () => {
   const navigate = useNavigate();
+
+  // Scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
