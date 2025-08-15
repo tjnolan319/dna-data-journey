@@ -444,17 +444,17 @@ const PortfolioSkillsDashboard = () => {
 
                 <div className="space-y-8">
                     <div className="text-center">
-                        <h1 className="text-4xl font-bold text-slate-500 mb-4">
+                        <h1 className="text-4xl font-bold text-slate-200 mb-4">
                             Interdisciplinary Strengths <span className="text-blue-600">Venn-Diagram</span>
                         </h1>
-                        <p className="text-xl text-slate-600 max-w-3xl mx-auto">
+                        <p className="text-xl text-slate-400 max-w-3xl mx-auto">
                            Interactive visualization mapping skillsets across Marketing, Psychology, and Analytics
                         </p>
                     </div>
 
                     <div className="grid lg:grid-cols-3 gap-8">
                         <div className="lg:col-span-2">
-                            <Card className="h-full bg-slate-1000">
+                            <Card className="h-full bg-slate-800">
                                 <CardHeader>
                                     <CardTitle className="flex items-center justify-between text-white">
                                           <span>Interdisciplinary Strengths Venn-Diagram</span>
