@@ -45,9 +45,9 @@ const AdminPortfolioContent = () => {
   },
   {
     id: '2',
-    slug: 'portfolio-skills', // CHANGE THIS from 'skillset-network' to 'portfolio-skills'
-    title: 'Interdisciplinary Strengths Venn-Diagram', // UPDATE THIS title too
-    description: 'Interactive network visualization mapping skillsets based on GitHub project topics',
+    slug: 'portfolio-skills', // Keep this as is - it's correct for the URL
+    title: 'Interdisciplinary Strengths Venn-Diagram', // This matches your page
+    description: 'Interactive visualization mapping skillsets across Marketing, Psychology, and Analytics',
     is_published: true,
     content_blocks: [
       {
