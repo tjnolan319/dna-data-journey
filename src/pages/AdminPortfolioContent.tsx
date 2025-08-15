@@ -36,84 +36,43 @@ const AdminPortfolioContent = () => {
 
   // Mock data for now - we'll implement Supabase integration later
   const mockPages: PortfolioPage[] = [
-    {
-      id: '1',
-      slug: 'sbc-workflow',
-      title: 'SBC Workflow Page',
-      description: 'BPMN workflow design for university-backed student entrepreneurship programs',
-      is_published: true,
-      content_blocks: [
-        {
-          id: '1',
-          type: 'text',
-          content: {
-            title: 'Student Business Program Development',
-            subtitle: 'BPMN workflow design for university-backed student entrepreneurship programs'
-          },
-          order: 0
+  {
+    id: '1',
+    slug: 'sbc-workflow', // This one is fine
+    title: 'SBC Workflow Page',
+    description: 'BPMN workflow design for university-backed student entrepreneurship programs',
+    // ... rest of the content
+  },
+  {
+    id: '2',
+    slug: 'portfolio-skills', // CHANGE THIS from 'skillset-network' to 'portfolio-skills'
+    title: 'Interdisciplinary Strengths Venn-Diagram', // UPDATE THIS title too
+    description: 'Interactive network visualization mapping skillsets based on GitHub project topics',
+    is_published: true,
+    content_blocks: [
+      {
+        id: '1',
+        type: 'text',
+        content: {
+          title: 'Interdisciplinary Strengths Venn-Diagram', // UPDATE THIS
+          subtitle: 'Network visualization mapping skillsets based on GitHub project topics'
         },
-        {
-          id: '2',
-          type: 'image',
-          content: {
-            src: '/assets/BPMN_of_SBC.jpg',
-            alt: 'BPMN Workflow Diagram',
-            caption: 'BPMN diagram clarifying decision points and workflows'
-          },
-          order: 1
+        order: 0
+      },
+      {
+        id: '2',
+        type: 'code',
+        content: {
+          language: 'javascript',
+          code: 'const NetworkVisualization = () => {\n  // D3.js network visualization code\n  return <div>Interactive Network</div>;\n};'
         },
-        {
-          id: '3',
-          type: 'card',
-          content: {
-            title: 'Project Overview',
-            sections: [
-              {
-                title: 'Objective',
-                content: 'Design comprehensive process model for launching university-backed student-owned business initiatives.'
-              },
-              {
-                title: 'Implementation',
-                content: 'Through extensive stakeholder interviews and process analysis, mapped complete journey from initial application through business launch.'
-              }
-            ]
-          },
-          order: 2
-        }
-      ],
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
-    },
-    {
-      id: '2',
-      slug: 'skillset-network',
-      title: 'Skillset Network Page',
-      description: 'Interactive network visualization mapping skillsets based on GitHub project topics',
-      is_published: true,
-      content_blocks: [
-        {
-          id: '1',
-          type: 'text',
-          content: {
-            title: 'Interactive Skillset Network Diagram',
-            subtitle: 'Network visualization mapping skillsets based on GitHub project topics'
-          },
-          order: 0
-        },
-        {
-          id: '2',
-          type: 'code',
-          content: {
-            language: 'javascript',
-            code: 'const NetworkVisualization = () => {\n  // D3.js network visualization code\n  return <div>Interactive Network</div>;\n};'
-          },
-          order: 1
-        }
-      ],
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
-    }
-  ];
+        order: 1
+      }
+    ],
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString()
+  }
+];
 
   useEffect(() => {
     // For now, use mock data
