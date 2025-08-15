@@ -445,10 +445,10 @@ const PortfolioSkillsDashboard = () => {
                 <div className="space-y-8">
                     <div className="text-center">
                         <h1 className="text-4xl font-bold text-slate-800 mb-4">
-                            Portfolio Skills <span className="text-blue-600">Dashboard</span>
+                            Interdisciplinary Strengths <span className="text-blue-600">Venn-Diagram</span>
                         </h1>
                         <p className="text-xl text-slate-600 max-w-3xl mx-auto">
-                            Interactive Venn diagram showcasing the intersection of Marketing, Psychology, and Analytics
+                           Interactive visualization mapping skillsets across Marketing, Psychology, and Analytics
                         </p>
                     </div>
 
@@ -457,7 +457,7 @@ const PortfolioSkillsDashboard = () => {
                             <Card className="h-full bg-gray-100">
                                 <CardHeader>
                                     <CardTitle className="flex items-center justify-between">
-                                        <span>Interdisciplinary Skills Visualization</span>
+                                          <span>Interdisciplinary Strengths Venn-Diagram</span>
                                     </CardTitle>
                                     <CardDescription>
                                         Click on any section to explore the unique value proposition of each skill and their intersections.
