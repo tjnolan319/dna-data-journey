@@ -35,26 +35,29 @@ const AdminPortfolioContent = () => {
   const [editableBlocks, setEditableBlocks] = useState<ContentBlock[]>([]);
 
   // Mock data for now - we'll implement Supabase integration later
-  const mockPages: PortfolioPage[] = [
+  // Your mockPages array should look like this:
+
+const mockPages: PortfolioPage[] = [
   {
     id: '1',
-    slug: 'sbc-workflow', // This one is fine
+    slug: 'sbc-workflow',
     title: 'SBC Workflow Page',
     description: 'BPMN workflow design for university-backed student entrepreneurship programs',
-    // ... rest of the content
+    is_published: true,
+    // ... existing content blocks
   },
   {
     id: '2',
-    slug: 'portfolio-skills', // Keep this as is - it's correct for the URL
-    title: 'Interdisciplinary Strengths Venn-Diagram', // This matches your page
-    description: 'Interactive visualization mapping skillsets across Marketing, Psychology, and Analytics',
+    slug: 'skillset-network', // CORRECT - This should go to /skillset-network
+    title: 'Interactive Skillset Network Diagram', // CORRECT TITLE
+    description: 'Interactive network visualization mapping skillsets based on GitHub project topics',
     is_published: true,
     content_blocks: [
       {
         id: '1',
         type: 'text',
         content: {
-          title: 'Interdisciplinary Strengths Venn-Diagram', // UPDATE THIS
+          title: 'Interactive Skillset Network Diagram',
           subtitle: 'Network visualization mapping skillsets based on GitHub project topics'
         },
         order: 0
@@ -65,6 +68,35 @@ const AdminPortfolioContent = () => {
         content: {
           language: 'javascript',
           code: 'const NetworkVisualization = () => {\n  // D3.js network visualization code\n  return <div>Interactive Network</div>;\n};'
+        },
+        order: 1
+      }
+    ],
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString()
+  },
+  {
+    id: '3', // NEW ENTRY - This is what you're missing!
+    slug: 'portfolio-skills', // CORRECT - This should go to /portfolio-skills  
+    title: 'Interdisciplinary Strengths Venn-Diagram', // CORRECT TITLE
+    description: 'Interactive visualization mapping skillsets across Marketing, Psychology, and Analytics',
+    is_published: true,
+    content_blocks: [
+      {
+        id: '1',
+        type: 'text',
+        content: {
+          title: 'Interdisciplinary Strengths Venn-Diagram',
+          subtitle: 'Interactive visualization mapping skillsets across Marketing, Psychology, and Analytics'
+        },
+        order: 0
+      },
+      {
+        id: '2',
+        type: 'code',
+        content: {
+          language: 'react',
+          code: 'const VennDiagram = () => {\n  // Interactive Venn diagram with Framer Motion\n  return <SkillVennDiagram />;\n};'
         },
         order: 1
       }
