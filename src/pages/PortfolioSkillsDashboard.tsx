@@ -454,12 +454,12 @@ const PortfolioSkillsDashboard = () => {
 
                     <div className="grid lg:grid-cols-3 gap-8">
                         <div className="lg:col-span-2">
-                            <Card className="h-full bg-white">
+                            <Card className="h-full bg-black">
                                 <CardHeader>
-                                    <CardTitle className="flex items-center justify-between">
+                                    <CardTitle className="flex items-center justify-between text-white">
                                           <span>Interdisciplinary Strengths Venn-Diagram</span>
                                     </CardTitle>
-                                    <CardDescription>
+                                    <CardDescription className="text-gray-300">
                                         Click on any section to explore the unique value proposition of each skill and their intersections.
                                     </CardDescription>
                                 </CardHeader>
