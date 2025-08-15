@@ -444,7 +444,7 @@ const PortfolioSkillsDashboard = () => {
 
                 <div className="space-y-8">
                     <div className="text-center">
-                        <h1 className="text-4xl font-bold text-slate-800 mb-4">
+                        <h1 className="text-4xl font-bold text-slate-500 mb-4">
                             Interdisciplinary Strengths <span className="text-blue-600">Venn-Diagram</span>
                         </h1>
                         <p className="text-xl text-slate-600 max-w-3xl mx-auto">
@@ -454,7 +454,7 @@ const PortfolioSkillsDashboard = () => {
 
                     <div className="grid lg:grid-cols-3 gap-8">
                         <div className="lg:col-span-2">
-                            <Card className="h-full bg-black">
+                            <Card className="h-full bg-slate-1000">
                                 <CardHeader>
                                     <CardTitle className="flex items-center justify-between text-white">
                                           <span>Interdisciplinary Strengths Venn-Diagram</span>
