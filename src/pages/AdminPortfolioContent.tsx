@@ -34,86 +34,24 @@ const AdminPortfolioContent = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [editableBlocks, setEditableBlocks] = useState<ContentBlock[]>([]);
 
-  // Mock data for now - we'll implement Supabase integration later
-  // Your mockPages array should look like this:
-
-const mockPages: PortfolioPage[] = [
-  {
-    id: '1',
-    slug: 'sbc-workflow',
-    title: 'SBC Workflow Page',
-    description: 'BPMN workflow design for university-backed student entrepreneurship programs',
-    is_published: true,
-    // ... existing content blocks
-  },
-  {
-    id: '2',
-    slug: 'skillset-network', // CORRECT - This should go to /skillset-network
-    title: 'Interactive Skillset Network Diagram', // CORRECT TITLE
-    description: 'Interactive network visualization mapping skillsets based on GitHub project topics',
-    is_published: true,
-    content_blocks: [
-      {
-        id: '1',
-        type: 'text',
-        content: {
-          title: 'Interactive Skillset Network Diagram',
-          subtitle: 'Network visualization mapping skillsets based on GitHub project topics'
-        },
-        order: 0
-      },
-      {
-        id: '2',
-        type: 'code',
-        content: {
-          language: 'javascript',
-          code: 'const NetworkVisualization = () => {\n  // D3.js network visualization code\n  return <div>Interactive Network</div>;\n};'
-        },
-        order: 1
-      }
-    ],
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString()
-  },
-  {
-    id: '3', // NEW ENTRY - This is what you're missing!
-    slug: 'portfolio-skills', // CORRECT - This should go to /portfolio-skills  
-    title: 'Interdisciplinary Strengths Venn-Diagram', // CORRECT TITLE
-    description: 'Interactive visualization mapping skillsets across Marketing, Psychology, and Analytics',
-    is_published: true,
-    content_blocks: [
-      {
-        id: '1',
-        type: 'text',
-        content: {
-          title: 'Interdisciplinary Strengths Venn-Diagram',
-          subtitle: 'Interactive visualization mapping skillsets across Marketing, Psychology, and Analytics'
-        },
-        order: 0
-      },
-      {
-        id: '2',
-        type: 'code',
-        content: {
-          language: 'react',
-          code: 'const VennDiagram = () => {\n  // Interactive Venn diagram with Framer Motion\n  return <SkillVennDiagram />;\n};'
-        },
-        order: 1
-      }
-    ],
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString()
-  }
-];
-
-  useEffect(() => {
-    // For now, use mock data
-    setPages(mockPages);
+  
+ useEffect(() => {
+  const fetchPages = async () => {
+    const { data, error } = await supabase
+      .from<PortfolioPage>('portfolio_pages')
+      .select('*');
+    if (error) {
+      console.error(error);
+      setLoading(false);
+      return;
+    }
+    setPages(data || []);
     setLoading(false);
-    
-    // TODO: Implement actual data fetching
-    // fetchPages();
-  }, []);
+  };
+
+  fetchPages();
+}, []);
+
 
   const getBlockIcon = (type: string) => {
     switch (type) {
