@@ -230,14 +230,15 @@ export const ProjectTabs = () => {
   };
 
   const handleDashboardClick = (dashboard) => {
-    if (dashboard.hasDetailPage || dashboard.has_detail_page) {
-      navigate('/skillset-network');
-      // Scroll to top after navigation
-      setTimeout(() => {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      }, 100);
-    }
-  };
+  if (dashboard.slug) {
+    navigate(`/${dashboard.slug}`);
+    // Scroll to top after navigation
+    setTimeout(() => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, 100);
+  }
+};
+
 
   // Keep the static data for lab notes only
   const labNotes = [
