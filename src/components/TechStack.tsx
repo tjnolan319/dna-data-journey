@@ -2,21 +2,21 @@ import { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 
 const techStack = [
-  { name: "SQL", category: "Database", certified: true, certCount: 2 },
-  { name: "Python", category: "Programming", certified: true, certCount: 1 },
+  { name: "SQL", category: "Database", certified: false },
+  { name: "Python", category: "Programming", certified: false },
   { name: "R Programming", category: "Statistics", certified: false },
   { name: "SPSS", category: "Statistics", certified: false },
-  { name: "Alteryx", category: "Data Workflow", certified: true, certCount: 1 },
-  { name: "Excel", category: "Analytics", certified: true, certCount: 3 },
-  { name: "Tableau", category: "Visualization", certified: true, certCount: 2 },
+  { name: "Alteryx", category: "Data Workflow", certified: true, certCount: 2 },
+  { name: "Excel", category: "Analytics", certified: true, certCount: 1 },
+  { name: "Tableau", category: "Visualization", certified: false },
   { name: "Power BI", category: "Visualization", certified: false },
   { name: "Drupal", category: "Website Editing", certified: false },
-  { name: "Hubspot", category: "CRM & Marketing", certified: true, certCount: 1 },
+  { name: "Hubspot", category: "CRM & Marketing", certified: true, false },
   { name: "Qualtrics", category: "Survey & Research", certified: false },
 ];
 
 const CertificationIcon = ({ certCount }) => (
-  <div className="absolute top-2 left-2 flex items-center gap-0.5">
+  <div className="absolute top-2 left-2 flex items-center gap-0.25">
     <svg 
       width="20" 
       height="20" 
