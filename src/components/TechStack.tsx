@@ -16,7 +16,7 @@ const techStack = [
 ];
 
 const CertificationIcon = ({ certCount }) => (
-  <div className="absolute top-2 left-2 flex items-center gap-0.15">
+  <div className="absolute top-2 left-2 flex items-center gap-0.5" title="Certified">
     <svg 
       width="20" 
       height="20" 
