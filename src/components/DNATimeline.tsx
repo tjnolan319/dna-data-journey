@@ -319,7 +319,7 @@ const SchoolSection = ({
               <div className="flex items-center justify-between">
                 <div className="text-sm text-slate-600">
                   {totalCourses} courses across {schoolData.semesters.length} semesters
-                  {isURI && <span className="text-xs text-slate-500 ml-1">*at level 300 or above</span>}
+                  {isURI && <span className="text-xs text-slate-500 ml-1">*at level 200 or above</span>}
                 </div>
                 <div className="flex items-center gap-3">
                   <button
