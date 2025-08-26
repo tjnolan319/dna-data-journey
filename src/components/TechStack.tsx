@@ -11,7 +11,7 @@ const techStack = [
   { name: "Tableau", category: "Visualization", certified: false },
   { name: "Power BI", category: "Visualization", certified: false },
   { name: "Drupal", category: "Website Editing", certified: false },
-  { name: "Hubspot", category: "CRM & Marketing", certified: true, false },
+  { name: "Hubspot", category: "CRM & Marketing", certified: false },
   { name: "Qualtrics", category: "Survey & Research", certified: false },
 ];
 
