@@ -12,6 +12,7 @@ import {
   fetchCertifications,
   fetchLabNotes
 } from "../api/projectApi"; // Import your API functions
+import { sortByStatusPriority } from "../utils/portfolioUtils";
 
 const StatusBanner = ({ status }: { status: string }) => {
   const getStatusStyles = (status: string) => {
@@ -370,7 +371,7 @@ export const ProjectTabs = () => {
               <ErrorMessage message={projectsError} onRetry={retryProjects} />
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-                {projects.map((project, index) => (
+                {sortByStatusPriority(projects).map((project, index) => (
                   <Card 
                     key={project.id || index} 
                     className={`relative hover:shadow-lg transition-shadow ${
@@ -425,7 +426,7 @@ export const ProjectTabs = () => {
               <ErrorMessage message={caseStudiesError} onRetry={retryCaseStudies} />
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-                {caseStudies.map((study, index) => (
+                {sortByStatusPriority(caseStudies).map((study, index) => (
                   <Card 
                     key={study.id || index} 
                     className={`relative hover:shadow-lg transition-shadow ${
@@ -456,7 +457,7 @@ export const ProjectTabs = () => {
               <ErrorMessage message={dashboardsError} onRetry={retryDashboards} />
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-                {dashboards.map((dashboard, index) => (
+                {sortByStatusPriority(dashboards).map((dashboard, index) => (
                   <Card 
                     key={dashboard.id || index} 
                     className={`relative hover:shadow-lg transition-shadow ${

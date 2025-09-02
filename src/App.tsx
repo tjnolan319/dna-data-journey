@@ -18,6 +18,7 @@ import AdminLabNoteEditor from "./pages/AdminLabNoteEditor";
 import AdminTodoLists from "./pages/AdminTodoLists";
 import AdminWorkJournal from "./pages/AdminWorkJournal";
 import AdminResumeManager from "./pages/AdminResumeManager";
+import AdminGalleryManager from "./pages/AdminGalleryManager";
 import AdminSectionManager from "./pages/AdminSectionManager";
 import AdminPortfolioContent from "./pages/AdminPortfolioContent";
 import PublicLabNotes from "./pages/PublicLabNotes";
@@ -51,6 +52,7 @@ const App = () => {
             <Route path="/admin/todo-lists" element={<AdminTodoLists />} />
             <Route path="/admin/work-journal" element={<AdminWorkJournal />} />
             <Route path="/admin/resume" element={<AdminResumeManager />} />
+            <Route path="/admin/gallery-manager" element={<AdminGalleryManager />} />
           <Route path="/admin/section-manager" element={<AdminSectionManager />} />
           <Route path="/admin/portfolio-content" element={<AdminPortfolioContent />} />
             <Route path="/lab-notes" element={<PublicLabNotes />} />

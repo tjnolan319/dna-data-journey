@@ -162,6 +162,23 @@ const AdminDashboard = () => {
             </CardContent>
           </Card>
 
+          <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => navigate('/admin/gallery-manager')}>
+            <CardHeader>
+              <CardTitle className="flex items-center space-x-2">
+                <Upload className="w-5 h-5 text-purple-600" />
+                <span>Gallery Manager</span>
+              </CardTitle>
+              <CardDescription>
+                Manage data visualization gallery images
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-slate-600">
+                Upload and organize images for the data visualization gallery section.
+              </p>
+            </CardContent>
+          </Card>
+
           <Card className="hover:shadow-lg transition-shadow cursor-pointer opacity-50">
             <CardHeader>
               <CardTitle className="flex items-center space-x-2">

@@ -35,30 +35,11 @@ const AdminPortfolioContent = () => {
   const [editableBlocks, setEditableBlocks] = useState<ContentBlock[]>([]);
 
   
- useEffect(() => {
-  const fetchPages = async () => {
-    const { data, error } = await supabase
-      .from('portfolio_pages')
-      .select('id, slug, title, description, is_published, created_at, updated_at, content_blocks');
-
-    if (error) {
-      console.error('Error fetching portfolio pages:', error);
-      setLoading(false);
-      return;
-    }
-
-    // Ensure content_blocks is always an array
-    const pagesWithBlocks = (data || []).map((page: any) => ({
-      ...page,
-      content_blocks: page.content_blocks || [],
-    }));
-
-    setPages(pagesWithBlocks);
+  useEffect(() => {
+    // TODO: Implement portfolio pages functionality when table is created
+    setPages([]);
     setLoading(false);
-  };
-
-  fetchPages();
-}, []);
+  }, []);
 
 
 

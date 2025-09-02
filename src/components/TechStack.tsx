@@ -1,21 +1,8 @@
 import { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
+import { supabase } from "@/integrations/supabase/client";
 
-const techStack = [
-  { name: "SQL", category: "Database", certified: false },
-  { name: "Python", category: "Programming", certified: false },
-  { name: "R Programming", category: "Statistics", certified: false },
-  { name: "SPSS", category: "Statistics", certified: false },
-  { name: "Alteryx", category: "Data Workflow", certified: true, certCount: 2 },
-  { name: "Excel", category: "Analytics", certified: true, certCount: 1 },
-  { name: "Tableau", category: "Visualization", certified: false },
-  { name: "Power BI", category: "Visualization", certified: false },
-  { name: "Drupal", category: "Website Editing", certified: false },
-  { name: "Hubspot", category: "CRM & Marketing", certified: false },
-  { name: "Qualtrics", category: "Survey & Research", certified: false },
-];
-
-const CertificationIcon = ({ certCount }) => (
+const CertificationIcon = ({ certCount }: { certCount: number }) => (
   <div className="absolute top-2 left-2 flex items-center gap-0.5" title="Certified">
     <svg 
       width="20" 
@@ -45,6 +32,33 @@ const CertificationIcon = ({ certCount }) => (
 
 export const TechStack = () => {
   const [isVisible, setIsVisible] = useState(false);
+  const [techStack, setTechStack] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchTechStack = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('tech_stack')
+          .select('*')
+          .order('display_order');
+
+        if (error) {
+          console.error('Error fetching tech stack:', error);
+          return;
+        }
+
+        setTechStack(data || []);
+      } catch (err) {
+        console.error('Error loading tech stack:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTechStack();
+  }, []);
+
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -65,23 +79,29 @@ export const TechStack = () => {
           My Tech <span className="text-blue-600">DNA</span>
         </h2>
         
-        <div className={`transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-          <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
-            {techStack.map((tech, index) => (
-              <Card 
-                key={tech.name} 
-                className={`relative hover:shadow-lg transition-all duration-300 hover:scale-105 ${isVisible ? 'animate-fade-in' : 'opacity-0'}`}
-                style={{ animationDelay: `${index * 100}ms` }}
-              >
-                {tech.certified && <CertificationIcon certCount={tech.certCount} />}
-                <CardContent className="p-3 sm:p-4 text-center">
-                  <div className="text-xs sm:text-sm font-semibold text-slate-800 mb-1 leading-tight">{tech.name}</div>
-                  <div className="text-xs text-slate-500 leading-tight">{tech.category}</div>
-                </CardContent>
-              </Card>
-            ))}
+        {loading ? (
+          <div className="flex justify-center py-8">
+            <div className="text-slate-600">Loading tech stack...</div>
           </div>
-        </div>
+        ) : (
+          <div className={`transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+            <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+              {techStack.map((tech: any, index: number) => (
+                <Card 
+                  key={tech.id} 
+                  className={`relative hover:shadow-lg transition-all duration-300 hover:scale-105 ${isVisible ? 'animate-fade-in' : 'opacity-0'}`}
+                  style={{ animationDelay: `${index * 100}ms` }}
+                >
+                  {tech.certified && <CertificationIcon certCount={tech.cert_count} />}
+                  <CardContent className="p-3 sm:p-4 text-center">
+                    <div className="text-xs sm:text-sm font-semibold text-slate-800 mb-1 leading-tight">{tech.name}</div>
+                    <div className="text-xs text-slate-500 leading-tight">{tech.category}</div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </section>
   );
