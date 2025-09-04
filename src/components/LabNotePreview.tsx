@@ -136,6 +136,11 @@ export const LabNotePreview: React.FC<LabNotePreviewProps> = ({ isOpen, onClose,
     
     let formatted = text;
     
+    // Images - Process before other formatting
+    formatted = formatted.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, (match, alt, src) => {
+      return `<div class="my-6"><img src="${src}" alt="${alt}" class="max-w-full h-auto rounded-lg shadow-sm border border-slate-200" style="max-height: 500px; object-fit: contain;" /></div>`;
+    });
+    
     // Custom colored boxes - Process before other formatting
     formatted = formatted.replace(/~box\(([^)]+)\)\s*([\s\S]*?)\s*~endbox/g, (match, color, content) => {
       const boxClasses = getBoxClasses(color);
@@ -162,8 +167,8 @@ export const LabNotePreview: React.FC<LabNotePreviewProps> = ({ isOpen, onClose,
     formatted = formatted.replace(/^\* (.+)$/gm, '<li class="ml-4 mb-1">• $1</li>');
     formatted = formatted.replace(/^\- (.+)$/gm, '<li class="ml-4 mb-1">• $1</li>');
     
-    // Links
-    formatted = formatted.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" class="text-blue-600 hover:text-blue-800 underline">$1</a>');
+    // Links (but not already processed images)
+    formatted = formatted.replace(/(?<!<img[^>]*)\[([^\]]+)\]\(([^)]+)\)(?![^<]*>)/g, '<a href="$2" class="text-blue-600 hover:text-blue-800 underline">$1</a>');
     
     // Paragraphs
     formatted = formatted.replace(/\n\n/g, '</p><p class="mb-4 text-slate-700 leading-relaxed">');
