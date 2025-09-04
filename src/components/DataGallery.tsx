@@ -55,10 +55,10 @@ export const DataGallery = () => {
       <div className="max-w-7xl mx-auto">
         <div className={`text-center mb-12 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
           <h2 className="text-4xl font-bold text-slate-800 mb-4">
-            Data Visualization <span className="text-blue-600">Gallery</span>
+            Portfolio <span className="text-blue-600">Gallery</span>
           </h2>
           <p className="text-xl text-slate-600 max-w-2xl mx-auto">
-            Interactive dashboards and analytical visualizations that transform data into insights
+            Snapshots of my work, including event leadership, program design, and analytical visuals.
           </p>
         </div>
 
