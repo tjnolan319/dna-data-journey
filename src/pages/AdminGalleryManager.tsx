@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Plus, Edit, Trash2, Upload, Move, Eye, EyeOff } from 'lucide-react';
+import { ArrowLeft, Plus, Edit, Trash2, Upload, Move, Eye, EyeOff, Image } from 'lucide-react';
 import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -34,6 +34,10 @@ const AdminGalleryManager = () => {
     description: '',
     image_url: ''
   });
+  const [uploadMethod, setUploadMethod] = useState<'url' | 'file'>('url');
+  const [dragActive, setDragActive] = useState(false);
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     fetchImages();
@@ -111,23 +115,103 @@ const AdminGalleryManager = () => {
     }
   };
 
+  const handleFileUpload = async (file: File): Promise<string | null> => {
+    if (!file.type.startsWith('image/') || (!file.type.includes('jpeg') && !file.type.includes('jpg') && !file.type.includes('png'))) {
+      toast({
+        title: "Invalid file type",
+        description: "Please upload a JPG or PNG image.",
+        variant: "destructive",
+      });
+      return null;
+    }
+
+    if (file.size > 10 * 1024 * 1024) { // 10MB limit
+      toast({
+        title: "File too large",
+        description: "Please upload an image smaller than 10MB.",
+        variant: "destructive",
+      });
+      return null;
+    }
+
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Math.random()}.${fileExt}`;
+      const filePath = fileName;
+
+      const { error: uploadError } = await supabase.storage
+        .from('gallery')
+        .upload(filePath, file);
+
+      if (uploadError) {
+        console.error('Error uploading file:', uploadError);
+        throw uploadError;
+      }
+
+      const { data } = supabase.storage
+        .from('gallery')
+        .getPublicUrl(filePath);
+
+      return data.publicUrl;
+    } catch (error) {
+      console.error('Error uploading file:', error);
+      toast({
+        title: "Upload failed",
+        description: "Failed to upload image. Please try again.",
+        variant: "destructive",
+      });
+      return null;
+    }
+  };
+
   const handleAddImage = async () => {
-    if (!formData.title || !formData.image_url) {
+    if (!formData.title) {
       toast({
         title: "Missing fields",
-        description: "Please fill in the title and image URL.",
+        description: "Please fill in the title.",
         variant: "destructive",
       });
       return;
     }
 
+    if (uploadMethod === 'url' && !formData.image_url) {
+      toast({
+        title: "Missing URL",
+        description: "Please provide an image URL.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (uploadMethod === 'file' && !uploadedFile) {
+      toast({
+        title: "Missing file",
+        description: "Please select an image file to upload.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setUploading(true);
+
     try {
+      let imageUrl = formData.image_url;
+
+      if (uploadMethod === 'file' && uploadedFile) {
+        const uploadedUrl = await handleFileUpload(uploadedFile);
+        if (!uploadedUrl) {
+          setUploading(false);
+          return;
+        }
+        imageUrl = uploadedUrl;
+      }
+
       const { data, error } = await supabase
         .from('gallery_images')
         .insert([{
           title: formData.title,
           description: formData.description,
-          image_url: formData.image_url,
+          image_url: imageUrl,
           display_order: images.length,
           is_active: true
         }])
@@ -146,6 +230,8 @@ const AdminGalleryManager = () => {
 
       setImages([...images, data]);
       setFormData({ title: '', description: '', image_url: '' });
+      setUploadedFile(null);
+      setUploadMethod('url');
       setShowAddDialog(false);
 
       toast({
@@ -159,6 +245,8 @@ const AdminGalleryManager = () => {
         description: "Failed to add gallery image.",
         variant: "destructive",
       });
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -293,8 +381,49 @@ const AdminGalleryManager = () => {
     });
   };
 
+  const handleDrag = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.type === "dragenter" || e.type === "dragover") {
+      setDragActive(true);
+    } else if (e.type === "dragleave") {
+      setDragActive(false);
+    }
+  }, []);
+
+  const handleDrop = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(false);
+
+    const files = e.dataTransfer.files;
+    if (files && files[0]) {
+      const file = files[0];
+      if (file.type.startsWith('image/')) {
+        setUploadedFile(file);
+        setUploadMethod('file');
+      } else {
+        toast({
+          title: "Invalid file type",
+          description: "Please drop a JPG or PNG image file.",
+          variant: "destructive",
+        });
+      }
+    }
+  }, [toast]);
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files && files[0]) {
+      setUploadedFile(files[0]);
+      setUploadMethod('file');
+    }
+  };
+
   const resetForm = () => {
     setFormData({ title: '', description: '', image_url: '' });
+    setUploadedFile(null);
+    setUploadMethod('url');
     setEditingImage(null);
     setShowAddDialog(false);
   };
@@ -330,48 +459,134 @@ const AdminGalleryManager = () => {
                   <span>Add Image</span>
                 </Button>
               </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Add Gallery Image</DialogTitle>
-                </DialogHeader>
-                <div className="space-y-4">
-                  <div>
-                    <Label htmlFor="title">Title</Label>
-                    <Input
-                      id="title"
-                      value={formData.title}
-                      onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                      placeholder="Image title"
-                    />
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Add Gallery Image</DialogTitle>
+                  </DialogHeader>
+                  <div className="space-y-4">
+                    <div>
+                      <Label htmlFor="title">Title</Label>
+                      <Input
+                        id="title"
+                        value={formData.title}
+                        onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                        placeholder="Image title"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="description">Description</Label>
+                      <Textarea
+                        id="description"
+                        value={formData.description}
+                        onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                        placeholder="Image description"
+                      />
+                    </div>
+
+                    {/* Upload Method Toggle */}
+                    <div className="space-y-2">
+                      <Label>Upload Method</Label>
+                      <div className="flex space-x-2">
+                        <Button
+                          type="button"
+                          variant={uploadMethod === 'url' ? 'default' : 'outline'}
+                          size="sm"
+                          onClick={() => setUploadMethod('url')}
+                        >
+                          URL
+                        </Button>
+                        <Button
+                          type="button"
+                          variant={uploadMethod === 'file' ? 'default' : 'outline'}
+                          size="sm"
+                          onClick={() => setUploadMethod('file')}
+                        >
+                          File Upload
+                        </Button>
+                      </div>
+                    </div>
+
+                    {uploadMethod === 'url' && (
+                      <div>
+                        <Label htmlFor="image_url">Image URL</Label>
+                        <Input
+                          id="image_url"
+                          value={formData.image_url}
+                          onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
+                          placeholder="https://example.com/image.jpg"
+                        />
+                      </div>
+                    )}
+
+                    {uploadMethod === 'file' && (
+                      <div className="space-y-2">
+                        <Label>Upload Image File</Label>
+                        <div
+                          className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors ${
+                            dragActive
+                              ? 'border-blue-500 bg-blue-50'
+                              : 'border-slate-300 hover:border-slate-400'
+                          }`}
+                          onDragEnter={handleDrag}
+                          onDragLeave={handleDrag}
+                          onDragOver={handleDrag}
+                          onDrop={handleDrop}
+                        >
+                          {uploadedFile ? (
+                            <div className="space-y-2">
+                              <Image className="w-8 h-8 mx-auto text-green-600" />
+                              <p className="text-sm font-medium text-green-700">
+                                {uploadedFile.name}
+                              </p>
+                              <p className="text-xs text-slate-500">
+                                {(uploadedFile.size / 1024 / 1024).toFixed(2)} MB
+                              </p>
+                              <Button
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                onClick={() => setUploadedFile(null)}
+                              >
+                                Remove
+                              </Button>
+                            </div>
+                          ) : (
+                            <div className="space-y-2">
+                              <Upload className="w-8 h-8 mx-auto text-slate-400" />
+                              <p className="text-sm text-slate-600">
+                                Drag and drop an image here, or
+                              </p>
+                              <input
+                                type="file"
+                                accept="image/jpeg,image/jpg,image/png"
+                                onChange={handleFileSelect}
+                                className="hidden"
+                                id="file-upload"
+                              />
+                              <label htmlFor="file-upload">
+                                <Button type="button" variant="outline" size="sm" asChild>
+                                  <span className="cursor-pointer">Browse files</span>
+                                </Button>
+                              </label>
+                              <p className="text-xs text-slate-500">
+                                JPG, PNG up to 10MB
+                              </p>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
+
+                    <div className="flex justify-end space-x-2">
+                      <Button variant="outline" onClick={resetForm}>
+                        Cancel
+                      </Button>
+                      <Button onClick={handleAddImage} disabled={uploading}>
+                        {uploading ? 'Uploading...' : 'Add Image'}
+                      </Button>
+                    </div>
                   </div>
-                  <div>
-                    <Label htmlFor="description">Description</Label>
-                    <Textarea
-                      id="description"
-                      value={formData.description}
-                      onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                      placeholder="Image description"
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="image_url">Image URL</Label>
-                    <Input
-                      id="image_url"
-                      value={formData.image_url}
-                      onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
-                      placeholder="https://example.com/image.jpg"
-                    />
-                  </div>
-                  <div className="flex justify-end space-x-2">
-                    <Button variant="outline" onClick={resetForm}>
-                      Cancel
-                    </Button>
-                    <Button onClick={handleAddImage}>
-                      Add Image
-                    </Button>
-                  </div>
-                </div>
-              </DialogContent>
+                </DialogContent>
             </Dialog>
           </div>
           

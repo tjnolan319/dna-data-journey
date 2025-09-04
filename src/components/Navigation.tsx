@@ -1,13 +1,14 @@
 
 import { useState, useEffect } from "react";
 import { Menu, X, Download, Github, LogIn, UserPlus } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [currentTime, setCurrentTime] = useState("");
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const updateTime = () => {
@@ -28,9 +29,26 @@ export const Navigation = () => {
   }, []);
 
   const scrollToSection = (sectionId: string) => {
-    const element = document.getElementById(sectionId);
-    element?.scrollIntoView({ behavior: 'smooth' });
     setIsOpen(false);
+    
+    // If not on home page, navigate to home first then scroll
+    if (location.pathname !== '/') {
+      navigate('/');
+      // Use setTimeout to ensure DOM is updated before scrolling
+      setTimeout(() => {
+        const element = document.getElementById(sectionId);
+        element?.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+    } else {
+      // Already on home page, scroll directly
+      const element = document.getElementById(sectionId);
+      element?.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  const handleNameClick = () => {
+    setIsOpen(false);
+    navigate('/');
   };
 
   const handleResumeDownload = async () => {
@@ -97,9 +115,12 @@ export const Navigation = () => {
     <nav className="fixed top-0 w-full bg-white/80 backdrop-blur-md z-50 border-b border-slate-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          <div className="font-bold text-xl text-slate-800">
+          <button 
+            onClick={handleNameClick}
+            className="font-bold text-xl text-slate-800 hover:text-blue-600 transition-colors cursor-pointer"
+          >
             Timothy Nolan
-          </div>
+          </button>
           
           <div className="hidden md:flex items-center space-x-6">
             <button 
