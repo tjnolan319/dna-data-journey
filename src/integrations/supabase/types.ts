@@ -423,6 +423,78 @@ export type Database = {
         }
         Relationships: []
       }
+      recent_books: {
+        Row: {
+          author: string | null
+          cover_url: string | null
+          created_at: string
+          goodreads_id: string
+          goodreads_url: string | null
+          id: string
+          read_date: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          author?: string | null
+          cover_url?: string | null
+          created_at?: string
+          goodreads_id: string
+          goodreads_url?: string | null
+          id?: string
+          read_date?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          author?: string | null
+          cover_url?: string | null
+          created_at?: string
+          goodreads_id?: string
+          goodreads_url?: string | null
+          id?: string
+          read_date?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      recent_movies: {
+        Row: {
+          created_at: string
+          director: string | null
+          id: string
+          letterboxd_url: string | null
+          poster_url: string | null
+          title: string
+          tmdb_id: string
+          updated_at: string
+          watched_date: string | null
+        }
+        Insert: {
+          created_at?: string
+          director?: string | null
+          id?: string
+          letterboxd_url?: string | null
+          poster_url?: string | null
+          title: string
+          tmdb_id: string
+          updated_at?: string
+          watched_date?: string | null
+        }
+        Update: {
+          created_at?: string
+          director?: string | null
+          id?: string
+          letterboxd_url?: string | null
+          poster_url?: string | null
+          title?: string
+          tmdb_id?: string
+          updated_at?: string
+          watched_date?: string | null
+        }
+        Relationships: []
+      }
       resumes: {
         Row: {
           created_at: string
