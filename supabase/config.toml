@@ -1,1 +1,7 @@
 project_id = "mlrfleeflqqfacrknnzf"
+
+[functions.fetch-letterboxd]
+verify_jwt = false
+
+[functions.fetch-goodreads]
+verify_jwt = false

@@ -6,6 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Mail, Linkedin, MapPin, Clock, CheckCircle } from "lucide-react";
 import { toast } from "@/components/ui/sonner";
+import { RecentMedia } from "@/components/RecentMedia";
 
 export const ContactForm = () => {
   const [formData, setFormData] = useState({
@@ -216,6 +217,8 @@ export const ContactForm = () => {
             </CardContent>
           </Card>
         </div>
+        
+        <RecentMedia />
       </div>
     </section>
   );
