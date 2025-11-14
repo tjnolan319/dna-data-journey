@@ -54,7 +54,17 @@ serve(async (req) => {
       
       // Extract published date (user read date)
       const dateMatch = itemXml.match(/<user_read_at>(.*?)<\/user_read_at>/);
-      const readDate = dateMatch ? new Date(dateMatch[1]) : null;
+      let readDate = null;
+      if (dateMatch && dateMatch[1]) {
+        try {
+          const parsedDate = new Date(dateMatch[1]);
+          if (!isNaN(parsedDate.getTime())) {
+            readDate = parsedDate.toISOString();
+          }
+        } catch (e) {
+          console.log('Failed to parse date:', dateMatch[1]);
+        }
+      }
       
       console.log(`Found book: ${title} by ${author}`);
       
@@ -63,7 +73,7 @@ serve(async (req) => {
         title: title,
         author: author,
         cover_url: coverUrl,
-        read_date: readDate?.toISOString() || null,
+        read_date: readDate,
         goodreads_url: goodreadsUrl,
       });
     }
