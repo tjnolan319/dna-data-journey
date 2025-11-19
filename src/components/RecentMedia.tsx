@@ -72,7 +72,8 @@ export const RecentMedia = () => {
 
   return (
     <div className="w-full space-y-8 py-8 border-t border-border/20">
-      {movies.length > 0 && (
+      {/* Temporarily hiding movies */}
+      {/* {movies.length > 0 && (
         <div className="space-y-4">
           <div className="flex items-center gap-2">
             <Film className="w-5 h-5 text-primary" />
@@ -114,7 +115,7 @@ export const RecentMedia = () => {
             ))}
           </div>
         </div>
-      )}
+      )} */}
 
       {books.length > 0 && (
         <div className="space-y-4">
