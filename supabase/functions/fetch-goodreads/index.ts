@@ -27,7 +27,8 @@ serve(async (req) => {
     const itemMatches = [...rssText.matchAll(/<item>[\s\S]*?<\/item>/g)];
     const books = [];
     
-    for (const match of itemMatches.slice(0, 4)) {
+    // Process more items initially to filter by genre
+    for (const match of itemMatches) {
       const itemXml = match[0];
       
       // Extract book ID
@@ -36,13 +37,56 @@ serve(async (req) => {
       
       const goodreadsId = bookIdMatch[1];
       
-      // Extract title
-      const titleMatch = itemXml.match(/<title><!\[CDATA\[(.*?)\]\]><\/title>/);
-      const title = titleMatch ? titleMatch[1] : '';
+      // Extract title - try multiple patterns
+      let title = '';
+      const titleCdataMatch = itemXml.match(/<title><!\[CDATA\[(.*?)\]\]><\/title>/);
+      if (titleCdataMatch) {
+        title = titleCdataMatch[1];
+      } else {
+        const titleSimpleMatch = itemXml.match(/<title>(.*?)<\/title>/);
+        if (titleSimpleMatch) {
+          title = titleSimpleMatch[1];
+        }
+      }
       
-      // Extract author
-      const authorMatch = itemXml.match(/<author_name><!\[CDATA\[(.*?)\]\]><\/author_name>/);
-      const author = authorMatch ? authorMatch[1] : '';
+      // Extract author - try multiple patterns
+      let author = '';
+      const authorCdataMatch = itemXml.match(/<author_name><!\[CDATA\[(.*?)\]\]><\/author_name>/);
+      if (authorCdataMatch) {
+        author = authorCdataMatch[1];
+      } else {
+        const authorSimpleMatch = itemXml.match(/<author_name>(.*?)<\/author_name>/);
+        if (authorSimpleMatch) {
+          author = authorSimpleMatch[1];
+        }
+      }
+      
+      // Skip books without title or author
+      if (!title || !author) {
+        console.log(`Skipping book with missing data: title="${title}", author="${author}"`);
+        continue;
+      }
+      
+      // Extract shelves/genres
+      const shelvesMatches = [...itemXml.matchAll(/<user_shelves><!\[CDATA\[(.*?)\]\]><\/user_shelves>/g)];
+      let shelves = '';
+      if (shelvesMatches.length > 0) {
+        shelves = shelvesMatches[0][1].toLowerCase();
+      }
+      
+      // Determine genre - check for Classics or Business
+      let genre = null;
+      if (shelves.includes('classics') || shelves.includes('classic')) {
+        genre = 'Classics';
+      } else if (shelves.includes('business')) {
+        genre = 'Business';
+      }
+      
+      // Skip books that don't match our genre filter
+      if (!genre) {
+        console.log(`Skipping book "${title}" - not in Classics or Business genre (shelves: ${shelves})`);
+        continue;
+      }
       
       // Extract cover image
       const coverMatch = itemXml.match(/<book_large_image_url><!\[CDATA\[(.*?)\]\]><\/book_large_image_url>/);
@@ -66,7 +110,7 @@ serve(async (req) => {
         }
       }
       
-      console.log(`Found book: ${title} by ${author}`);
+      console.log(`Found book: ${title} by ${author} (${genre})`);
       
       books.push({
         goodreads_id: goodreadsId,
@@ -75,7 +119,11 @@ serve(async (req) => {
         cover_url: coverUrl,
         read_date: readDate,
         goodreads_url: goodreadsUrl,
+        genre: genre,
       });
+      
+      // Stop once we have 4 books that match our criteria
+      if (books.length >= 4) break;
     }
     
     console.log(`Found ${books.length} books`);
