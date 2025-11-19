@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
-import { BookOpen, Film } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { BookOpen, Film, RefreshCw } from "lucide-react";
+import { toast } from "sonner";
 
 interface Movie {
   id: string;
@@ -23,6 +25,7 @@ export const RecentMedia = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
   const [books, setBooks] = useState<Book[]>([]);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
     fetchRecentMedia();
@@ -48,6 +51,30 @@ export const RecentMedia = () => {
       console.error('Error fetching recent media:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    try {
+      toast.info("Fetching latest books from Goodreads...");
+      
+      const { error } = await supabase.functions.invoke('fetch-goodreads');
+      
+      if (error) throw error;
+      
+      // Wait a moment for the data to be written to the database
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      // Refetch the data
+      await fetchRecentMedia();
+      
+      toast.success("Books updated successfully!");
+    } catch (error) {
+      console.error('Error refreshing books:', error);
+      toast.error("Failed to update books. Please try again.");
+    } finally {
+      setRefreshing(false);
     }
   };
 
@@ -119,9 +146,20 @@ export const RecentMedia = () => {
 
       {books.length > 0 && (
         <div className="space-y-4">
-          <div className="flex items-center gap-2">
-            <BookOpen className="w-5 h-5 text-primary" />
-            <h3 className="text-xl font-semibold">Recently Read</h3>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <BookOpen className="w-5 h-5 text-primary" />
+              <h3 className="text-xl font-semibold">Recently Read</h3>
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleRefresh}
+              disabled={refreshing}
+            >
+              <RefreshCw className={`w-4 h-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
+              Refresh
+            </Button>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {books.map((book) => (
