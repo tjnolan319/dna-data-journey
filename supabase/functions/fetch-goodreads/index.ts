@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.50.3";
+import { DOMParser } from "https://deno.land/x/deno_dom@v0.1.38/deno-dom-wasm.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -23,110 +24,105 @@ serve(async (req) => {
     const goodreadsRss = await fetch('https://www.goodreads.com/review/list_rss/179633369?shelf=read');
     const rssText = await goodreadsRss.text();
     
-    // Parse XML to extract book data
-    const itemMatches = [...rssText.matchAll(/<item>[\s\S]*?<\/item>/g)];
-    const books = [];
+    console.log('Parsing RSS feed with DOMParser...');
     
-    // Process more items initially to filter by genre
-    for (const match of itemMatches) {
-      const itemXml = match[0];
-      
-      // Extract book ID
-      const bookIdMatch = itemXml.match(/<book_id>(\d+)<\/book_id>/);
-      if (!bookIdMatch) continue;
-      
-      const goodreadsId = bookIdMatch[1];
-      
-      // Extract title - try multiple patterns
-      let title = '';
-      const titleCdataMatch = itemXml.match(/<title><!\[CDATA\[(.*?)\]\]><\/title>/);
-      if (titleCdataMatch) {
-        title = titleCdataMatch[1];
-      } else {
-        const titleSimpleMatch = itemXml.match(/<title>(.*?)<\/title>/);
-        if (titleSimpleMatch) {
-          title = titleSimpleMatch[1];
-        }
-      }
-      
-      // Extract author - try multiple patterns
-      let author = '';
-      const authorCdataMatch = itemXml.match(/<author_name><!\[CDATA\[(.*?)\]\]><\/author_name>/);
-      if (authorCdataMatch) {
-        author = authorCdataMatch[1];
-      } else {
-        const authorSimpleMatch = itemXml.match(/<author_name>(.*?)<\/author_name>/);
-        if (authorSimpleMatch) {
-          author = authorSimpleMatch[1];
-        }
-      }
-      
-      // Skip books without title or author
-      if (!title || !author) {
-        console.log(`Skipping book with missing data: title="${title}", author="${author}"`);
-        continue;
-      }
-      
-      // Extract shelves/genres
-      const shelvesMatches = [...itemXml.matchAll(/<user_shelves><!\[CDATA\[(.*?)\]\]><\/user_shelves>/g)];
-      let shelves = '';
-      if (shelvesMatches.length > 0) {
-        shelves = shelvesMatches[0][1].toLowerCase();
-      }
-      
-      // Determine genre - check for Classics or Business
-      let genre = null;
-      if (shelves.includes('classics') || shelves.includes('classic')) {
-        genre = 'Classics';
-      } else if (shelves.includes('business')) {
-        genre = 'Business';
-      }
-      
-      // Skip books that don't match our genre filter
-      if (!genre) {
-        console.log(`Skipping book "${title}" - not in Classics or Business genre (shelves: ${shelves})`);
-        continue;
-      }
-      
-      // Extract cover image
-      const coverMatch = itemXml.match(/<book_large_image_url><!\[CDATA\[(.*?)\]\]><\/book_large_image_url>/);
-      const coverUrl = coverMatch ? coverMatch[1] : null;
-      
-      // Extract link
-      const linkMatch = itemXml.match(/<link>(.*?)<\/link>/);
-      const goodreadsUrl = linkMatch ? linkMatch[1] : null;
-      
-      // Extract published date (user read date)
-      const dateMatch = itemXml.match(/<user_read_at>(.*?)<\/user_read_at>/);
-      let readDate = null;
-      if (dateMatch && dateMatch[1]) {
-        try {
-          const parsedDate = new Date(dateMatch[1]);
-          if (!isNaN(parsedDate.getTime())) {
-            readDate = parsedDate.toISOString();
-          }
-        } catch (e) {
-          console.log('Failed to parse date:', dateMatch[1]);
-        }
-      }
-      
-      console.log(`Found book: ${title} by ${author} (${genre})`);
-      
-      books.push({
-        goodreads_id: goodreadsId,
-        title: title,
-        author: author,
-        cover_url: coverUrl,
-        read_date: readDate,
-        goodreads_url: goodreadsUrl,
-        genre: genre,
-      });
-      
-      // Stop once we have 4 books that match our criteria
-      if (books.length >= 4) break;
+    // Parse XML using DOMParser
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(rssText, 'text/xml');
+    
+    if (!doc) {
+      throw new Error('Failed to parse RSS feed');
     }
     
-    console.log(`Found ${books.length} books`);
+    const items = doc.querySelectorAll('item');
+    console.log(`Found ${items.length} total items in feed`);
+    
+    const books = [];
+    
+    for (const item of items) {
+      try {
+        // Extract book ID
+        const bookIdEl = item.querySelector('book_id');
+        if (!bookIdEl || !bookIdEl.textContent) continue;
+        const goodreadsId = bookIdEl.textContent.trim();
+        
+        // Extract title
+        const titleEl = item.querySelector('title');
+        const title = titleEl?.textContent?.trim() || '';
+        
+        // Extract author
+        const authorEl = item.querySelector('author_name');
+        const author = authorEl?.textContent?.trim() || '';
+        
+        // Skip books without title or author
+        if (!title || !author) {
+          console.log(`Skipping book ${goodreadsId} - missing title or author`);
+          continue;
+        }
+        
+        // Extract shelves/genres
+        const shelvesEl = item.querySelector('user_shelves');
+        const shelves = shelvesEl?.textContent?.trim().toLowerCase() || '';
+        
+        console.log(`Book: "${title}" by ${author} - shelves: "${shelves}"`);
+        
+        // Determine genre - check for Classics or Business
+        let genre = null;
+        if (shelves.includes('classics') || shelves.includes('classic')) {
+          genre = 'Classics';
+        } else if (shelves.includes('business')) {
+          genre = 'Business';
+        }
+        
+        // Skip books that don't match our genre filter
+        if (!genre) {
+          console.log(`Skipping "${title}" - not in Classics or Business genre`);
+          continue;
+        }
+        
+        // Extract cover image
+        const coverEl = item.querySelector('book_large_image_url');
+        const coverUrl = coverEl?.textContent?.trim() || null;
+        
+        // Extract link
+        const linkEl = item.querySelector('link');
+        const goodreadsUrl = linkEl?.textContent?.trim() || null;
+        
+        // Extract read date
+        const dateEl = item.querySelector('user_read_at');
+        let readDate = null;
+        if (dateEl && dateEl.textContent) {
+          try {
+            const parsedDate = new Date(dateEl.textContent.trim());
+            if (!isNaN(parsedDate.getTime())) {
+              readDate = parsedDate.toISOString();
+            }
+          } catch (e) {
+            console.log('Failed to parse date:', dateEl.textContent);
+          }
+        }
+        
+        console.log(`✓ Added: ${title} by ${author} (${genre})`);
+        
+        books.push({
+          goodreads_id: goodreadsId,
+          title: title,
+          author: author,
+          cover_url: coverUrl,
+          read_date: readDate,
+          goodreads_url: goodreadsUrl,
+          genre: genre,
+        });
+        
+        // Stop once we have 4 books that match our criteria
+        if (books.length >= 4) break;
+      } catch (error) {
+        console.error('Error processing item:', error);
+        continue;
+      }
+    }
+    
+    console.log(`Successfully parsed ${books.length} books`);
     
     // Delete old books and insert new ones
     const { error: deleteError } = await supabase
@@ -150,7 +146,7 @@ serve(async (req) => {
     }
     
     return new Response(
-      JSON.stringify({ success: true, count: books.length }),
+      JSON.stringify({ success: true, count: books.length, books: books }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   } catch (error) {
