@@ -20,7 +20,7 @@ serve(async (req) => {
     
     console.log('Fetching Goodreads RSS feed...');
     
-    // Fetch Goodreads RSS feed for "read" shelf
+    // Fetch Goodreads RSS feed for "read" shelf to get book IDs
     const goodreadsRss = await fetch('https://www.goodreads.com/review/list_rss/179633369?shelf=read');
     const rssText = await goodreadsRss.text();
     
@@ -46,49 +46,7 @@ serve(async (req) => {
         if (!bookIdEl || !bookIdEl.textContent) continue;
         const goodreadsId = bookIdEl.textContent.trim();
         
-        // Extract title
-        const titleEl = item.querySelector('title');
-        const title = titleEl?.textContent?.trim() || '';
-        
-        // Extract author
-        const authorEl = item.querySelector('author_name');
-        const author = authorEl?.textContent?.trim() || '';
-        
-        // Skip books without title or author
-        if (!title || !author) {
-          console.log(`Skipping book ${goodreadsId} - missing title or author`);
-          continue;
-        }
-        
-        // Extract shelves/genres
-        const shelvesEl = item.querySelector('user_shelves');
-        const shelves = shelvesEl?.textContent?.trim().toLowerCase() || '';
-        
-        console.log(`Book: "${title}" by ${author} - shelves: "${shelves}"`);
-        
-        // Determine genre - check for Classics or Business
-        let genre = null;
-        if (shelves.includes('classics') || shelves.includes('classic')) {
-          genre = 'Classics';
-        } else if (shelves.includes('business')) {
-          genre = 'Business';
-        }
-        
-        // Skip books that don't match our genre filter
-        if (!genre) {
-          console.log(`Skipping "${title}" - not in Classics or Business genre`);
-          continue;
-        }
-        
-        // Extract cover image
-        const coverEl = item.querySelector('book_large_image_url');
-        const coverUrl = coverEl?.textContent?.trim() || null;
-        
-        // Extract link
-        const linkEl = item.querySelector('link');
-        const goodreadsUrl = linkEl?.textContent?.trim() || null;
-        
-        // Extract read date
+        // Extract read date from RSS
         const dateEl = item.querySelector('user_read_at');
         let readDate = null;
         if (dateEl && dateEl.textContent) {
@@ -102,6 +60,61 @@ serve(async (req) => {
           }
         }
         
+        console.log(`Fetching book page for ID: ${goodreadsId}`);
+        
+        // Fetch individual book page for accurate data
+        const bookPageUrl = `https://www.goodreads.com/book/show/${goodreadsId}`;
+        const bookPageResponse = await fetch(bookPageUrl);
+        const bookPageHtml = await bookPageResponse.text();
+        
+        // Parse the book page HTML
+        const bookDoc = parser.parseFromString(bookPageHtml, 'text/html');
+        if (!bookDoc) {
+          console.log(`Failed to parse book page for ${goodreadsId}`);
+          continue;
+        }
+        
+        // Extract title from h1 with data-testid="bookTitle"
+        const titleEl = bookDoc.querySelector('h1[data-testid="bookTitle"]');
+        const title = titleEl?.textContent?.trim() || '';
+        
+        // Extract author from span with data-testid="name"
+        const authorEl = bookDoc.querySelector('span[data-testid="name"]');
+        const author = authorEl?.textContent?.trim() || '';
+        
+        // Skip books without title or author
+        if (!title || !author) {
+          console.log(`Skipping book ${goodreadsId} - missing title or author`);
+          continue;
+        }
+        
+        // Extract genres - look for buttons with class containing "BookPageMetadataSection__genreButton"
+        const genreButtons = bookDoc.querySelectorAll('button[class*="BookPageMetadataSection__genreButton"]');
+        let genre = null;
+        
+        for (const button of genreButtons) {
+          const genreText = button.textContent?.trim().toLowerCase() || '';
+          console.log(`Found genre: ${genreText}`);
+          
+          if (genreText.includes('classics') || genreText.includes('classic')) {
+            genre = 'Classics';
+            break;
+          } else if (genreText.includes('business')) {
+            genre = 'Business';
+            break;
+          }
+        }
+        
+        // Skip books that don't match our genre filter
+        if (!genre) {
+          console.log(`Skipping "${title}" - not in Classics or Business genre`);
+          continue;
+        }
+        
+        // Extract cover image
+        const coverEl = bookDoc.querySelector('img[class*="ResponsiveImage"]');
+        const coverUrl = coverEl?.getAttribute('src') || null;
+        
         console.log(`✓ Added: ${title} by ${author} (${genre})`);
         
         books.push({
@@ -110,7 +123,7 @@ serve(async (req) => {
           author: author,
           cover_url: coverUrl,
           read_date: readDate,
-          goodreads_url: goodreadsUrl,
+          goodreads_url: bookPageUrl,
           genre: genre,
         });
         
