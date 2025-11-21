@@ -2,10 +2,10 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
+
 import { useToast } from "@/hooks/use-toast";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Area, AreaChart } from "recharts";
-import { Upload, TrendingUp, Zap, DollarSign, Thermometer } from "lucide-react";
+import { TrendingUp, Zap, DollarSign, Thermometer } from "lucide-react";
 
 interface EnergyData {
   read_date: string;
@@ -27,7 +27,6 @@ interface ForecastData {
 export default function EnergyDashboard() {
   const [historicalData, setHistoricalData] = useState<EnergyData[]>([]);
   const [forecastData, setForecastData] = useState<ForecastData[]>([]);
-  const [csvInput, setCsvInput] = useState("");
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
@@ -65,46 +64,6 @@ export default function EnergyDashboard() {
     }
   };
 
-  const handleDataImport = async () => {
-    try {
-      const lines = csvInput.trim().split("\n");
-      const dataRows = lines.slice(1); // Skip header
-
-      const records = dataRows.map(line => {
-        const parts = line.split("\t");
-        return {
-          account: parts[0],
-          read_date: new Date(parts[1]).toISOString().split('T')[0],
-          usage: parseInt(parts[2]),
-          number_of_days: parseInt(parts[3]),
-          usage_per_day: parseFloat(parts[4]),
-          charge: parseFloat(parts[5].replace("$", "").replace(",", "")),
-          average_temperature: parseInt(parts[6]),
-        };
-      });
-
-      const { error } = await supabase
-        .from("energy_consumption" as any)
-        .upsert(records as any, { onConflict: "account,read_date" });
-
-      if (error) throw error;
-
-      toast({
-        title: "Success",
-        description: `Imported ${records.length} energy records`,
-      });
-
-      setCsvInput("");
-      fetchData();
-    } catch (error) {
-      console.error("Error importing data:", error);
-      toast({
-        title: "Error",
-        description: "Failed to import data",
-        variant: "destructive",
-      });
-    }
-  };
 
   const combinedChartData = [
     ...historicalData.map(d => ({
@@ -254,37 +213,43 @@ export default function EnergyDashboard() {
           </Card>
         </div>
 
-        {/* Data Import */}
-        <Card className="p-6">
-          <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-            <Upload className="h-5 w-5" />
-            Import Energy Data
-          </h2>
-          <p className="text-sm text-muted-foreground mb-4">
-            Paste your tab-separated energy data below (including header row)
-          </p>
-          <Textarea
-            value={csvInput}
-            onChange={(e) => setCsvInput(e.target.value)}
-            placeholder="Account	Read Date	Usage	Number of Days	Usage per day	Charge	Average Temperature"
-            rows={10}
-            className="font-mono text-sm mb-4"
-          />
-          <Button onClick={handleDataImport} disabled={!csvInput.trim()}>
-            <Upload className="h-4 w-4 mr-2" />
-            Import Data
-          </Button>
-        </Card>
+        {/* Model Information */}
+        <Card className="p-6 bg-gradient-to-br from-primary/5 to-primary/10 border-primary/20">
+          <h2 className="text-xl font-semibold mb-4">🔬 SARIMA Forecasting Model</h2>
+          <div className="space-y-3">
+            <p className="text-sm text-muted-foreground">
+              Forecasts are generated using a <strong>SARIMA (Seasonal AutoRegressive Integrated Moving Average)</strong> model 
+              that analyzes historical usage patterns and temperature data to predict future energy consumption.
+            </p>
+            
+            <div className="bg-background/50 rounded-lg p-4 space-y-2">
+              <h3 className="font-medium text-sm">How It Works:</h3>
+              <ul className="text-sm text-muted-foreground space-y-1 list-disc list-inside">
+                <li>Analyzes seasonal patterns in your energy usage</li>
+                <li>Incorporates temperature correlation for improved accuracy</li>
+                <li>Generates 12-month forecasts with confidence intervals</li>
+                <li>Auto-selects optimal model parameters using AIC criteria</li>
+              </ul>
+            </div>
 
-        {/* R Script Integration Note */}
-        <Card className="p-6 mt-6 bg-muted/50">
-          <h3 className="font-semibold mb-2">🔬 SARIMA Model Integration</h3>
-          <p className="text-sm text-muted-foreground mb-2">
-            To add forecasts, run your R script to generate predictions, then upload the forecast JSON to update the database.
-          </p>
-          <p className="text-xs text-muted-foreground">
-            Your R script exports to <code className="bg-background px-1 py-0.5 rounded">energy_forecast.json</code> - you can create an API endpoint to upload this data.
-          </p>
+            <div className="bg-background/50 rounded-lg p-4 space-y-2">
+              <h3 className="font-medium text-sm">Update Forecasts:</h3>
+              <p className="text-sm text-muted-foreground">
+                To refresh predictions, run the R script located in <code className="bg-background px-1.5 py-0.5 rounded text-xs">r-scripts/energy_forecast_sarima.R</code>.
+                The script will automatically:
+              </p>
+              <ol className="text-sm text-muted-foreground space-y-1 list-decimal list-inside ml-2">
+                <li>Fetch current data from the database</li>
+                <li>Train the SARIMA model</li>
+                <li>Generate visualizations (PNG files)</li>
+                <li>Upload new forecasts to display here</li>
+              </ol>
+            </div>
+
+            <p className="text-xs text-muted-foreground italic">
+              Data management is handled through the backend. Add new historical data via Supabase Table Editor.
+            </p>
+          </div>
         </Card>
       </div>
     </div>
