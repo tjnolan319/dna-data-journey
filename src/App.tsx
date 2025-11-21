@@ -23,6 +23,7 @@ import AdminSectionManager from "./pages/AdminSectionManager";
 import AdminPortfolioContent from "./pages/AdminPortfolioContent";
 import PublicLabNotes from "./pages/PublicLabNotes";
 import NotFound from "./pages/NotFound";
+import EnergyDashboard from "./pages/EnergyDashboard";
 
 const queryClient = new QueryClient();
 
@@ -56,6 +57,7 @@ const App = () => {
           <Route path="/admin/section-manager" element={<AdminSectionManager />} />
           <Route path="/admin/portfolio-content" element={<AdminPortfolioContent />} />
             <Route path="/lab-notes" element={<PublicLabNotes />} />
+            <Route path="/energy" element={<EnergyDashboard />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
